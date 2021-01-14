@@ -95,6 +95,7 @@ export function initBase(option: InitBaseOption) {
       wConfig.resolveLoader.modules.unshift(yylConfig.resolveModule)
     }
   }
+  // TODO: yyl 系列 plugins 引入
 
   return wConfig
 }
