@@ -1,21 +1,15 @@
 import webpack, { Compiler, WebpackOptionsNormalized } from 'webpack'
 import merge from 'webpack-merge'
-import MiniCssExtractPlugin from 'mini-css-extract-plugin'
-import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
-import autoprefixer from 'autoprefixer'
-import px2rem from 'postcss-pxtorem'
-import sass from 'sass'
 import path from 'path'
-import util from 'yyl-util'
-import fs from 'fs'
-import extFs from 'yyl-fs'
 import { YylConfig, Env } from 'yyl-config-types'
+import { initBase } from './init/base'
+import { initEntry } from './init/entry'
+import { initModule } from './init/module'
 
 import { Alias } from './types'
-
 export interface YylReactTsConfigWebpackPluginOption {
   /** 当前路径 */
-  cwd: string
+  context: string
   /** 环境变量 */
   env?: Env
   /** yyl.config */
@@ -23,16 +17,11 @@ export interface YylReactTsConfigWebpackPluginOption {
   alias?: Alias
 }
 
-/** 格式化路径 */
-function formatPath(str: string) {
-  return str.split(path.sep).join('/')
-}
-
 type AliasProperty = Required<YylReactTsConfigWebpackPluginProperty['alias']>
 
 export type YylReactTsConfigWebpackPluginProperty = Required<YylReactTsConfigWebpackPluginOption>
 export class YylReactTsConfigWebpackPlugin {
-  cwd: YylReactTsConfigWebpackPluginProperty['cwd'] = process.cwd()
+  context: YylReactTsConfigWebpackPluginProperty['context'] = process.cwd()
   env: YylReactTsConfigWebpackPluginProperty['env'] = {}
   yylConfig: YylReactTsConfigWebpackPluginOption['yylConfig']
   alias: AliasProperty = {
@@ -41,13 +30,15 @@ export class YylReactTsConfigWebpackPlugin {
     dirname: './',
     jsDest: './dist/js',
     cssDest: './dist/css',
-    imageDest: './dist/images',
-    htmlDest: './dist/html'
+    imagesDest: './dist/images',
+    htmlDest: './dist/html',
+    basePath: '/',
+    publicPath: '/'
   }
 
   constructor(op?: YylReactTsConfigWebpackPluginOption) {
-    if (op?.cwd) {
-      this.cwd = path.resolve(__dirname, op.cwd)
+    if (op?.context) {
+      this.context = path.resolve(__dirname, op.context)
     }
 
     if (op?.alias) {
@@ -59,6 +50,21 @@ export class YylReactTsConfigWebpackPlugin {
 
     if (op?.yylConfig) {
       this.yylConfig = op.yylConfig
+      // 字段兼容
+      if (this.yylConfig.dest?.basePath) {
+        this.alias.basePath = this.yylConfig.dest.basePath
+      }
+
+      if (this.yylConfig.commit?.hostname) {
+        this.alias.publicPath = this.yylConfig.commit.hostname
+      }
+
+      if (this.yylConfig?.alias) {
+        this.alias = {
+          ...this.alias,
+          ...this.yylConfig.alias
+        }
+      }
     }
   }
 
@@ -66,7 +72,7 @@ export class YylReactTsConfigWebpackPlugin {
     const { alias, env, yylConfig } = this
     const { options } = compiler
     if (options.context) {
-      this.cwd = path.resolve(__dirname, options.context)
+      this.context = path.resolve(__dirname, options.context)
     }
 
     // 路径纠正
@@ -77,22 +83,15 @@ export class YylReactTsConfigWebpackPlugin {
 
     // dist 目录
     const resolveRoot = path.resolve(__dirname, alias.root)
+    const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot })
+    const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot })
+    const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot })
 
-    const wConfig: WebpackOptionsNormalized = {
-      output: {
-        path: resolveRoot,
-        filename: formatPath(
-          path.relative(resolveRoot, path.join(alias.jsDest, '[name]-[hash:8].js'))
-        ),
-        chunkFilename: formatPath(
-          path.relative(
-            resolveRoot,
-            path.join(alias.jsDest, 'async_component/[name]-[chunkhash:8].js')
-          )
-        )
-      }
-    }
-
-    compiler.options = merge(options, wConfig)
+    compiler.options = merge(
+      options,
+      baseWConfig,
+      entryWConfig as WebpackOptionsNormalized,
+      moduleWConfig as WebpackOptionsNormalized
+    )
   }
 }

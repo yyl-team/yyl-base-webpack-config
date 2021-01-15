@@ -10,5 +10,11 @@
     "declarationDir": "./output",
     "declaration": true
   },
-  "include": ["typing/**/*", "src/**.*"]
+  "include": [
+    "typing/**/*",
+    "src/**.*",
+    "src/init/initModule.ts",
+    "src/init/initEntry.ts",
+    "src/init/initBase.ts"
+  ]
 }

@@ -1,37 +1,37 @@
-import { WebpackOptionsNormalized, DefinePlugin, config } from 'webpack'
-import { Env, YylConfig } from 'yyl-config-types'
+import { WebpackOptionsNormalized, DefinePlugin, config, EnvironmentPlugin } from 'webpack'
 import path from 'path'
+import util from 'yyl-util'
 import TerserWebpackPlugin from 'terser-webpack-plugin'
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin'
 
-import { Alias } from './types'
-import { formatPath } from './formatter'
-import { __dirname } from '../typing/global'
+import { InitBaseOption } from '../types'
+import { formatPath } from '../formatter'
+import { __dirname } from '../../typing/global'
 
 export interface DefinePluginOption {
   [key: string]: any
 }
-export interface InitBaseOption {
-  resolveRoot: string
-  env: Env
-  alias: Required<Alias>
-  yylConfig?: YylConfig
-}
 
-export interface InitBaseResult {
-  context: Required<WebpackOptionsNormalized['context']>
-  output: WebpackOptionsNormalized['output']
-  resolveLoader: WebpackOptionsNormalized['resolveLoader']
-  resolve: WebpackOptionsNormalized['resolve']
-  devtool: Required<WebpackOptionsNormalized['devtool']>
-  optimization: WebpackOptionsNormalized['optimization']
-  plugins: Required<WebpackOptionsNormalized['plugins']>
-}
+export type InitBaseResult = WebpackOptionsNormalized
 
 export function initBase(option: InitBaseOption) {
   const { resolveRoot, alias, yylConfig, env } = option
   const nodeModulesPath = path.join(alias.dirname, 'node_modules')
   const wConfig: InitBaseResult = {
+    node: {},
+    mode: 'development',
+    cache: {
+      type: 'memory'
+    },
+    entry: {},
+    experiments: {},
+    externals: [],
+    externalsPresets: {},
+    infrastructureLogging: {},
+    module: {},
+    snapshot: {},
+    stats: {},
+    watchOptions: {},
     context: path.resolve(__dirname, alias.dirname),
     output: {
       path: resolveRoot,
@@ -95,6 +95,36 @@ export function initBase(option: InitBaseOption) {
       wConfig.resolveLoader.modules.unshift(yylConfig.resolveModule)
     }
   }
+
+  // 环境区分
+  if (env.proxy || env.remote) {
+    wConfig.output.publicPath = util.path.join(
+      alias.hostname,
+      alias.basePath,
+      path.relative(alias.root, resolveRoot),
+      '/'
+    )
+  } else if (env.isCommit) {
+    wConfig.mode = 'production'
+    wConfig.output.publicPath = util.path.join(
+      alias.hostname,
+      alias.basePath,
+      path.relative(alias.root, resolveRoot),
+      '/'
+    )
+  } else {
+    wConfig.output.publicPath = util.path.join(
+      alias.basePath,
+      path.relative(alias.root, resolveRoot),
+      '/'
+    )
+  }
+  wConfig.plugins.push(
+    new DefinePlugin({
+      'process.env.NODE_ENV': env.NODE_ENV || wConfig.mode
+    })
+  )
+
   // TODO: yyl 系列 plugins 引入
 
   return wConfig

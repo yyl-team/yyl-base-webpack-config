@@ -2,21 +2,13 @@ import { WebpackOptionsNormalized } from 'webpack'
 import path from 'path'
 import extFs from 'yyl-fs'
 import fs from 'fs'
-import { Env } from 'yyl-config-types'
-import { Alias } from './types'
+import { InitBaseOption } from '../types'
 import HtmlWebpackPlugin, { Options as HtmlWebpackPluginOption } from 'html-webpack-plugin'
 
 const OUTPUT_HTML_REG = /(\.jade|\.pug|\.html)$/
 
 function ignoreExtName(iPath: string) {
   return iPath.replace(/(\.jade|.pug|\.html|\.js|\.css|\.ts|\.tsx|\.jsx)$/, '')
-}
-
-/** 初始化入口和输出html-配置 */
-export interface InitEntryOption {
-  resolveRoot: string
-  env: Env
-  alias: Required<Alias>
 }
 
 /** 初始化入口和输出html-返回结果 */
@@ -30,7 +22,7 @@ export interface OutputMap {
 }
 
 /** 初始化入口和输出html */
-export function initEntry(option: InitEntryOption) {
+export function initEntry(option: InitBaseOption) {
   const { env, alias, resolveRoot } = option
   const wConfig: InitEntryResult = {
     entry: (() => {
