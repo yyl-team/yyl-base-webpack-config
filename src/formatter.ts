@@ -1,6 +1,5 @@
 import path from 'path'
 import { type } from 'yyl-util'
-import { require } from '../typing/global'
 /** 格式化路径 */
 export function formatPath(str: string) {
   return str.split(path.sep).join('/')

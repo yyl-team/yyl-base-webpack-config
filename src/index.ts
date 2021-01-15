@@ -2,9 +2,9 @@ import webpack, { Compiler, WebpackOptionsNormalized } from 'webpack'
 import merge from 'webpack-merge'
 import path from 'path'
 import { YylConfig, Env } from 'yyl-config-types'
-import { initBase } from './init/base'
-import { initEntry } from './init/entry'
-import { initModule } from './init/module'
+import { initBase } from './config/initBase'
+import { initEntry } from './config/initEntry'
+import { initModule } from './config/initModule'
 
 import { Alias } from './types'
 export interface YylReactTsConfigWebpackPluginOption {

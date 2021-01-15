@@ -25,7 +25,7 @@ const config = {
       typescript: require('typescript')
     })
   ],
-  external: ['dayjs', 'chalk', 'path', 'fs']
+  external: Object.keys(pkg.dependencies).concat(['webpack', 'fs', 'path'])
 }
 
 export default [

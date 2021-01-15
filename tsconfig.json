@@ -13,8 +13,8 @@
   "include": [
     "typing/**/*",
     "src/**.*",
-    "src/init/initModule.ts",
-    "src/init/initEntry.ts",
-    "src/init/initBase.ts"
+    "src/config/initModule.ts",
+    "src/config/initEntry.ts",
+    "src/config/initBase.ts"
   ]
 }

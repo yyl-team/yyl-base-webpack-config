@@ -6,7 +6,6 @@ import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin'
 
 import { InitBaseOption } from '../types'
 import { formatPath } from '../formatter'
-import { __dirname } from '../../typing/global'
 
 export interface DefinePluginOption {
   [key: string]: any
