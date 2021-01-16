@@ -5,8 +5,6 @@
  */
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var merge = _interopDefault(require('webpack-merge'));
@@ -434,7 +432,7 @@ function initModule(op) {
     return wConfig;
 }
 
-class YylReactTsConfigWebpackPlugin {
+module.exports = class YylReactTsConfigWebpackPlugin {
     constructor(op) {
         var _a, _b, _c;
         this.context = process.cwd();
@@ -488,6 +486,4 @@ class YylReactTsConfigWebpackPlugin {
         const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot });
         compiler.options = merge(options, baseWConfig, entryWConfig, moduleWConfig);
     }
-}
-
-exports.YylReactTsConfigWebpackPlugin = YylReactTsConfigWebpackPlugin;
+};

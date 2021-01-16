@@ -1,4 +1,4 @@
-import webpack, { Compiler, WebpackOptionsNormalized } from 'webpack'
+import { Compiler, WebpackOptionsNormalized } from 'webpack'
 import merge from 'webpack-merge'
 import path from 'path'
 import { YylConfig, Env } from 'yyl-config-types'
@@ -20,7 +20,7 @@ export interface YylReactTsConfigWebpackPluginOption {
 type AliasProperty = Required<YylReactTsConfigWebpackPluginProperty['alias']>
 
 export type YylReactTsConfigWebpackPluginProperty = Required<YylReactTsConfigWebpackPluginOption>
-export class YylReactTsConfigWebpackPlugin {
+module.exports = class YylReactTsConfigWebpackPlugin {
   context: YylReactTsConfigWebpackPluginProperty['context'] = process.cwd()
   env: YylReactTsConfigWebpackPluginProperty['env'] = {}
   yylConfig: YylReactTsConfigWebpackPluginOption['yylConfig']
