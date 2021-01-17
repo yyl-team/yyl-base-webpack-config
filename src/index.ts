@@ -77,40 +77,34 @@ module.exports = class YylReactTsConfigWebpackPlugin {
   apply(compiler: Compiler) {
     const { alias, env, yylConfig } = this
     const { options } = compiler
-    if (options.context) {
-      this.context = path.resolve(__dirname, options.context)
-    }
+    compiler.hooks.afterPlugins.tap('yyl-react-ts-config', (compiler) => {
+      if (options.context) {
+        this.context = path.resolve(__dirname, options.context)
+      }
 
-    // 路径纠正
-    Object.keys(alias).forEach((key) => {
-      const iKey = key as keyof AliasProperty
-      alias[iKey] = path.resolve(__dirname, alias[iKey])
+      // 路径纠正
+      Object.keys(alias).forEach((key) => {
+        const iKey = key as keyof AliasProperty
+        alias[iKey] = path.resolve(__dirname, alias[iKey])
+      })
+
+      // dist 目录
+      const resolveRoot = path.resolve(__dirname, alias.root)
+      const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot })
+      const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot })
+      const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot })
+
+      const mixedOptions = merge(
+        options,
+        baseWConfig as WebpackOptionsNormalized,
+        entryWConfig as WebpackOptionsNormalized,
+        moduleWConfig as WebpackOptionsNormalized
+      )
+      if ('main' in mixedOptions.entry && Object.keys(mixedOptions.entry.main).length === 0) {
+        delete mixedOptions.entry.main
+      }
+      compiler.options = mixedOptions
+      console.log('r', compiler.options)
     })
-
-    // dist 目录
-    const resolveRoot = path.resolve(__dirname, alias.root)
-    const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot })
-    const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot })
-    const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot })
-
-    console.log('baseWConfig', baseWConfig)
-    console.log('===========================')
-    console.log('entryWConfig', entryWConfig)
-    console.log('===========================')
-    console.log('moduleWConfig', moduleWConfig)
-    console.log('===========================')
-
-    const mixedOptions = merge(
-      options,
-      baseWConfig as WebpackOptionsNormalized
-      // entryWConfig as WebpackOptionsNormalized,
-      // moduleWConfig as WebpackOptionsNormalized
-    )
-    if ('main' in mixedOptions.entry && Object.keys(mixedOptions.entry.main).length === 0) {
-      delete mixedOptions.entry.main
-    }
-    compiler.options = mixedOptions
-    console.log('r', compiler.options)
-    // console.log('===', compiler.options)
   }
 }

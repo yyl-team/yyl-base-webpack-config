@@ -16,7 +16,7 @@ export type InitBaseResult = Pick<
   | 'mode'
   | 'cache'
   | 'context'
-  // | 'output'
+  | 'output'
   | 'resolveLoader'
   | 'resolve'
   | 'devtool'
@@ -33,18 +33,20 @@ export function initBase(option: InitBaseOption) {
       type: 'memory'
     },
     context: path.resolve(__dirname, alias.dirname),
-    // output: {
-    //   path: resolveRoot,
-    //   filename: formatPath(
-    //     path.relative(resolveRoot, path.join(alias.jsDest, '[name]-[hash:8].js'))
-    //   ),
-    //   chunkFilename: formatPath(
-    //     path.relative(
-    //       resolveRoot,
-    //       path.join(alias.jsDest, 'async_component/[name]-[chunkhash:8].js')
-    //     )
-    //   )
-    // },
+    output: {
+      path: resolveRoot,
+      filename: formatPath(
+        path.relative(resolveRoot, path.join(alias.jsDest, '[name]-[hash:8].js'))
+      ),
+      chunkFilename: formatPath(
+        path.relative(
+          resolveRoot,
+          path.join(alias.jsDest, 'async_component/[name]-[chunkhash:8].js')
+        )
+      ),
+      hashDigest: '',
+      hashDigestLength: 0
+    },
     resolveLoader: {
       modules: [nodeModulesPath]
     },
@@ -97,28 +99,28 @@ export function initBase(option: InitBaseOption) {
   }
 
   // 环境区分
-  // if (env.proxy || env.remote) {
-  //   wConfig.output.publicPath = util.path.join(
-  //     alias.hostname,
-  //     alias.basePath,
-  //     path.relative(alias.root, resolveRoot),
-  //     '/'
-  //   )
-  // } else if (env.isCommit) {
-  //   wConfig.mode = 'production'
-  //   wConfig.output.publicPath = util.path.join(
-  //     alias.hostname,
-  //     alias.basePath,
-  //     path.relative(alias.root, resolveRoot),
-  //     '/'
-  //   )
-  // } else {
-  //   wConfig.output.publicPath = util.path.join(
-  //     alias.basePath,
-  //     path.relative(alias.root, resolveRoot),
-  //     '/'
-  //   )
-  // }
+  if (env.proxy || env.remote) {
+    wConfig.output.publicPath = util.path.join(
+      alias.hostname,
+      alias.basePath,
+      path.relative(alias.root, resolveRoot),
+      '/'
+    )
+  } else if (env.isCommit) {
+    wConfig.mode = 'production'
+    wConfig.output.publicPath = util.path.join(
+      alias.hostname,
+      alias.basePath,
+      path.relative(alias.root, resolveRoot),
+      '/'
+    )
+  } else {
+    wConfig.output.publicPath = util.path.join(
+      alias.basePath,
+      path.relative(alias.root, resolveRoot),
+      '/'
+    )
+  }
   wConfig.plugins.push(
     new DefinePlugin({
       'process.env.NODE_ENV': env.NODE_ENV || wConfig.mode
