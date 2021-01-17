@@ -12,11 +12,7 @@ const NODE_MODULES_REG = /node_modules/
 const IS_VUE_REG = /\.vue\.js/
 
 /** 初始化 wConfig module 部分 - 返回值 */
-export interface InitModuleResult {
-  module: WebpackOptionsNormalized['module']
-  resolve: WebpackOptionsNormalized['resolve']
-  plugins: WebpackOptionsNormalized['plugins']
-}
+export type InitModuleResult = Pick<WebpackOptionsNormalized, 'module' | 'resolve' | 'plugins'>
 
 /** 初始化 wConfig module 部分 */
 export function initModule(op: InitBaseOption) {
