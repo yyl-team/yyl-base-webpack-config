@@ -10,60 +10,38 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var merge = _interopDefault(require('webpack-merge'));
 var path = _interopDefault(require('path'));
 var webpack = require('webpack');
-var util = require('yyl-util');
-var util__default = _interopDefault(util);
 var TerserWebpackPlugin = _interopDefault(require('terser-webpack-plugin'));
 var OptimizeCSSAssetsPlugin = _interopDefault(require('optimize-css-assets-webpack-plugin'));
 var extFs = _interopDefault(require('yyl-fs'));
 var fs = _interopDefault(require('fs'));
-var HtmlWebpackPlugin = _interopDefault(require('html-webpack-plugin'));
+var util = require('yyl-util');
+var util__default = _interopDefault(util);
 var autoprefixer = _interopDefault(require('autoprefixer'));
 var px2rem = _interopDefault(require('postcss-px2rem'));
 var sass = _interopDefault(require('sass'));
 var MiniCssExtractPlugin = _interopDefault(require('mini-css-extract-plugin'));
 
-/** 格式化路径 */
-function formatPath(str) {
-    return str.split(path.sep).join('/');
-}
-function isModuleInclude(iPath, arr) {
-    if (util.type(arr) !== 'array') {
-        return false;
-    }
-    const matchModule = arr.filter((pkg) => {
-        const pkgPath = path.join('node_modules', pkg);
-        return iPath.includes(pkgPath);
-    });
-    return !!matchModule[0];
-}
-function resolveModule(ctx) {
-    return require.resolve(ctx);
-}
-
 function initBase(option) {
     const { resolveRoot, alias, yylConfig, env } = option;
     const nodeModulesPath = path.join(alias.dirname, 'node_modules');
     const wConfig = {
-        node: {},
         mode: 'development',
         cache: {
             type: 'memory'
         },
-        entry: {},
-        experiments: {},
-        externals: [],
-        externalsPresets: {},
-        infrastructureLogging: {},
-        module: {},
-        snapshot: {},
-        stats: {},
-        watchOptions: {},
         context: path.resolve(__dirname, alias.dirname),
-        output: {
-            path: resolveRoot,
-            filename: formatPath(path.relative(resolveRoot, path.join(alias.jsDest, '[name]-[hash:8].js'))),
-            chunkFilename: formatPath(path.relative(resolveRoot, path.join(alias.jsDest, 'async_component/[name]-[chunkhash:8].js')))
-        },
+        // output: {
+        //   path: resolveRoot,
+        //   filename: formatPath(
+        //     path.relative(resolveRoot, path.join(alias.jsDest, '[name]-[hash:8].js'))
+        //   ),
+        //   chunkFilename: formatPath(
+        //     path.relative(
+        //       resolveRoot,
+        //       path.join(alias.jsDest, 'async_component/[name]-[chunkhash:8].js')
+        //     )
+        //   )
+        // },
         resolveLoader: {
             modules: [nodeModulesPath]
         },
@@ -109,16 +87,28 @@ function initBase(option) {
         }
     }
     // 环境区分
-    if (env.proxy || env.remote) {
-        wConfig.output.publicPath = util__default.path.join(alias.hostname, alias.basePath, path.relative(alias.root, resolveRoot), '/');
-    }
-    else if (env.isCommit) {
-        wConfig.mode = 'production';
-        wConfig.output.publicPath = util__default.path.join(alias.hostname, alias.basePath, path.relative(alias.root, resolveRoot), '/');
-    }
-    else {
-        wConfig.output.publicPath = util__default.path.join(alias.basePath, path.relative(alias.root, resolveRoot), '/');
-    }
+    // if (env.proxy || env.remote) {
+    //   wConfig.output.publicPath = util.path.join(
+    //     alias.hostname,
+    //     alias.basePath,
+    //     path.relative(alias.root, resolveRoot),
+    //     '/'
+    //   )
+    // } else if (env.isCommit) {
+    //   wConfig.mode = 'production'
+    //   wConfig.output.publicPath = util.path.join(
+    //     alias.hostname,
+    //     alias.basePath,
+    //     path.relative(alias.root, resolveRoot),
+    //     '/'
+    //   )
+    // } else {
+    //   wConfig.output.publicPath = util.path.join(
+    //     alias.basePath,
+    //     path.relative(alias.root, resolveRoot),
+    //     '/'
+    //   )
+    // }
     wConfig.plugins.push(new webpack.DefinePlugin({
         'process.env.NODE_ENV': env.NODE_ENV || wConfig.mode
     }));
@@ -126,7 +116,7 @@ function initBase(option) {
     return wConfig;
 }
 
-const OUTPUT_HTML_REG = /(\.jade|\.pug|\.html)$/;
+const ENTRY_ERG = /\.(js|tsx?)$/;
 function ignoreExtName(iPath) {
     return iPath.replace(/(\.jade|.pug|\.html|\.js|\.css|\.ts|\.tsx|\.jsx)$/, '');
 }
@@ -139,7 +129,7 @@ function initEntry(option) {
             const r = {};
             const entryPath = path.join(srcRoot, 'entry');
             if (fs.existsSync(entryPath)) {
-                const fileList = extFs.readFilesSync(entryPath);
+                const fileList = extFs.readFilesSync(entryPath, ENTRY_ERG);
                 fileList.forEach((filePath) => {
                     const key = ignoreExtName(path.basename(filePath));
                     if (key) {
@@ -154,54 +144,74 @@ function initEntry(option) {
         })(),
         plugins: []
     };
-    wConfig.plugins = wConfig.plugins.concat((() => {
-        const { srcRoot } = alias;
-        const bootPath = path.join(srcRoot, 'boot');
-        const entryPath = path.join(srcRoot, 'entry');
-        let outputPath = [];
-        if (fs.existsSync(bootPath)) {
-            outputPath = outputPath.concat(extFs.readFilesSync(bootPath, OUTPUT_HTML_REG));
-        }
-        if (fs.existsSync(entryPath)) {
-            outputPath = outputPath.concat(extFs.readFilesSync(entryPath, OUTPUT_HTML_REG));
-        }
-        const outputMap = {};
-        outputPath.forEach((iPath) => {
-            outputMap[ignoreExtName(path.basename(iPath))] = iPath;
-        });
-        const commonChunks = [];
-        Object.keys(wConfig.entry).forEach((key) => {
-            if (key in outputMap) ;
-            else {
-                // common chunk
-                commonChunks.push(key);
-            }
-        });
-        return outputPath.map((iPath) => {
-            const filename = ignoreExtName(path.basename(iPath));
-            let iChunks = [];
-            iChunks = iChunks.concat(commonChunks);
-            if (filename in wConfig.entry) {
-                iChunks.push(filename);
-            }
-            const opts = {
-                template: iPath,
-                filename: path.relative(resolveRoot, path.join(alias.htmlDest, `${filename}.html`)),
-                chunks: iChunks,
-                chunksSortMode(a, b) {
-                    return iChunks.indexOf(a) - iChunks.indexOf(b);
-                },
-                inlineSource: '.(js|css|ts|tsx|jsx)\\?__inline$',
-                minify: false,
-                inject: 'body',
-                process: {
-                    env: env
-                }
-            };
-            return new HtmlWebpackPlugin(opts);
-        });
-    })());
+    // wConfig.plugins = wConfig.plugins.concat(
+    //   (() => {
+    //     const { srcRoot } = alias
+    //     const bootPath = path.join(srcRoot, 'boot')
+    //     const entryPath = path.join(srcRoot, 'entry')
+    //     let outputPath: string[] = []
+    //     if (fs.existsSync(bootPath)) {
+    //       outputPath = outputPath.concat(extFs.readFilesSync(bootPath, OUTPUT_HTML_REG))
+    //     }
+    //     if (fs.existsSync(entryPath)) {
+    //       outputPath = outputPath.concat(extFs.readFilesSync(entryPath, OUTPUT_HTML_REG))
+    //     }
+    //     const outputMap: OutputMap = {}
+    //     outputPath.forEach((iPath) => {
+    //       outputMap[ignoreExtName(path.basename(iPath))] = iPath
+    //     })
+    //     const commonChunks: string[] = []
+    //     const pageChunkMap: OutputMap = {}
+    //     Object.keys(wConfig.entry).forEach((key) => {
+    //       if (key in outputMap) {
+    //         // page chunk
+    //         pageChunkMap[key] = key
+    //       } else {
+    //         // common chunk
+    //         commonChunks.push(key)
+    //       }
+    //     })
+    //     return outputPath.map((iPath) => {
+    //       const filename = ignoreExtName(path.basename(iPath))
+    //       let iChunks: string[] = []
+    //       iChunks = iChunks.concat(commonChunks)
+    //       if (filename in wConfig.entry) {
+    //         iChunks.push(filename)
+    //       }
+    //       const opts: HtmlWebpackPluginOption = {
+    //         template: iPath,
+    //         filename: path.relative(resolveRoot, path.join(alias.htmlDest, `${filename}.html`)),
+    //         chunks: iChunks,
+    //         chunksSortMode(a, b) {
+    //           return iChunks.indexOf(a) - iChunks.indexOf(b)
+    //         },
+    //         inlineSource: '.(js|css|ts|tsx|jsx)\\?__inline$',
+    //         minify: false,
+    //         inject: 'body',
+    //         process: {
+    //           env: env
+    //         }
+    //       }
+    //       return new HtmlWebpackPlugin(opts)
+    //     })
+    //   })()
+    // )
+    console.log('entry', wConfig);
     return wConfig;
+}
+
+function isModuleInclude(iPath, arr) {
+    if (util.type(arr) !== 'array') {
+        return false;
+    }
+    const matchModule = arr.filter((pkg) => {
+        const pkgPath = path.join('node_modules', pkg);
+        return iPath.includes(pkgPath);
+    });
+    return !!matchModule[0];
+}
+function resolveModule(ctx) {
+    return require.resolve(ctx);
 }
 
 const NODE_MODULES_REG = /node_modules/;
@@ -290,8 +300,7 @@ function initModule(op) {
                     test: util.path.join(alias.srcRoot, 'js/lib/'),
                     use: [
                         {
-                            loader: resolveModule('imports-loader'),
-                            options: 'this=>window'
+                            loader: `${resolveModule('imports-loader')}?this=?window`
                         }
                     ]
                 },
@@ -429,6 +438,7 @@ function initModule(op) {
         }
     }
     // - ts
+    console.log('module', wConfig);
     return wConfig;
 }
 
@@ -467,6 +477,11 @@ module.exports = class YylReactTsConfigWebpackPlugin {
                 this.alias = Object.assign(Object.assign({}, this.alias), this.yylConfig.alias);
             }
         }
+        // alias 路径 resolve
+        Object.keys(this.alias).forEach((key) => {
+            const iKey = key;
+            this.alias[iKey] = path.resolve(this.context, this.alias[iKey]);
+        });
     }
     apply(compiler) {
         const { alias, env, yylConfig } = this;
@@ -484,6 +499,21 @@ module.exports = class YylReactTsConfigWebpackPlugin {
         const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot });
         const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot });
         const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot });
-        compiler.options = merge(options, baseWConfig, entryWConfig, moduleWConfig);
+        console.log('baseWConfig', baseWConfig);
+        console.log('===========================');
+        console.log('entryWConfig', entryWConfig);
+        console.log('===========================');
+        console.log('moduleWConfig', moduleWConfig);
+        console.log('===========================');
+        const mixedOptions = merge(options, baseWConfig
+        // entryWConfig as WebpackOptionsNormalized,
+        // moduleWConfig as WebpackOptionsNormalized
+        );
+        if ('main' in mixedOptions.entry && Object.keys(mixedOptions.entry.main).length === 0) {
+            delete mixedOptions.entry.main;
+        }
+        compiler.options = mixedOptions;
+        console.log('r', compiler.options);
+        // console.log('===', compiler.options)
     }
 };

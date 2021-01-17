@@ -4,8 +4,7 @@ const YylTsConfigWebpackPlugin = require('../../../')
 //   context: __dirname
 // })
 
-module.exports = env => {
-  console.log('111')
+module.exports = (env) => {
   return {
     plugins: [
       new YylTsConfigWebpackPlugin({

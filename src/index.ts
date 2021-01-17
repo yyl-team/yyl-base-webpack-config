@@ -66,6 +66,12 @@ module.exports = class YylReactTsConfigWebpackPlugin {
         }
       }
     }
+
+    // alias 路径 resolve
+    Object.keys(this.alias).forEach((key) => {
+      const iKey = key as keyof Alias
+      this.alias[iKey] = path.resolve(this.context, this.alias[iKey])
+    })
   }
 
   apply(compiler: Compiler) {
@@ -87,11 +93,24 @@ module.exports = class YylReactTsConfigWebpackPlugin {
     const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot })
     const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot })
 
-    compiler.options = merge(
+    console.log('baseWConfig', baseWConfig)
+    console.log('===========================')
+    console.log('entryWConfig', entryWConfig)
+    console.log('===========================')
+    console.log('moduleWConfig', moduleWConfig)
+    console.log('===========================')
+
+    const mixedOptions = merge(
       options,
-      baseWConfig,
-      entryWConfig as WebpackOptionsNormalized,
-      moduleWConfig as WebpackOptionsNormalized
+      baseWConfig as WebpackOptionsNormalized
+      // entryWConfig as WebpackOptionsNormalized,
+      // moduleWConfig as WebpackOptionsNormalized
     )
+    if ('main' in mixedOptions.entry && Object.keys(mixedOptions.entry.main).length === 0) {
+      delete mixedOptions.entry.main
+    }
+    compiler.options = mixedOptions
+    console.log('r', compiler.options)
+    // console.log('===', compiler.options)
   }
 }

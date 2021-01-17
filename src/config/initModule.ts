@@ -102,8 +102,7 @@ export function initModule(op: InitBaseOption) {
           test: path.join(alias.srcRoot, 'js/lib/'),
           use: [
             {
-              loader: resolveModule('imports-loader'),
-              options: 'this=>window'
+              loader: `${resolveModule('imports-loader')}?this=?window`
             }
           ]
         },
@@ -260,5 +259,6 @@ export function initModule(op: InitBaseOption) {
   }
   // - ts
 
+  console.log('module', wConfig)
   return wConfig
 }

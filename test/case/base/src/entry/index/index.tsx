@@ -10,14 +10,7 @@ const App = (
   <Router>
     <Switch>
       {routes.map((item, index) => {
-        return (
-          <Route
-            exact={true}
-            path={item.path}
-            component={item.component}
-            key={index}
-          />
-        )
+        return <Route exact={true} path={item.path} component={item.component} key={index} />
       })}
       <Redirect from='/' to={routes[0].path} />
     </Switch>

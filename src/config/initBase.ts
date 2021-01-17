@@ -11,39 +11,40 @@ export interface DefinePluginOption {
   [key: string]: any
 }
 
-export type InitBaseResult = WebpackOptionsNormalized
+export type InitBaseResult = Pick<
+  WebpackOptionsNormalized,
+  | 'mode'
+  | 'cache'
+  | 'context'
+  // | 'output'
+  | 'resolveLoader'
+  | 'resolve'
+  | 'devtool'
+  | 'plugins'
+  | 'optimization'
+>
 
 export function initBase(option: InitBaseOption) {
   const { resolveRoot, alias, yylConfig, env } = option
   const nodeModulesPath = path.join(alias.dirname, 'node_modules')
   const wConfig: InitBaseResult = {
-    node: {},
     mode: 'development',
     cache: {
       type: 'memory'
     },
-    entry: {},
-    experiments: {},
-    externals: [],
-    externalsPresets: {},
-    infrastructureLogging: {},
-    module: {},
-    snapshot: {},
-    stats: {},
-    watchOptions: {},
     context: path.resolve(__dirname, alias.dirname),
-    output: {
-      path: resolveRoot,
-      filename: formatPath(
-        path.relative(resolveRoot, path.join(alias.jsDest, '[name]-[hash:8].js'))
-      ),
-      chunkFilename: formatPath(
-        path.relative(
-          resolveRoot,
-          path.join(alias.jsDest, 'async_component/[name]-[chunkhash:8].js')
-        )
-      )
-    },
+    // output: {
+    //   path: resolveRoot,
+    //   filename: formatPath(
+    //     path.relative(resolveRoot, path.join(alias.jsDest, '[name]-[hash:8].js'))
+    //   ),
+    //   chunkFilename: formatPath(
+    //     path.relative(
+    //       resolveRoot,
+    //       path.join(alias.jsDest, 'async_component/[name]-[chunkhash:8].js')
+    //     )
+    //   )
+    // },
     resolveLoader: {
       modules: [nodeModulesPath]
     },
@@ -96,28 +97,28 @@ export function initBase(option: InitBaseOption) {
   }
 
   // 环境区分
-  if (env.proxy || env.remote) {
-    wConfig.output.publicPath = util.path.join(
-      alias.hostname,
-      alias.basePath,
-      path.relative(alias.root, resolveRoot),
-      '/'
-    )
-  } else if (env.isCommit) {
-    wConfig.mode = 'production'
-    wConfig.output.publicPath = util.path.join(
-      alias.hostname,
-      alias.basePath,
-      path.relative(alias.root, resolveRoot),
-      '/'
-    )
-  } else {
-    wConfig.output.publicPath = util.path.join(
-      alias.basePath,
-      path.relative(alias.root, resolveRoot),
-      '/'
-    )
-  }
+  // if (env.proxy || env.remote) {
+  //   wConfig.output.publicPath = util.path.join(
+  //     alias.hostname,
+  //     alias.basePath,
+  //     path.relative(alias.root, resolveRoot),
+  //     '/'
+  //   )
+  // } else if (env.isCommit) {
+  //   wConfig.mode = 'production'
+  //   wConfig.output.publicPath = util.path.join(
+  //     alias.hostname,
+  //     alias.basePath,
+  //     path.relative(alias.root, resolveRoot),
+  //     '/'
+  //   )
+  // } else {
+  //   wConfig.output.publicPath = util.path.join(
+  //     alias.basePath,
+  //     path.relative(alias.root, resolveRoot),
+  //     '/'
+  //   )
+  // }
   wConfig.plugins.push(
     new DefinePlugin({
       'process.env.NODE_ENV': env.NODE_ENV || wConfig.mode
