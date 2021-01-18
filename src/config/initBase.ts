@@ -43,9 +43,7 @@ export function initBase(option: InitBaseOption) {
           resolveRoot,
           path.join(alias.jsDest, 'async_component/[name]-[chunkhash:8].js')
         )
-      ),
-      hashDigest: '',
-      hashDigestLength: 0
+      )
     },
     resolveLoader: {
       modules: [nodeModulesPath]

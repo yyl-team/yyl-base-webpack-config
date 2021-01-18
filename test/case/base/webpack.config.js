@@ -1,15 +1,11 @@
-const YylTsConfigWebpackPlugin = require('../../../')
-
-// const d = new YylTsConfigWebpackPlugin({
-//   context: __dirname
-// })
+const merge = require('webpack-merge').default
+const initBaseConfig = require('../../../')
 
 module.exports = (env) => {
-  return {
-    plugins: [
-      new YylTsConfigWebpackPlugin({
-        context: __dirname
-      })
-    ]
-  }
+  return merge(
+    initBaseConfig({
+      context: __dirname,
+      env
+    })
+  )
 }

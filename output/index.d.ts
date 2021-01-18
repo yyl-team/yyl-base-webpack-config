@@ -1,6 +1,6 @@
 import { YylConfig, Env } from 'yyl-config-types';
 import { Alias } from './types';
-export interface YylReactTsConfigWebpackPluginOption {
+export interface YylBaseInitConfigOption {
     /** 当前路径 */
     context: string;
     /** 环境变量 */
@@ -9,4 +9,4 @@ export interface YylReactTsConfigWebpackPluginOption {
     yylConfig?: YylConfig;
     alias?: Alias;
 }
-export declare type YylReactTsConfigWebpackPluginProperty = Required<YylReactTsConfigWebpackPluginOption>;
+export declare type YylBaseInitConfigProperty = Required<YylBaseInitConfigOption>;

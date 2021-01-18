@@ -94,8 +94,8 @@
     "yyl-sugar-webpack-plugin": "^0.1.14",
     "yyl-util": "^2.3.8"
   },
-  "name": "yyl-react-ts-config-webpack-plugin",
-  "repository": "https://github.com/jackness1208/yyl-react-ts-config-webpack-plugin.git",
+  "name": "yyl-base-webpack-config",
+  "repository": "https://github.com/jackness1208/yyl-base-webpack-config.git",
   "author": "liudaojie <liudaojie@yy.com>",
   "license": "MIT"
 }

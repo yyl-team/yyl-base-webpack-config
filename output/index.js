@@ -1,5 +1,5 @@
 /*!
- * yyl-react-ts-config-webpack-plugin cjs 0.1.0
+ * yyl-base-webpack-config cjs 0.1.0
  * (c) 2020 - 2021 jackness
  * Released under the MIT License.
  */
@@ -52,9 +52,7 @@ function initBase(option) {
         output: {
             path: resolveRoot,
             filename: formatPath(path.relative(resolveRoot, path.join(alias.jsDest, '[name]-[hash:8].js'))),
-            chunkFilename: formatPath(path.relative(resolveRoot, path.join(alias.jsDest, 'async_component/[name]-[chunkhash:8].js'))),
-            hashDigest: '',
-            hashDigestLength: 0
+            chunkFilename: formatPath(path.relative(resolveRoot, path.join(alias.jsDest, 'async_component/[name]-[chunkhash:8].js')))
         },
         resolveLoader: {
             modules: [nodeModulesPath]
@@ -426,70 +424,60 @@ function initModule(op) {
     return wConfig;
 }
 
-module.exports = class YylReactTsConfigWebpackPlugin {
-    constructor(op) {
-        var _a, _b, _c;
-        this.context = process.cwd();
-        this.env = {};
-        this.alias = {
-            root: './dist',
-            srcRoot: './src',
-            dirname: './',
-            jsDest: './dist/js',
-            cssDest: './dist/css',
-            imagesDest: './dist/images',
-            htmlDest: './dist/html',
-            basePath: '/',
-            publicPath: '/'
-        };
-        if (op === null || op === void 0 ? void 0 : op.context) {
-            this.context = path.resolve(__dirname, op.context);
-        }
-        if (op === null || op === void 0 ? void 0 : op.alias) {
-            this.alias = Object.assign(Object.assign({}, this.alias), op.alias);
-        }
-        if (op === null || op === void 0 ? void 0 : op.yylConfig) {
-            this.yylConfig = op.yylConfig;
-            // 字段兼容
-            if ((_a = this.yylConfig.dest) === null || _a === void 0 ? void 0 : _a.basePath) {
-                this.alias.basePath = this.yylConfig.dest.basePath;
-            }
-            if ((_b = this.yylConfig.commit) === null || _b === void 0 ? void 0 : _b.hostname) {
-                this.alias.publicPath = this.yylConfig.commit.hostname;
-            }
-            if ((_c = this.yylConfig) === null || _c === void 0 ? void 0 : _c.alias) {
-                this.alias = Object.assign(Object.assign({}, this.alias), this.yylConfig.alias);
-            }
-        }
-        // alias 路径 resolve
-        Object.keys(this.alias).forEach((key) => {
-            const iKey = key;
-            this.alias[iKey] = path.resolve(this.context, this.alias[iKey]);
-        });
-    }
-    apply(compiler) {
-        const { alias, env, yylConfig } = this;
-        const { options } = compiler;
-        compiler.hooks.afterPlugins.tap('yyl-react-ts-config', (compiler) => {
-            if (options.context) {
-                this.context = path.resolve(__dirname, options.context);
-            }
-            // 路径纠正
-            Object.keys(alias).forEach((key) => {
-                const iKey = key;
-                alias[iKey] = path.resolve(__dirname, alias[iKey]);
-            });
-            // dist 目录
-            const resolveRoot = path.resolve(__dirname, alias.root);
-            const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot });
-            const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot });
-            const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot });
-            const mixedOptions = merge(options, baseWConfig, entryWConfig, moduleWConfig);
-            if ('main' in mixedOptions.entry && Object.keys(mixedOptions.entry.main).length === 0) {
-                delete mixedOptions.entry.main;
-            }
-            compiler.options = mixedOptions;
-            console.log('r', compiler.options);
-        });
-    }
+const DEFAULT_ALIAS = {
+    root: './dist',
+    srcRoot: './src',
+    dirname: './',
+    jsDest: './dist/js',
+    cssDest: './dist/css',
+    imagesDest: './dist/images',
+    htmlDest: './dist/html',
+    basePath: '/',
+    publicPath: '/'
 };
+function yylBaseInitConfig(op) {
+    var _a, _b;
+    // 配置初始化 - env
+    const env = (op === null || op === void 0 ? void 0 : op.env) || {};
+    // 配置初始化 - context
+    let context = process.cwd();
+    if (op === null || op === void 0 ? void 0 : op.context) {
+        context = path.resolve(__dirname, op.context);
+    }
+    // 配置初始化 - alias
+    let alias = Object.assign({}, DEFAULT_ALIAS);
+    if (op === null || op === void 0 ? void 0 : op.alias) {
+        alias = Object.assign(Object.assign({}, alias), op.alias);
+    }
+    // 配置初始化 - yylConfig
+    let yylConfig;
+    if (op === null || op === void 0 ? void 0 : op.yylConfig) {
+        yylConfig = op.yylConfig;
+        // 字段兼容
+        if ((_a = yylConfig.dest) === null || _a === void 0 ? void 0 : _a.basePath) {
+            alias.basePath = yylConfig.dest.basePath;
+        }
+        if ((_b = yylConfig.commit) === null || _b === void 0 ? void 0 : _b.hostname) {
+            alias.publicPath = yylConfig.commit.hostname;
+        }
+        if (yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.alias) {
+            alias = Object.assign(Object.assign({}, alias), yylConfig.alias);
+        }
+    }
+    // alias 路径 resolve
+    Object.keys(alias).forEach((key) => {
+        const iKey = key;
+        alias[iKey] = path.resolve(context, alias[iKey]);
+        alias[iKey] = path.resolve(__dirname, alias[iKey]);
+    });
+    // dist 目录
+    const resolveRoot = path.resolve(__dirname, alias.root);
+    // 配置初始化
+    const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot });
+    const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot });
+    const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot });
+    // 配置合并
+    const mixedOptions = merge(baseWConfig, entryWConfig, moduleWConfig);
+    return mixedOptions;
+}
+module.exports = yylBaseInitConfig;
