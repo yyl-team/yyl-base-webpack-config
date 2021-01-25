@@ -18,7 +18,7 @@ var extFs = _interopDefault(require('yyl-fs'));
 var fs = _interopDefault(require('fs'));
 var HtmlWebpackPlugin = _interopDefault(require('html-webpack-plugin'));
 var autoprefixer = _interopDefault(require('autoprefixer'));
-var px2rem = _interopDefault(require('postcss-px2rem'));
+var px2rem = _interopDefault(require('postcss-pxtorem'));
 var sass = _interopDefault(require('sass'));
 var MiniCssExtractPlugin = _interopDefault(require('mini-css-extract-plugin'));
 
@@ -51,7 +51,7 @@ function initBase(option) {
         context: path.resolve(__dirname, alias.dirname),
         output: {
             path: resolveRoot,
-            filename: formatPath(path.relative(resolveRoot, path.join(alias.jsDest, '[name]-[hash:8].js'))),
+            filename: formatPath(path.relative(resolveRoot, path.join(alias.jsDest, '[name]-[chunkhash:8].js'))),
             chunkFilename: formatPath(path.relative(resolveRoot, path.join(alias.jsDest, 'async_component/[name]-[chunkhash:8].js')))
         },
         resolveLoader: {
@@ -270,10 +270,7 @@ function initModule(op) {
                             }
                         },
                         {
-                            loader: resolveModule('pug-loader'),
-                            options: {
-                                self: true
-                            }
+                            loader: resolveModule('pug-loader')
                         }
                     ]
                 },
@@ -321,7 +318,7 @@ function initModule(op) {
         {
             loader: resolveModule('style-loader'),
             options: {
-                attrs: {
+                attributes: {
                     'data-module': (yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.name) || 'inline-style'
                 }
             }
@@ -330,23 +327,24 @@ function initModule(op) {
         {
             loader: resolveModule('postcss-loader'),
             options: {
-                ident: 'postcss',
-                plugins() {
-                    const r = [];
-                    if ((yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.platform) === 'pc') {
-                        r.push(autoprefixer({
-                            overrideBrowserslist: ['> 1%', 'last 2 versions']
-                        }));
-                    }
-                    else {
-                        r.push(autoprefixer({
-                            overrideBrowserslist: ['iOS >= 7', 'Android >= 4']
-                        }));
-                        if ((yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.px2rem) !== false) {
-                            r.push(px2rem({ remUnit: 75 }));
+                postcssOptions: {
+                    plugins: (() => {
+                        const r = [];
+                        if ((yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.platform) === 'pc') {
+                            r.push(autoprefixer({
+                                overrideBrowserslist: ['> 1%', 'last 2 versions']
+                            }));
                         }
-                    }
-                    return r;
+                        else {
+                            r.push(autoprefixer({
+                                overrideBrowserslist: ['iOS >= 7', 'Android >= 4']
+                            }));
+                        }
+                        if ((yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.px2rem) === true) {
+                            r.push(px2rem({ unitPrecision: 75 }));
+                        }
+                        return r;
+                    })()
                 }
             }
         }
@@ -359,7 +357,7 @@ function initModule(op) {
             options: {}
         });
         wConfig.plugins.push(new MiniCssExtractPlugin({
-            filename: util__default.path.relative(resolveRoot, util.path.join(alias.cssDest, '[name]-[hash:8].css')),
+            filename: util__default.path.relative(resolveRoot, util.path.join(alias.cssDest, '[name]-[chunkhash:8].css')),
             chunkFilename: util__default.path.relative(resolveRoot, util.path.join(alias.cssDest, '[name]-[chunkhash:8].css'))
         }));
     }

@@ -2,7 +2,7 @@ import { WebpackOptionsNormalized, RuleSetUse } from 'webpack'
 import { InitBaseOption } from '../types'
 import { isModuleInclude, resolveModule } from '../formatter'
 import autoprefixer from 'autoprefixer'
-import px2rem from 'postcss-px2rem'
+import px2rem from 'postcss-pxtorem'
 import util, { path } from 'yyl-util'
 import sass from 'sass'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
@@ -86,10 +86,7 @@ export function initModule(op: InitBaseOption) {
               }
             },
             {
-              loader: resolveModule('pug-loader'),
-              options: {
-                self: true
-              }
+              loader: resolveModule('pug-loader')
             }
           ]
         },
@@ -139,7 +136,7 @@ export function initModule(op: InitBaseOption) {
     {
       loader: resolveModule('style-loader'),
       options: {
-        attrs: {
+        attributes: {
           'data-module': yylConfig?.name || 'inline-style'
         }
       }
@@ -148,26 +145,28 @@ export function initModule(op: InitBaseOption) {
     {
       loader: resolveModule('postcss-loader'),
       options: {
-        ident: 'postcss',
-        plugins() {
-          const r = []
-          if (yylConfig?.platform === 'pc') {
-            r.push(
-              autoprefixer({
-                overrideBrowserslist: ['> 1%', 'last 2 versions']
-              })
-            )
-          } else {
-            r.push(
-              autoprefixer({
-                overrideBrowserslist: ['iOS >= 7', 'Android >= 4']
-              })
-            )
-            if (yylConfig?.px2rem !== false) {
-              r.push(px2rem({ remUnit: 75 }))
+        postcssOptions: {
+          plugins: (() => {
+            const r = []
+            if (yylConfig?.platform === 'pc') {
+              r.push(
+                autoprefixer({
+                  overrideBrowserslist: ['> 1%', 'last 2 versions']
+                })
+              )
+            } else {
+              r.push(
+                autoprefixer({
+                  overrideBrowserslist: ['iOS >= 7', 'Android >= 4']
+                })
+              )
             }
-          }
-          return r
+
+            if (yylConfig?.px2rem === true) {
+              r.push(px2rem({ unitPrecision : 75 }))
+            }
+            return r
+          })()
         }
       }
     }
@@ -183,7 +182,7 @@ export function initModule(op: InitBaseOption) {
 
     wConfig.plugins.push(
       new MiniCssExtractPlugin({
-        filename: util.path.relative(resolveRoot, path.join(alias.cssDest, '[name]-[hash:8].css')),
+        filename: util.path.relative(resolveRoot, path.join(alias.cssDest, '[name]-[chunkhash:8].css')),
         chunkFilename: util.path.relative(
           resolveRoot,
           path.join(alias.cssDest, '[name]-[chunkhash:8].css')

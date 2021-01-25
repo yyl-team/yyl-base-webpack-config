@@ -36,7 +36,7 @@ export function initBase(option: InitBaseOption) {
     output: {
       path: resolveRoot,
       filename: formatPath(
-        path.relative(resolveRoot, path.join(alias.jsDest, '[name]-[hash:8].js'))
+        path.relative(resolveRoot, path.join(alias.jsDest, '[name]-[chunkhash:8].js'))
       ),
       chunkFilename: formatPath(
         path.relative(
