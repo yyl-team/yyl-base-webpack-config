@@ -108,9 +108,10 @@ function initBase(option) {
     }
     else {
         wConfig.output.publicPath = util__default.path.join(alias.basePath, path.relative(alias.root, resolveRoot), '/');
+        console.log('===', wConfig.output.publicPath, alias.basePath, path.relative(alias.root, resolveRoot));
     }
     wConfig.plugins.push(new webpack.DefinePlugin({
-        'process.env.NODE_ENV': env.NODE_ENV || wConfig.mode
+        'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV || wConfig.mode)
     }));
     // TODO: yyl 系列 plugins 引入
     return wConfig;
@@ -192,7 +193,6 @@ function initEntry(option) {
             return new HtmlWebpackPlugin(opts);
         });
     })());
-    console.log('entry', wConfig);
     return wConfig;
 }
 
@@ -418,7 +418,6 @@ function initModule(op) {
         }
     }
     // - ts
-    console.log('module', wConfig);
     return wConfig;
 }
 
@@ -465,8 +464,10 @@ function yylBaseInitConfig(op) {
     // alias 路径 resolve
     Object.keys(alias).forEach((key) => {
         const iKey = key;
-        alias[iKey] = path.resolve(context, alias[iKey]);
-        alias[iKey] = path.resolve(__dirname, alias[iKey]);
+        if (!path.isAbsolute(alias[iKey])) {
+            alias[iKey] = path.resolve(context, alias[iKey]);
+            alias[iKey] = path.resolve(__dirname, alias[iKey]);
+        }
     });
     // dist 目录
     const resolveRoot = path.resolve(__dirname, alias.root);

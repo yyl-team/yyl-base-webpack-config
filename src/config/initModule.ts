@@ -254,6 +254,5 @@ export function initModule(op: InitBaseOption) {
   }
   // - ts
 
-  console.log('module', wConfig)
   return wConfig
 }

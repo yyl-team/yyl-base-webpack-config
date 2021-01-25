@@ -12,6 +12,18 @@ module.exports = (env) => {
         '~': path.join(__dirname, './src'),
         '~@': path.join(__dirname, './src/components/')
       }
-    })
+    }),
+    {
+      devServer: {
+        contentBase: path.join(__dirname, 'dist'),
+        disableHostCheck: true,
+        port: 5000,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+          'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
+        }
+      }
+    }
   )
 }

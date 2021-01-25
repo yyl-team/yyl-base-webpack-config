@@ -106,6 +106,5 @@ export function initEntry(option: InitBaseOption) {
     })()
   )
 
-  console.log('entry', wConfig)
   return wConfig
 }

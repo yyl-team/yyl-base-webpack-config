@@ -79,8 +79,10 @@ function yylBaseInitConfig(op?: YylBaseInitConfigOption) {
   // alias 路径 resolve
   Object.keys(alias).forEach((key) => {
     const iKey = key as keyof Alias
-    alias[iKey] = path.resolve(context, alias[iKey])
-    alias[iKey] = path.resolve(__dirname, alias[iKey])
+    if (!path.isAbsolute(alias[iKey])) {
+      alias[iKey] = path.resolve(context, alias[iKey])
+      alias[iKey] = path.resolve(__dirname, alias[iKey])
+    }
   })
   // dist 目录
   const resolveRoot = path.resolve(__dirname, alias.root)

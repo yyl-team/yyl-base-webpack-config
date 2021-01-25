@@ -118,10 +118,11 @@ export function initBase(option: InitBaseOption) {
       path.relative(alias.root, resolveRoot),
       '/'
     )
+    console.log('===', wConfig.output.publicPath, alias.basePath, path.relative(alias.root, resolveRoot))
   }
   wConfig.plugins.push(
     new DefinePlugin({
-      'process.env.NODE_ENV': env.NODE_ENV || wConfig.mode
+      'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV || wConfig.mode)
     })
   )
 
