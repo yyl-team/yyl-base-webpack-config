@@ -99,6 +99,8 @@ function yylBaseInitConfig(op?: YylBaseInitConfigOption) {
     moduleWConfig as WebpackOptionsNormalized
   )
 
+  // 添加 yyl 脚本， 没有挂 hooks 所以放最后比较稳
+
   return mixedOptions
 }
 
