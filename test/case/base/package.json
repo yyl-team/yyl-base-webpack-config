@@ -9,6 +9,7 @@
     "prettier": "prettier --write ./**/*.{ts,tsx,js}"
   },
   "eslintConfig": {
+    "root": true,
     "extends": [
       "yyl-react"
     ]

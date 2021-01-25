@@ -6,7 +6,7 @@ import { initBase } from './config/initBase'
 import { initEntry } from './config/initEntry'
 import { initModule } from './config/initModule'
 
-import { Alias } from './types'
+import { Alias, InitBaseOption } from './types'
 export interface YylBaseInitConfigOption {
   /** 当前路径 */
   context: string
@@ -15,6 +15,9 @@ export interface YylBaseInitConfigOption {
   /** yyl.config */
   yylConfig?: YylConfig
   alias?: Alias
+  devServer?: {
+    port: number
+  }
 }
 
 type AliasProperty = Required<YylBaseInitConfigProperty['alias']>
@@ -31,6 +34,10 @@ const DEFAULT_ALIAS: AliasProperty = {
   htmlDest: './dist/html',
   basePath: '/',
   publicPath: '/'
+}
+
+const DEFAULT_DEV_SERVER: InitBaseOption['devServer'] = {
+  port: 5000
 }
 
 function yylBaseInitConfig(op?: YylBaseInitConfigOption) {
@@ -55,6 +62,17 @@ function yylBaseInitConfig(op?: YylBaseInitConfigOption) {
     }
   }
 
+  let devServer = {
+    ...DEFAULT_DEV_SERVER
+  }
+
+  if (op?.devServer) {
+    devServer = {
+      ...devServer,
+      ...op.devServer
+    }
+  }
+
   // 配置初始化 - yylConfig
   let yylConfig: YylConfig | undefined
   if (op?.yylConfig) {
@@ -74,6 +92,10 @@ function yylBaseInitConfig(op?: YylBaseInitConfigOption) {
         ...yylConfig.alias
       }
     }
+
+    if (yylConfig?.localserver?.port) {
+      devServer.port = yylConfig.localserver.port
+    }
   }
 
   // alias 路径 resolve
@@ -88,9 +110,9 @@ function yylBaseInitConfig(op?: YylBaseInitConfigOption) {
   const resolveRoot = path.resolve(__dirname, alias.root)
 
   // 配置初始化
-  const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot })
-  const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot })
-  const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot })
+  const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot, devServer })
+  const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot, devServer })
+  const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot, devServer })
 
   // 配置合并
   const mixedOptions = merge(

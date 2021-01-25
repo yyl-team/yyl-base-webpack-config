@@ -118,7 +118,6 @@ export function initBase(option: InitBaseOption) {
       path.relative(alias.root, resolveRoot),
       '/'
     )
-    console.log('===', wConfig.output.publicPath, alias.basePath, path.relative(alias.root, resolveRoot))
   }
   wConfig.plugins.push(
     new DefinePlugin({

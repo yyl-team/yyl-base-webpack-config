@@ -163,7 +163,7 @@ export function initModule(op: InitBaseOption) {
             }
 
             if (yylConfig?.px2rem === true) {
-              r.push(px2rem({ unitPrecision : 75 }))
+              r.push(px2rem({ unitPrecision: 75 }))
             }
             return r
           })()
@@ -182,7 +182,10 @@ export function initModule(op: InitBaseOption) {
 
     wConfig.plugins.push(
       new MiniCssExtractPlugin({
-        filename: util.path.relative(resolveRoot, path.join(alias.cssDest, '[name]-[chunkhash:8].css')),
+        filename: util.path.relative(
+          resolveRoot,
+          path.join(alias.cssDest, '[name]-[chunkhash:8].css')
+        ),
         chunkFilename: util.path.relative(
           resolveRoot,
           path.join(alias.cssDest, '[name]-[chunkhash:8].css')

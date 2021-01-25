@@ -477,6 +477,7 @@ function yylBaseInitConfig(op) {
     const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot });
     // 配置合并
     const mixedOptions = merge(baseWConfig, entryWConfig, moduleWConfig);
+    // 添加 yyl 脚本， 没有挂 hooks 所以放最后比较稳
     return mixedOptions;
 }
 module.exports = yylBaseInitConfig;
