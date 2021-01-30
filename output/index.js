@@ -21,6 +21,10 @@ var autoprefixer = _interopDefault(require('autoprefixer'));
 var px2rem = _interopDefault(require('postcss-pxtorem'));
 var sass = _interopDefault(require('sass'));
 var MiniCssExtractPlugin = _interopDefault(require('mini-css-extract-plugin'));
+var net = _interopDefault(require('net'));
+var os = _interopDefault(require('os'));
+var child_process = _interopDefault(require('child_process'));
+var YylEnvPopPlugin = _interopDefault(require('yyl-env-pop-webpack-plugin'));
 
 /** 格式化路径 */
 function formatPath(str) {
@@ -420,6 +424,483 @@ function initModule(op) {
     return wConfig;
 }
 
+function commonjsRequire () {
+	throw new Error('Dynamic requires are not currently supported by rollup-plugin-commonjs');
+}
+
+const IS_WINDOWS = process.platform == 'win32';
+const IS_LINUX = process.platform === 'linux';
+const IS_MAC = process.platform === 'darwin';
+const IS_WINDOWS_7 = IS_WINDOWS && /^6\.1\.\d+$/.test(os.release());
+
+const extOs = {
+  IS_WINDOWS,
+  IS_LINUX,
+  IS_MAC,
+  IS_WINDOWS_7,
+  // 本机 ip地址
+  LOCAL_IP: (function () {
+    var ipObj = os.networkInterfaces();
+    var ipArr;
+    for (var key in ipObj) {
+      // eslint-disable-next-line no-prototype-builtins
+      if (ipObj.hasOwnProperty(key)) {
+        ipArr = ipObj[key];
+        for (var fip, i = 0, len = ipArr.length; i < len; i++) {
+          fip = ipArr[i];
+          if (fip.family.toLowerCase() == 'ipv4' && !fip.internal) {
+            return fip.address
+          }
+        }
+      }
+    }
+    return '127.0.0.1'
+  })(),
+
+  // 复制内容到剪贴板
+  async clip(str) {
+    if (IS_MAC) {
+      await extOs.runCMD(`echo ${str} | tr -d '\n' | pbcopy`);
+    } else if (IS_WINDOWS) {
+      await extOs.runCMD(`echo|set /p=${str}|clip`);
+    }
+  },
+
+  /**
+   * 检查端口是否可用
+   * @param  {Number}   port         需要检查的端口
+   * @param  {boolean}  canUse       是否可用
+   * @return {Promise}  p(canUse)    promise 对象
+   */
+  checkPort(port) {
+    return new Promise((done) => {
+      const server = net.createServer().listen(port);
+      server.on('listening', () => {
+        // 执行这块代码说明端口未被占用
+        server.close(); // 关闭服务
+        done(true);
+      });
+
+      server.on('error', (err) => {
+        if (err.code === 'EADDRINUSE') {
+          // 端口已经被使用
+          done(false);
+        }
+      });
+    })
+  },
+
+  rm(iPath) {
+    if (!fs.existsSync(iPath)) {
+      return Promise.resolve()
+    }
+
+    let cmd = '';
+    let rPath = iPath.replace(/ /g, '\\ ');
+
+    if (IS_WINDOWS) {
+      if (fs.statSync(iPath).isDirectory()) {
+        cmd = `rd /s /q ${rPath}`;
+      } else {
+        cmd = `del ${rPath}`;
+      }
+    } else {
+      cmd = `rm -rf ${rPath}`;
+    }
+    return extOs.runCMD(cmd)
+  },
+
+  openBrowser(address) {
+    if (/^[/]{2}/.test(address)) {
+      address = `http:${address}`;
+    }
+    if (IS_WINDOWS) {
+      return extOs.runCMD(`start ${address.replace(/&/g, '^&')}`)
+    } else if (IS_LINUX) {
+      return Promise.resolve()
+    } else {
+      return extOs.runCMD(`open ${address.replace(/&/g, '\\&')}`)
+    }
+  },
+
+  runCMD: function (str, iEnv, iPath, showOutput, newWindow) {
+    const myCmd = child_process.exec;
+    const runner = (next, reject) => {
+      if (typeof iEnv === 'string') {
+        // (str, iPath, showOutput, newWindow)
+        newWindow = showOutput;
+        showOutput = iPath;
+        iPath = iEnv;
+        iEnv = null;
+      }
+      if (showOutput === undefined) {
+        showOutput = true;
+      }
+      if (!str) {
+        return reject('没任何 cmd 操作')
+      }
+      if (!/Array/.test(Object.prototype.toString.call(str))) {
+        str = [str];
+      }
+
+      if (iPath && !fs.existsSync(iPath)) {
+        return reject(`runCMD 当前目录不存在: ${iPath}`)
+      }
+
+      let iCmd = str.join(' && ');
+
+      if (newWindow) {
+        if (IS_WINDOWS) {
+          iCmd = `cmd /k start cmd /k ${iCmd}`;
+        } else if (IS_LINUX) {
+          iCmd = `${iCmd}`;
+        } else {
+          iCmd = `osascript -e 'tell application "Terminal" to activate' -e 'tell application "System Events" to tell process "Terminal" to keystroke "t" using command down' -e 'delay 0.2' -e 'tell application "Terminal" to do script "cd ${iPath} && ${iCmd}" in selected tab of the front window'`;
+        }
+      }
+
+      const child = myCmd(
+        iCmd,
+        {
+          maxBuffer: 2000 * 1024,
+          cwd: iPath || '',
+          env: iEnv,
+        },
+        (err, stdout) => {
+          if (err) {
+            if (showOutput) {
+              console.log('cmd运行 出错');
+              console.log(err.stack);
+            }
+            reject(err);
+          } else {
+            next(stdout);
+          }
+        }
+      );
+
+      child.stdout.setEncoding('utf8');
+
+      if (showOutput) {
+        child.stdout.pipe(process.stdout);
+        child.stderr.pipe(process.stderr);
+      }
+
+      if (newWindow && IS_WINDOWS) {
+        next();
+      }
+    };
+    return new Promise(runner)
+  },
+  /**
+   * 运行 单行 cmd
+   * @param  {String}       str             cmd执行语句 or 数组
+   * @param  {funciton}     callback(error) 回调函数
+   *                        - error         错误信息
+   * @return {Void}
+   */
+  runSpawn: function (ctx, iEnv, iPath, showOutput) {
+    const iSpawn = child_process.spawn;
+    const runner = (next, reject) => {
+      if (typeof iEnv === 'string') {
+        // (str, iPath, showOutput, newWindow)
+        showOutput = iPath;
+        iPath = iEnv;
+        iEnv = null;
+      }
+      let ops = '';
+      let hand = '';
+      const cwd = iPath || process.cwd();
+
+      if (IS_WINDOWS) {
+        hand = 'cmd.exe';
+        ops = ['/s', '/c', ctx];
+      } else {
+        hand = '/bin/sh';
+        ops = ['-c', ctx];
+      }
+
+      if (iPath && !fs.existsSync(iPath)) {
+        return reject(`runSpawn 当前目录不存在: ${iPath}`)
+      }
+
+      const child = iSpawn(hand, ops, {
+        cwd: cwd,
+        silent: showOutput ? true : false,
+        stdio: [0, 1, 2],
+        env: iEnv,
+      });
+      child.on('exit', (err) => {
+        if (err) {
+          reject(err);
+        } else {
+          next();
+        }
+      });
+    };
+
+    return new Promise(runner)
+  },
+  /**
+   * 打开文件所在位置
+   */
+  openPath: function (iPath) {
+    if (IS_WINDOWS) {
+      return extOs.runCMD(`start ${iPath.replace(/\//g, '\\')}`, __dirname)
+    } else if (IS_LINUX) {
+      return Promise.resolve()
+    } else {
+      return extOs.runCMD(`open ${iPath}`)
+    }
+  },
+
+  /**
+   * 安装 node 接件
+   */
+  async installNodeModules(plugins, basePath, useYarn) {
+    if (!plugins || !plugins.length) {
+      return
+    }
+
+    if (!basePath) {
+      throw new Error('install node_modules fail, basePath is not set')
+    }
+
+    if (!fs.existsSync(basePath)) {
+      throw new Error(
+        `install node_modules fail, basePath is not exists: ${basePath}`
+      )
+    }
+    const iPkgPath = path.join(basePath, './package.json');
+    const nodeModulePath = path.join(basePath, 'node_modules');
+    if (!fs.existsSync(iPkgPath)) {
+      fs.writeFileSync(
+        iPkgPath,
+        JSON.stringify(
+          {
+            description: 'none',
+            repository: 'none',
+            license: 'ISC',
+          },
+          null,
+          2
+        )
+      );
+    } else {
+      const iPkg = commonjsRequire();
+      let changeed = false;
+
+      if (!iPkg.description) {
+        iPkg.description = 'none';
+        changeed = true;
+      }
+
+      if (!iPkg.repository) {
+        iPkg.repository = 'none';
+        changeed = true;
+      }
+
+      if (!iPkg.license) {
+        iPkg.license = 'ISC';
+        changeed = true;
+      }
+      if (changeed) {
+        fs.writeFileSync(iPkgPath, JSON.stringify(iPkg, null, 2));
+      }
+    }
+
+    if (!fs.existsSync(nodeModulePath)) {
+      fs.mkdirSync(nodeModulePath);
+    }
+
+    const installLists = [];
+
+    plugins.forEach((str) => {
+      let iDir = '';
+      let iVer = '';
+      const pathArr = str.split(/[\\/]+/);
+      let pluginPath = '';
+      let pluginName = '';
+      if (pathArr.length > 1) {
+        pluginName = pathArr.pop();
+        pluginPath = pathArr.join('/');
+      } else {
+        pluginName = pathArr[0];
+      }
+
+      if (~pluginName.indexOf('@')) {
+        iDir = pluginName.split('@')[0];
+        iVer = pluginName.split('@')[1];
+      } else {
+        iDir = pluginName;
+      }
+      let iBasePath = path.join(nodeModulePath, pluginPath, iDir);
+      let iPkgPath = path.join(iBasePath, 'package.json');
+      let iPkg;
+      if (fs.existsSync(iBasePath) && fs.existsSync(iPkgPath)) {
+        if (iVer) {
+          iPkg = commonjsRequire();
+          if (iPkg.version != iVer) {
+            installLists.push(str);
+          }
+        }
+      } else {
+        installLists.push(str);
+      }
+    });
+
+    if (installLists.length) {
+      let cmd = `npm install ${installLists.join(' ')} --loglevel http`;
+      if (useYarn) {
+        cmd = `yarn add ${installLists.join(' ')}`;
+      }
+      return await extOs.runCMD(cmd, basePath)
+    } else {
+      return
+    }
+  },
+  async installPackage(pkgPath, op = {}) {
+    let bPath = path.dirname(pkgPath);
+
+    const nodeModulePath = util__default.path.join(bPath, 'node_modules');
+    const nodePathExists = fs.existsSync(nodeModulePath);
+    const getModuleVersion = function (name) {
+      const modVerPath = util__default.path.join(nodeModulePath, name, 'package.json');
+      let r = '0';
+      if (!fs.existsSync(modVerPath)) {
+        return r
+      }
+
+      try {
+        const modPkg = commonjsRequire(modVerPath);
+        r = modPkg.version;
+      } catch (er) {}
+      return r
+    };
+    let needInstall = false;
+    if (fs.existsSync(pkgPath)) {
+      let iPkg = {};
+      try {
+        iPkg = commonjsRequire(pkgPath);
+      } catch (er) {}
+
+      let checkMap = {};
+      if (iPkg.dependencies) {
+        checkMap = Object.assign(checkMap, iPkg.dependencies);
+      }
+      if (iPkg.devDependencies && !op.production) {
+        checkMap = Object.assign(checkMap, iPkg.devDependencies);
+      }
+
+      Object.keys(checkMap).some((key) => {
+        if (
+          !nodePathExists ||
+          !util__default.matchVersion(checkMap[key], getModuleVersion(key))
+        ) {
+          needInstall = true;
+          return true
+        }
+      });
+    }
+
+    if (needInstall) {
+      let cmd = 'npm install';
+      if (op.useYarn) {
+        cmd = 'yarn install';
+      }
+
+      if (op.loglevel) {
+        cmd = `${cmd} --loglevel ${op.loglevel}`;
+      }
+      if (op.production) {
+        cmd = `${cmd} --production`;
+      }
+      return await extOs.runCMD(cmd, bPath)
+    }
+  },
+  async getYarnVersion() {
+    try {
+      const version = await extOs.runCMD('yarn -v');
+      return version.trim()
+    } catch (er) {
+      return
+    }
+  },
+  async getChromeVersion() {
+    const self = this;
+    let verStr = '';
+    let cmd = '';
+    let verReg = null;
+
+    if (IS_MAC) {
+      cmd =
+        '/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --version';
+      verReg = /^[\w\W]*Chrome\s+([0-9._]+)[\w\W]*$/i;
+    } else if (IS_WINDOWS) {
+      cmd =
+        'reg query "HKEY_CURRENT_USER\\Software\\Google\\Chrome\\BLBeacon" /v version';
+      verReg = /^[\w\W]*REG_SZ\s*([0-9._]+)[\w\W]*$/i;
+    } else if (IS_LINUX) {
+      cmd = 'google-chrome --version';
+      verReg = /^[\w\W]*Chrome\s+([0-9._]+)[\w\W]*$/i;
+    }
+    if (cmd) {
+      try {
+        verStr = await self.runCMD(cmd, __dirname, false);
+      } catch (er) {}
+      if (verStr && verStr.match(verReg)) {
+        return verStr.replace(verReg, '$1')
+      } else {
+        return
+      }
+    } else {
+      return
+    }
+  },
+  getJavaVersion() {
+    let verStr = '';
+    const reg = /^[\w\W]*version "([0-9._]+)"[\w\W]*$/;
+    return new Promise((next) => {
+      const child = child_process.spawn('java', ['-version']);
+      child.stderr.on('data', (data) => {
+        verStr = data.toString();
+        if (verStr && verStr.match(reg)) {
+          next(verStr.replace(reg, '$1'));
+        } else {
+          next();
+        }
+      });
+      child.on('error', () => {
+        next();
+      });
+    })
+  },
+};
+
+var os_1 = extOs;
+
+function initYylPlugins(op) {
+    const { env, alias, devServer } = op;
+    const pkgPath = path.join(alias.dirname, 'package.json');
+    let pkg = {
+        name: 'default'
+    };
+    if (fs.existsSync(pkgPath)) {
+        pkg = require(pkgPath);
+    }
+    const r = {
+        plugins: []
+    };
+    r.plugins = [
+        new YylEnvPopPlugin({
+            enable: !!env.tips,
+            text: `${pkg.name} - ${os_1.LOCAL_IP}:${devServer.port}`,
+            duration: 3000
+        })
+    ];
+    return r;
+}
+
 const DEFAULT_ALIAS = {
     root: './dist',
     srcRoot: './src',
@@ -448,6 +929,7 @@ function yylBaseInitConfig(op) {
     if (op === null || op === void 0 ? void 0 : op.alias) {
         alias = Object.assign(Object.assign({}, alias), op.alias);
     }
+    // 配置 devServer
     let devServer = Object.assign({}, DEFAULT_DEV_SERVER);
     if (op === null || op === void 0 ? void 0 : op.devServer) {
         devServer = Object.assign(Object.assign({}, devServer), op.devServer);
@@ -484,8 +966,9 @@ function yylBaseInitConfig(op) {
     const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot, devServer });
     const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot, devServer });
     const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot, devServer });
+    const yylPluginsWConfig = initYylPlugins({ yylConfig, env, alias, resolveRoot, devServer });
     // 配置合并
-    const mixedOptions = merge(baseWConfig, entryWConfig, moduleWConfig);
+    const mixedOptions = merge(baseWConfig, entryWConfig, moduleWConfig, yylPluginsWConfig);
     // 添加 yyl 脚本， 没有挂 hooks 所以放最后比较稳
     return mixedOptions;
 }

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "scripts": {
     "d": "webpack",
-    "w": "webpack-dev-server",
+    "w": "webpack-dev-server --env.tips=true",
     "eslint": "eslint --ext=jsx,ts,tsx ./",
     "eslint:fix": "eslint --fix --ext=jsx,ts,tsx ./",
     "prettier": "prettier --write ./**/*.{ts,tsx,js}"
