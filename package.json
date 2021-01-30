@@ -91,7 +91,7 @@
     "yyl-concat-webpack-plugin": "0.2.10",
     "yyl-config-types": "0.3.7",
     "yyl-copy-webpack-plugin": "0.2.11",
-    "yyl-env-pop-webpack-plugin": "0.3.1",
+    "yyl-env-pop-webpack-plugin": "1.0.0",
     "yyl-fs": "^0.3.3",
     "yyl-rev-webpack-plugin": "0.1.7",
     "yyl-sugar-webpack-plugin": "0.1.14",

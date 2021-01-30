@@ -8,5 +8,8 @@ export interface YylBaseInitConfigOption {
     /** yyl.config */
     yylConfig?: YylConfig;
     alias?: Alias;
+    devServer?: {
+        port: number;
+    };
 }
 export declare type YylBaseInitConfigProperty = Required<YylBaseInitConfigOption>;

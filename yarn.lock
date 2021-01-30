@@ -7888,13 +7888,14 @@ yyl-copy-webpack-plugin@0.2.11:
     tapable "1.1.3"
     terser "4.6.3"
 
-yyl-env-pop-webpack-plugin@0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/yyl-env-pop-webpack-plugin/-/yyl-env-pop-webpack-plugin-0.3.1.tgz#f839f55b6059989ed9b84e278ae5b53cd032cc91"
-  integrity sha512-XYyGs2XsEse9YjSuyjzvvev5mhPyeL2VzS4mxM097TH712rF5AcjUdaRx8u6Kl6qMcpAvT3FU1rnicz2lAQZIQ==
+yyl-env-pop-webpack-plugin@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/yyl-env-pop-webpack-plugin/-/yyl-env-pop-webpack-plugin-1.0.0.tgz#f392c8a6bd50f673093da88ce4f86e3e618e3282"
+  integrity sha512-fBpYNNCsBQZAI9DzA2vxOz/vnganqs7gQ1aiU1YFIDhHMNqkjxz16b660gQY+hhJk1By+aLzNQQ480sMRJsC4g==
   dependencies:
-    chalk "^3.0.0"
-    tapable "^1.1.3"
+    chalk "^4.1.0"
+    tapable "^2.2.0"
+    yyl-util "^2.3.8"
 
 yyl-file-replacer@0.5.0:
   version "0.5.0"

@@ -108,7 +108,6 @@ function initBase(option) {
     }
     else {
         wConfig.output.publicPath = util__default.path.join(alias.basePath, path.relative(alias.root, resolveRoot), '/');
-        console.log('===', wConfig.output.publicPath, alias.basePath, path.relative(alias.root, resolveRoot));
     }
     wConfig.plugins.push(new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV || wConfig.mode)
@@ -432,8 +431,11 @@ const DEFAULT_ALIAS = {
     basePath: '/',
     publicPath: '/'
 };
+const DEFAULT_DEV_SERVER = {
+    port: 5000
+};
 function yylBaseInitConfig(op) {
-    var _a, _b;
+    var _a, _b, _c;
     // 配置初始化 - env
     const env = (op === null || op === void 0 ? void 0 : op.env) || {};
     // 配置初始化 - context
@@ -445,6 +447,10 @@ function yylBaseInitConfig(op) {
     let alias = Object.assign({}, DEFAULT_ALIAS);
     if (op === null || op === void 0 ? void 0 : op.alias) {
         alias = Object.assign(Object.assign({}, alias), op.alias);
+    }
+    let devServer = Object.assign({}, DEFAULT_DEV_SERVER);
+    if (op === null || op === void 0 ? void 0 : op.devServer) {
+        devServer = Object.assign(Object.assign({}, devServer), op.devServer);
     }
     // 配置初始化 - yylConfig
     let yylConfig;
@@ -460,6 +466,9 @@ function yylBaseInitConfig(op) {
         if (yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.alias) {
             alias = Object.assign(Object.assign({}, alias), yylConfig.alias);
         }
+        if ((_c = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _c === void 0 ? void 0 : _c.port) {
+            devServer.port = yylConfig.localserver.port;
+        }
     }
     // alias 路径 resolve
     Object.keys(alias).forEach((key) => {
@@ -472,9 +481,9 @@ function yylBaseInitConfig(op) {
     // dist 目录
     const resolveRoot = path.resolve(__dirname, alias.root);
     // 配置初始化
-    const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot });
-    const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot });
-    const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot });
+    const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot, devServer });
+    const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot, devServer });
+    const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot, devServer });
     // 配置合并
     const mixedOptions = merge(baseWConfig, entryWConfig, moduleWConfig);
     // 添加 yyl 脚本， 没有挂 hooks 所以放最后比较稳

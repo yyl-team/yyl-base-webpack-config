@@ -7,4 +7,7 @@ export interface InitBaseOption {
     env: Env;
     alias: Required<Alias>;
     yylConfig?: YylConfig;
+    devServer: {
+        port: number;
+    };
 }

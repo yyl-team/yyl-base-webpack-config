@@ -25,7 +25,12 @@ const config = {
       typescript: require('typescript')
     })
   ],
-  external: Object.keys(pkg.dependencies).concat(['webpack', 'fs', 'path'])
+  external: Object.keys(pkg.dependencies).concat([
+    'webpack',
+    'fs',
+    'path',
+    'yyl-env-pop-webpack-plugin'
+  ])
 }
 
 export default [
