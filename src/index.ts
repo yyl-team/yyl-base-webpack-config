@@ -5,6 +5,7 @@ import { YylConfig, Env } from 'yyl-config-types'
 import { initBase } from './config/initBase'
 import { initEntry } from './config/initEntry'
 import { initModule } from './config/initModule'
+import { initYylPlugins } from './config/initYylPlugins'
 
 import { Alias, InitBaseOption } from './types'
 export interface YylBaseInitConfigOption {
@@ -62,6 +63,7 @@ function yylBaseInitConfig(op?: YylBaseInitConfigOption) {
     }
   }
 
+  // 配置 devServer
   let devServer = {
     ...DEFAULT_DEV_SERVER
   }
@@ -113,12 +115,14 @@ function yylBaseInitConfig(op?: YylBaseInitConfigOption) {
   const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot, devServer })
   const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot, devServer })
   const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot, devServer })
+  const yylPluginsWConfig = initYylPlugins({ yylConfig, env, alias, resolveRoot, devServer })
 
   // 配置合并
   const mixedOptions = merge(
     baseWConfig as WebpackOptionsNormalized,
     entryWConfig as WebpackOptionsNormalized,
-    moduleWConfig as WebpackOptionsNormalized
+    moduleWConfig as WebpackOptionsNormalized,
+    yylPluginsWConfig as WebpackOptionsNormalized
   )
 
   // 添加 yyl 脚本， 没有挂 hooks 所以放最后比较稳
