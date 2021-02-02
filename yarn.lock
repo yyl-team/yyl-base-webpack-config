@@ -1139,6 +1139,14 @@
   dependencies:
     "@types/babel-types" "*"
 
+"@types/clean-css@^4.2.3":
+  version "4.2.3"
+  resolved "https://registry.npmjs.org/@types/clean-css/-/clean-css-4.2.3.tgz#12c13cc815f5e793014ee002c6324455907d851c"
+  integrity sha512-ET0ldU/vpXecy5vO8JRIhtJWSrk1vzXdJcp3Bjf8bARZynl6vfkhEKY/A7njfNIRlmyTGuVFuqnD6I3tOGdXpQ==
+  dependencies:
+    "@types/node" "*"
+    source-map "^0.6.0"
+
 "@types/eslint-scope@^3.7.0":
   version "3.7.0"
   resolved "https://registry.npmjs.org/@types/eslint-scope/-/eslint-scope-3.7.0.tgz#4792816e31119ebd506902a482caec4951fabd86"
@@ -2159,17 +2167,17 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-clean-css@4.2.1:
-  version "4.2.1"
-  resolved "https://registry.npmjs.org/clean-css/-/clean-css-4.2.1.tgz#2d411ef76b8569b6d0c84068dabe85b0aa5e5c17"
-  integrity sha512-4ZxI6dy4lrY6FHzfiy1aEOXgu4LIsW2MhwG0VBKdcoGoH/XLFgaHSdLTGr4O8Be6A8r3MOphEiI8Gc1n0ecf3g==
-  dependencies:
-    source-map "~0.6.0"
-
 clean-css@^4.1.11, clean-css@^4.2.3:
   version "4.2.3"
   resolved "https://registry.npmjs.org/clean-css/-/clean-css-4.2.3.tgz#507b5de7d97b48ee53d84adb0160ff6216380f78"
   integrity sha512-VcMWDN54ZN/DS+g58HYL5/n4Zrqe8vHJpGA8KdgUXFU4fuP/aHNw8eld9SyEIyabIMJX/0RaY/fplOo5hYLSFA==
+  dependencies:
+    source-map "~0.6.0"
+
+clean-css@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.npmjs.org/clean-css/-/clean-css-5.0.1.tgz#f84c6ad82c5a8246a680206da8bceef483ccc0b6"
+  integrity sha512-F1zAGOowUCg8yxT0O4UR+nmbMauf3YwbiUS60CPxpzJU7ulpamGzQomFrJSK4w/HqHtMmQKSHJUNue+dQQYQdg==
   dependencies:
     source-map "~0.6.0"
 
@@ -2306,11 +2314,6 @@ commander@^5.0.0:
   resolved "https://registry.npmjs.org/commander/-/commander-5.1.0.tgz#46abbd1652f8e059bddaef99bbdcb2ad9cf179ae"
   integrity sha512-P0CysNDQ7rtVw4QIQtm+MRxV66vKFSvlsQvGYXZWR3qFU0jlMKHZZZgw8e+8DSah4UDKMqnknRDQz+xuQXQ/Zg==
 
-commander@~2.13.0:
-  version "2.13.0"
-  resolved "https://registry.npmjs.org/commander/-/commander-2.13.0.tgz#6964bca67685df7c1f1430c584f07d7597885b9c"
-  integrity sha512-MVuS359B+YzaWqjCL/c+22gfryv+mCBPHAv3zyVI2GN8EY6IRP8VwtasXn8jyyhvvq84R4ImN1OKRtcbIasjYA==
-
 commondir@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/commondir/-/commondir-1.0.1.tgz#ddd800da0c66127393cca5950ea968a3aaf1253b"
@@ -2326,7 +2329,7 @@ concat-map@0.0.1:
   resolved "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
   integrity sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=
 
-concat-with-sourcemaps@1.1.0:
+concat-with-sourcemaps@^1.1.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/concat-with-sourcemaps/-/concat-with-sourcemaps-1.1.0.tgz#d4ea93f05ae25790951b99e7b3b09e3908a4082e"
   integrity sha512-4gEjHJFT9e+2W/77h/DS5SGUgwDaOwprX8L/gl5+3ixnzkVJJsZWDSelmN3Oilw3LNDZjZV0yqH1hLG3k6nghg==
@@ -2954,6 +2957,11 @@ escape-string-regexp@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-2.0.0.tgz#a30304e99daa32e23b2fd20f51babd07cffca344"
   integrity sha512-UpzcLCXolUWcNu5HtVMHYdXJjArjsF9C0aNnquZYY4uW/Vu0miy5YoWvbV345HauVvcAUnpRuhMMcqTcGOY2+w==
+
+escape-string-regexp@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz#14ba83a5d373e3d311e5afca29cf5bfad965bf34"
+  integrity sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==
 
 escodegen@^1.14.1:
   version "1.14.3"
@@ -4987,12 +4995,12 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-matcher@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/matcher/-/matcher-2.0.0.tgz#85fe38d97670dbd2a46590cf099401e2ffb4755c"
-  integrity sha512-nlmfSlgHBFx36j/Pl/KQPbIaqE8Zf0TqmSMjsuddHDg6PMSVgmyW9HpkLs0o0M1n2GIZ/S2BZBLIww/xjhiGng==
+matcher@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/matcher/-/matcher-3.0.0.tgz#bd9060f4c5b70aa8041ccc6f80368760994f30ca"
+  integrity sha512-OkeDaAZ/bQCxeFAozM55PKcKU0yJMPGifLwV4Qgjitu+5MoAfSQN4lsLJeXZ1b8w0x+/Emda6MZgXS1jvsapng==
   dependencies:
-    escape-string-regexp "^2.0.0"
+    escape-string-regexp "^4.0.0"
 
 mdn-data@2.0.14:
   version "2.0.14"
@@ -7177,15 +7185,6 @@ terser-webpack-plugin@^5.1.1:
     source-map "^0.6.1"
     terser "^5.5.1"
 
-terser@4.6.3:
-  version "4.6.3"
-  resolved "https://registry.npmjs.org/terser/-/terser-4.6.3.tgz#e33aa42461ced5238d352d2df2a67f21921f8d87"
-  integrity sha512-Lw+ieAXmY69d09IIc/yqeBqXpEQIpDGZqT34ui1QWXIUpR2RjbqEkT8X7Lgex19hslSqcWM5iMN2kM11eMsESQ==
-  dependencies:
-    commander "^2.20.0"
-    source-map "~0.6.1"
-    source-map-support "~0.5.12"
-
 terser@^4.6.2, terser@^4.6.3:
   version "4.8.0"
   resolved "https://registry.npmjs.org/terser/-/terser-4.8.0.tgz#63056343d7c70bb29f3af665865a46fe03a0df17"
@@ -7409,14 +7408,6 @@ typescript@^4.1.3:
   version "4.1.3"
   resolved "https://registry.npmjs.org/typescript/-/typescript-4.1.3.tgz#519d582bd94cba0cf8934c7d8e8467e473f53bb7"
   integrity sha512-B3ZIOf1IKeH2ixgHhj6la6xdwR9QrLC5d1VKeCSY4tvkqhF2eqd9O7txNlS0PO3GrBAFIdr3L1ndNwteUbZLYg==
-
-uglify-es@3.3.9:
-  version "3.3.9"
-  resolved "https://registry.npmjs.org/uglify-es/-/uglify-es-3.3.9.tgz#0c1c4f0700bed8dbc124cdb304d2592ca203e677"
-  integrity sha512-r+MU0rfv4L/0eeW3xZrd16t4NZfK8Ld4SWVglYBb7ez5uXFWHuVRs6xCTrf1yirs9a4j4Y27nn7SRfO6v67XsQ==
-  dependencies:
-    commander "~2.13.0"
-    source-map "~0.6.1"
 
 uglify-js@^2.6.1:
   version "2.8.29"
@@ -7861,32 +7852,35 @@ yocto-queue@^0.1.0:
   resolved "https://registry.npmjs.org/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-yyl-concat-webpack-plugin@0.2.10:
-  version "0.2.10"
-  resolved "https://registry.npmjs.org/yyl-concat-webpack-plugin/-/yyl-concat-webpack-plugin-0.2.10.tgz#0465ebbfa05db456093374ee651dc0b1122b1408"
-  integrity sha512-NSn5+sEIIiJ+zyDDxCEJxM6hywCufDBxO/SfjYGlJkTQ0hI9uhQyevhxszT49AaRDAA/ePW7S0Ao9scnGRP8dA==
+yyl-concat-webpack-plugin@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/yyl-concat-webpack-plugin/-/yyl-concat-webpack-plugin-1.0.1.tgz#5b41f24fe0c4e7eb3bbfddb8c746bd6f2a144ce8"
+  integrity sha512-5aVTACsYPvOjymyx3cA0TudvlJwq3Sc5KiRlhbN9FL7bksKl0BD9INmEA61qfdD9Tm2I0zffxy6zqwVMsaUCiw==
   dependencies:
-    chalk "^3.0.0"
-    concat-with-sourcemaps "1.1.0"
-    tapable "1.1.3"
-    terser "4.6.3"
-    uglify-es "3.3.9"
+    chalk "^4.1.0"
+    concat-with-sourcemaps "^1.1.0"
+    tapable "^2.2.0"
+    terser "^5.5.1"
+    yyl-util "^2.3.9"
 
-yyl-config-types@0.3.7:
-  version "0.3.7"
-  resolved "https://registry.npmjs.org/yyl-config-types/-/yyl-config-types-0.3.7.tgz#9d4dae5818fe4c137e723bcdbc765d2280c29063"
-  integrity sha512-lvJIQqDdFaqlpaLYymzazWfwn/CnNRnfw+wWBtY7ei9V/6HPMh5lspI49N+WvBqPGgQkCjAaOseDKLtZ4AWSSA==
+yyl-config-types@0.3.8:
+  version "0.3.8"
+  resolved "https://registry.npmjs.org/yyl-config-types/-/yyl-config-types-0.3.8.tgz#359f6e98f8323f9f113df97211327bb4e57abe52"
+  integrity sha512-p1I1X0l//rMr7QuqtPVbP76k2a8qaMeGhPR9IcyA/YG3vUwEF4/hnu8s7wjhpU30O2ZsUtzAIF2lcDf/H4x+Qg==
 
-yyl-copy-webpack-plugin@0.2.11:
-  version "0.2.11"
-  resolved "https://registry.npmjs.org/yyl-copy-webpack-plugin/-/yyl-copy-webpack-plugin-0.2.11.tgz#511d7bbd4fec4fcb218b9f1100beb60e2d04bb1e"
-  integrity sha512-6GnKjhKmn1purnq03L/8Pl+hMotrTmeeb9ncu+seixTrmaOWcr2ajWP3mxVPqeCjQcIULB5ksu9DT10shOoBgg==
+yyl-copy-webpack-plugin@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/yyl-copy-webpack-plugin/-/yyl-copy-webpack-plugin-1.0.0.tgz#27ba517c2c30cead3d7d49145e4fb468fc29868b"
+  integrity sha512-QyJ5vKpAAbis67b+vOmcOWNwUj6il09IoSjviPJR5MQvpcMELvtYibEy4rNaeiLJKt8vPG3BNNYRIcxfZsdY/g==
   dependencies:
-    chalk "^3.0.0"
-    clean-css "4.2.1"
-    matcher "2.0.0"
-    tapable "1.1.3"
-    terser "4.6.3"
+    "@types/clean-css" "^4.2.3"
+    chalk "^4.1.0"
+    clean-css "^5.0.1"
+    matcher "^3.0.0"
+    tapable "^2.2.0"
+    terser "^5.5.1"
+    yyl-fs "^0.3.3"
+    yyl-util "^2.3.9"
 
 yyl-env-pop-webpack-plugin@1.0.1:
   version "1.0.1"
@@ -7961,3 +7955,8 @@ yyl-util@2.3.8, yyl-util@^2.3.5, yyl-util@^2.3.8:
   version "2.3.8"
   resolved "https://registry.npmjs.org/yyl-util/-/yyl-util-2.3.8.tgz#5ef178f47ddc33c841add5356628c9c305836f2d"
   integrity sha512-z4mgp4mHdyDWJmvLswB6ayBrobtEGPr80wsGkhUKCfsSzl6gD1bRWoXTbkYX4P7/wnSBkNQ+L6eDZ1HOt32qXg==
+
+yyl-util@^2.3.9:
+  version "2.3.9"
+  resolved "https://registry.npmjs.org/yyl-util/-/yyl-util-2.3.9.tgz#4c4f5d1af1c9b474e46db5cce6afbc82bbd586ce"
+  integrity sha512-sKNudT5RApLNLDnHSppoR+K9yslDmof57gQ5yHDcX8xRADIv8r218DHIsyksSnlEmlld9TXAMYLeazAu4ufW0A==
