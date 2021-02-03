@@ -5,12 +5,13 @@ import { WebpackOptionsNormalized } from 'webpack'
 import YylConcatWebpackPlugin from 'yyl-concat-webpack-plugin'
 import YylCopyWebpackPlugin, { YylCopyWebpackPluginOption } from 'yyl-copy-webpack-plugin'
 import YylSugarWebpackPlugin from 'yyl-sugar-webpack-plugin'
-import YylRevWebpackPlugin from 'yyl-rev-webpack-plugin'
+import YylRevWebpackPlugin, { YylRevWebpackPluginOption } from 'yyl-rev-webpack-plugin'
 import YylEnvPopPlugin from 'yyl-env-pop-webpack-plugin'
-import { InitBaseOption } from '../types'
+import { Alias, InitBaseOption } from '../types'
+import util from 'yyl-util'
 export type InitYylPluginsResult = Pick<WebpackOptionsNormalized, 'plugins'>
 export function initYylPlugins(op: InitBaseOption) {
-  const { env, alias, devServer, yylConfig } = op
+  const { env, alias, devServer, yylConfig, resolveRoot } = op
   const pkgPath = path.join(alias.dirname, 'package.json')
   let pkg = {
     name: 'default'
@@ -31,7 +32,7 @@ export function initYylPlugins(op: InitBaseOption) {
     // concat
     new YylConcatWebpackPlugin({
       fileMap: yylConfig?.concat || {},
-      basePath: alias.dirname,
+      context: alias.dirname,
       minify: !!env?.isCommit
     }),
     // copy
@@ -40,7 +41,7 @@ export function initYylPlugins(op: InitBaseOption) {
         const r: YylCopyWebpackPluginOption = {
           files: [],
           minify: false,
-          basePath: alias.dirname
+          context: alias.dirname
         }
         if (yylConfig?.resource) {
           Object.keys(yylConfig.resource).forEach((from) => {
@@ -82,8 +83,43 @@ export function initYylPlugins(op: InitBaseOption) {
         }
         return r
       })()
-    )
-    // sugar TODO:
+    ),
+    // sugar
+    new YylSugarWebpackPlugin({
+      context: alias.dirname
+    }),
+    // rev
+    new YylRevWebpackPlugin({
+      revFileName: util.path.join(path.relative(resolveRoot, alias.revDest)),
+      revRoot: alias.revRoot,
+      remote: !!env.remote,
+      remoteAddr: yylConfig?.commit?.revAddr,
+      remoteBlankCss: !env.isCommit,
+      extends: (() => {
+        const r: YylRevWebpackPluginOption['extends'] = {
+          version: util.makeCssJsDate(),
+          staticRemotePath: yylConfig?.commit?.staticHost || yylConfig?.commit?.hostname || '',
+          mainRemotePath: yylConfig?.commit?.mainHost || yylConfig?.commit?.hostname || ''
+        }
+        Object.keys(env)
+          .filter((key) => {
+            return ![
+              'isCommit',
+              'logLevel',
+              'proxy',
+              'name',
+              'config',
+              'workflow',
+              'useHotPlugin',
+              'hmr'
+            ].includes(key)
+          })
+          .forEach((key) => {
+            r[key] = env[key]
+          })
+        return r
+      })()
+    })
   ]
 
   return r

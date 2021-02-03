@@ -33,6 +33,9 @@ const DEFAULT_ALIAS: AliasProperty = {
   cssDest: './dist/css',
   imagesDest: './dist/images',
   htmlDest: './dist/html',
+  revDest: './dist/assets',
+  revRoot: './dist',
+  revAddr: '',
   basePath: '/',
   publicPath: '/'
 }
