@@ -2370,11 +2370,6 @@ commander@^4.1.1:
   resolved "https://registry.npmjs.org/commander/-/commander-4.1.1.tgz#9fd602bd936294e9e9ef46a3f4d6964044b18068"
   integrity sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==
 
-commander@^5.0.0:
-  version "5.1.0"
-  resolved "https://registry.npmjs.org/commander/-/commander-5.1.0.tgz#46abbd1652f8e059bddaef99bbdcb2ad9cf179ae"
-  integrity sha512-P0CysNDQ7rtVw4QIQtm+MRxV66vKFSvlsQvGYXZWR3qFU0jlMKHZZZgw8e+8DSah4UDKMqnknRDQz+xuQXQ/Zg==
-
 commondir@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/commondir/-/commondir-1.0.1.tgz#ddd800da0c66127393cca5950ea968a3aaf1253b"
@@ -7971,10 +7966,10 @@ yyl-concat-webpack-plugin@1.0.3:
     yyl-util "^2.3.9"
     yyl-webpack-plugin-base "^0.1.0"
 
-yyl-config-types@0.3.10:
-  version "0.3.10"
-  resolved "https://registry.npmjs.org/yyl-config-types/-/yyl-config-types-0.3.10.tgz#fa1f19532c12df797468349997187ac9282beba2"
-  integrity sha512-BTto2i5iry+JZtig1llhpA2kl3C0re1KuhabKHs8M5R1mWqdY5cXu/rxzqEdKOhlckJeKJZMfR+rnFYspJJWQg==
+yyl-config-types@0.3.17:
+  version "0.3.17"
+  resolved "https://registry.npmjs.org/yyl-config-types/-/yyl-config-types-0.3.17.tgz#f40c9c5e86bf9042eab76acfb5da98621a2748d0"
+  integrity sha512-JfOwJDVU+5nNcMYIlKALDHaDF0094GdvuOjCeHht09Ms7GUh/ruYt44sdPmrG6+jyml2sXg7EdptRa0EnebOOg==
 
 yyl-copy-webpack-plugin@1.0.1:
   version "1.0.1"
@@ -8010,29 +8005,12 @@ yyl-fs@^0.3.3:
   resolved "https://registry.npmjs.org/yyl-fs/-/yyl-fs-0.3.3.tgz#aa409a5ea451cd0da287315665f338b1a24d4324"
   integrity sha512-3I+zY97ZJz91whuiBcdv3qdTQzErI8Dm2YSfJNK3XIAXmzWOSj1nSf6x59KrG4buzIaS3t2LEHVq4kPSYqu/9Q==
 
-yyl-os@^0.11.1:
+yyl-os@^0.11.4:
   version "0.11.4"
   resolved "https://registry.npmjs.org/yyl-os/-/yyl-os-0.11.4.tgz#635172b344ab92d2a517bc8c011b8836a30f4e40"
   integrity sha512-R2YvkA4BMCCk6BdJliBThG3ISN6FZOqeqfiuTXATG8XXF6XVdcL+Ik1H1udWZS99WMLLz+783iKs88KM5CQR0Q==
   dependencies:
     yyl-util "^2.3.5"
-
-yyl-print@^0.7.5:
-  version "0.7.5"
-  resolved "https://registry.npmjs.org/yyl-print/-/yyl-print-0.7.5.tgz#f68de32a8e30e05df3cc662756b7a16ece7ebe13"
-  integrity sha512-qOKvifxhoIb1lyGdrxwQhO/ilONiSODW8zN7qLtBKtXv+ocyGrwxTR1pkPMg8glEZ/qDaMSXrH+fPRJLO6EZVQ==
-  dependencies:
-    chalk "^2.4.2"
-
-yyl-release@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.npmjs.org/yyl-release/-/yyl-release-0.1.0.tgz#a79963f84f6e4ac69193f447e5bf741fa0a8896f"
-  integrity sha512-in887x4ArjN/d2E4IW86T3S3s0dRJXo5EY8w4l32v/BXfX6ieu/d5+l5d3yT99BMvMUtvTO4BBBbXdlTcbyl/A==
-  dependencies:
-    chalk "^4.0.0"
-    commander "^5.0.0"
-    yyl-os "^0.11.1"
-    yyl-print "^0.7.5"
 
 yyl-rev-webpack-plugin@1.0.0:
   version "1.0.0"

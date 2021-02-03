@@ -26,7 +26,8 @@ const config = {
     commonjs(),
     json(),
     typescript({
-      typescript: require('typescript')
+      typescript: require('typescript'),
+      objectHashIgnoreUnknownHack: true
     })
   ],
   external: []

@@ -1,4 +1,4 @@
-import { Compiler, WebpackOptionsNormalized } from 'webpack'
+import { WebpackOptionsNormalized } from 'webpack'
 import merge from 'webpack-merge'
 import path from 'path'
 import { YylConfig, Env } from 'yyl-config-types'
@@ -106,9 +106,11 @@ function yylBaseInitConfig(op?: YylBaseInitConfigOption) {
   // alias 路径 resolve
   Object.keys(alias).forEach((key) => {
     const iKey = key as keyof Alias
-    if (!path.isAbsolute(alias[iKey])) {
-      alias[iKey] = path.resolve(context, alias[iKey])
-      alias[iKey] = path.resolve(__dirname, alias[iKey])
+    if (alias[iKey] !== undefined) {
+      if (!path.isAbsolute(alias[iKey] as string)) {
+        alias[iKey] = path.resolve(context, alias[iKey] as string)
+        alias[iKey] = path.resolve(__dirname, alias[iKey] as string)
+      }
     }
   })
   // dist 目录
