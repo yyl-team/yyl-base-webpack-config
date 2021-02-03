@@ -215,6 +215,7 @@ function initModule(op) {
     const { yylConfig, alias, resolveRoot, env } = op;
     const urlLoaderOptions = {
         limit: (yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.base64Limit) ? 3000 : Number((yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.base64Limit) || 0),
+        esModule: false,
         name: '[name]-[hash:8].[ext]',
         chunkFilename: 'async_component/[name]-[chunkhash:8].[ext]',
         outputPath: util.path.relative(resolveRoot, alias.imagesDest),

@@ -10,6 +10,17 @@ module.exports = (env) => {
       alias: {
         '~': path.join(__dirname, './src'),
         '~@': path.join(__dirname, './src/components/')
+      },
+      yylConfig: {
+        concat: {
+          'dist/js/shim.js': [
+            'src/js/lib/shim/es5-sham.min.js',
+            'src/js/lib/shim/es5-shim.min.js',
+            'src/js/lib/shim/es6-sham.min.js',
+            'src/js/lib/shim/es6-shim.min.js',
+            'src/js/lib/shim/json3.min.js'
+          ]
+        }
       }
     }),
     {

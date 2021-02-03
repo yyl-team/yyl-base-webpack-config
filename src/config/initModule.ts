@@ -20,6 +20,7 @@ export function initModule(op: InitBaseOption) {
 
   const urlLoaderOptions = {
     limit: yylConfig?.base64Limit ? 3000 : Number(yylConfig?.base64Limit || 0),
+    esModule: false,
     name: '[name]-[hash:8].[ext]',
     chunkFilename: 'async_component/[name]-[chunkhash:8].[ext]',
     outputPath: path.relative(resolveRoot, alias.imagesDest),

@@ -6,8 +6,8 @@ import './nav.scss'
 export const Nav: React.FC = () => {
   return (
     <div className='nav'>
-      {routes.map((item) => (
-        <NavLink to={item.path} activeClassName='current'>
+      {routes.map((item, key) => (
+        <NavLink to={item.path} activeClassName='current' key={key}>
           {item.title}
         </NavLink>
       ))}
