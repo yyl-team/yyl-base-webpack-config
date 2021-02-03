@@ -12,7 +12,6 @@ var path = _interopDefault(require('path'));
 var webpack = require('webpack');
 var util = require('yyl-util');
 var util__default = _interopDefault(util);
-var TerserWebpackPlugin = _interopDefault(require('terser-webpack-plugin'));
 var OptimizeCSSAssetsPlugin = _interopDefault(require('optimize-css-assets-webpack-plugin'));
 var extFs = _interopDefault(require('yyl-fs'));
 var fs = _interopDefault(require('fs'));
@@ -24,6 +23,10 @@ var MiniCssExtractPlugin = _interopDefault(require('mini-css-extract-plugin'));
 var net = _interopDefault(require('net'));
 var os = _interopDefault(require('os'));
 var child_process = _interopDefault(require('child_process'));
+var YylConcatWebpackPlugin = _interopDefault(require('yyl-concat-webpack-plugin'));
+var YylCopyWebpackPlugin = _interopDefault(require('yyl-copy-webpack-plugin'));
+var YylSugarWebpackPlugin = _interopDefault(require('yyl-sugar-webpack-plugin'));
+var YylRevWebpackPlugin = _interopDefault(require('yyl-rev-webpack-plugin'));
 var YylEnvPopPlugin = _interopDefault(require('yyl-env-pop-webpack-plugin'));
 
 /** 格式化路径 */
@@ -68,16 +71,7 @@ function initBase(option) {
         devtool: 'source-map',
         plugins: [],
         optimization: {
-            minimizer: [
-                new TerserWebpackPlugin({
-                    extractComments: false,
-                    terserOptions: {
-                        ie8: false,
-                        keep_fnames: false
-                    }
-                }),
-                new OptimizeCSSAssetsPlugin({})
-            ]
+            minimizer: [new OptimizeCSSAssetsPlugin({})]
         }
     };
     // 环境变量
@@ -880,7 +874,8 @@ const extOs = {
 var os_1 = extOs;
 
 function initYylPlugins(op) {
-    const { env, alias, devServer } = op;
+    var _a;
+    const { env, alias, devServer, yylConfig, resolveRoot } = op;
     const pkgPath = path.join(alias.dirname, 'package.json');
     let pkg = {
         name: 'default'
@@ -892,10 +887,102 @@ function initYylPlugins(op) {
         plugins: []
     };
     r.plugins = [
+        // pop
         new YylEnvPopPlugin({
             enable: !!env.tips,
             text: `${pkg.name} - ${os_1.LOCAL_IP}:${devServer.port}`,
             duration: 3000
+        }),
+        // concat
+        new YylConcatWebpackPlugin({
+            fileMap: (yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.concat) || {},
+            context: alias.dirname,
+            minify: !!(env === null || env === void 0 ? void 0 : env.isCommit)
+        }),
+        // copy
+        new YylCopyWebpackPlugin((() => {
+            const r = {
+                files: [],
+                minify: false,
+                context: alias.dirname
+            };
+            if (yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.resource) {
+                Object.keys(yylConfig.resource).forEach((from) => {
+                    const iExt = path.extname(from);
+                    if (iExt) {
+                        if (r.files && (yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.resource)) {
+                            if (['.html'].includes(iExt)) {
+                                r.files.push({
+                                    from,
+                                    to: yylConfig.resource[from],
+                                    filename: '[name].[ext]'
+                                });
+                            }
+                            else {
+                                r.files.push({
+                                    from,
+                                    to: yylConfig.resource[from],
+                                    filename: '[name]-[hash:8].[ext]'
+                                });
+                            }
+                        }
+                    }
+                    else {
+                        if (r.files && (yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.resource)) {
+                            r.files.push({
+                                from,
+                                to: yylConfig.resource[from],
+                                matcher: ['*.html', '!**/.*'],
+                                filename: '[name].[ext]'
+                            });
+                            r.files.push({
+                                from,
+                                to: yylConfig.resource[from],
+                                matcher: ['!*.html', '!**/.*'],
+                                filename: '[name]-[hash:8].[ext]'
+                            });
+                        }
+                    }
+                });
+            }
+            return r;
+        })()),
+        // sugar
+        new YylSugarWebpackPlugin({
+            context: alias.dirname
+        }),
+        // rev
+        new YylRevWebpackPlugin({
+            revFileName: util__default.path.join(path.relative(resolveRoot, alias.revDest)),
+            revRoot: alias.revRoot,
+            remote: !!env.remote,
+            remoteAddr: (_a = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _a === void 0 ? void 0 : _a.revAddr,
+            remoteBlankCss: !env.isCommit,
+            extends: (() => {
+                var _a, _b, _c, _d;
+                const r = {
+                    version: util__default.makeCssJsDate(),
+                    staticRemotePath: ((_a = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _a === void 0 ? void 0 : _a.staticHost) || ((_b = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _b === void 0 ? void 0 : _b.hostname) || '',
+                    mainRemotePath: ((_c = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _c === void 0 ? void 0 : _c.mainHost) || ((_d = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _d === void 0 ? void 0 : _d.hostname) || ''
+                };
+                Object.keys(env)
+                    .filter((key) => {
+                    return ![
+                        'isCommit',
+                        'logLevel',
+                        'proxy',
+                        'name',
+                        'config',
+                        'workflow',
+                        'useHotPlugin',
+                        'hmr'
+                    ].includes(key);
+                })
+                    .forEach((key) => {
+                    r[key] = env[key];
+                });
+                return r;
+            })()
         })
     ];
     return r;
@@ -909,6 +996,9 @@ const DEFAULT_ALIAS = {
     cssDest: './dist/css',
     imagesDest: './dist/images',
     htmlDest: './dist/html',
+    revDest: './dist/assets',
+    revRoot: './dist',
+    revAddr: '',
     basePath: '/',
     publicPath: '/'
 };

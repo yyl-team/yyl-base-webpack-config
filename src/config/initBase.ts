@@ -1,7 +1,6 @@
-import { WebpackOptionsNormalized, DefinePlugin, config, EnvironmentPlugin } from 'webpack'
+import { WebpackOptionsNormalized, DefinePlugin } from 'webpack'
 import path from 'path'
 import util from 'yyl-util'
-import TerserWebpackPlugin from 'terser-webpack-plugin'
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin'
 
 import { InitBaseOption } from '../types'
@@ -58,16 +57,7 @@ export function initBase(option: InitBaseOption) {
     devtool: 'source-map',
     plugins: [],
     optimization: {
-      minimizer: [
-        new TerserWebpackPlugin({
-          extractComments: false,
-          terserOptions: {
-            ie8: false,
-            keep_fnames: false
-          }
-        }),
-        new OptimizeCSSAssetsPlugin({})
-      ]
+      minimizer: [new OptimizeCSSAssetsPlugin({})]
     }
   }
 

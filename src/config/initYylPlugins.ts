@@ -7,7 +7,7 @@ import YylCopyWebpackPlugin, { YylCopyWebpackPluginOption } from 'yyl-copy-webpa
 import YylSugarWebpackPlugin from 'yyl-sugar-webpack-plugin'
 import YylRevWebpackPlugin, { YylRevWebpackPluginOption } from 'yyl-rev-webpack-plugin'
 import YylEnvPopPlugin from 'yyl-env-pop-webpack-plugin'
-import { Alias, InitBaseOption } from '../types'
+import { InitBaseOption } from '../types'
 import util from 'yyl-util'
 export type InitYylPluginsResult = Pick<WebpackOptionsNormalized, 'plugins'>
 export function initYylPlugins(op: InitBaseOption) {
