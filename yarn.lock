@@ -7966,7 +7966,7 @@ yyl-concat-webpack-plugin@1.0.7:
     yyl-util "^2.3.9"
     yyl-webpack-plugin-base "^0.1.6"
 
-yyl-config-types@0.3.17:
+yyl-config-types@0.3.17, yyl-config-types@^0.3.17:
   version "0.3.17"
   resolved "https://registry.npmjs.org/yyl-config-types/-/yyl-config-types-0.3.17.tgz#f40c9c5e86bf9042eab76acfb5da98621a2748d0"
   integrity sha512-JfOwJDVU+5nNcMYIlKALDHaDF0094GdvuOjCeHht09Ms7GUh/ruYt44sdPmrG6+jyml2sXg7EdptRa0EnebOOg==
@@ -8012,14 +8012,23 @@ yyl-os@^0.11.4:
   dependencies:
     yyl-util "^2.3.5"
 
-yyl-rev-webpack-plugin@1.0.3:
-  version "1.0.3"
-  resolved "https://registry.npmjs.org/yyl-rev-webpack-plugin/-/yyl-rev-webpack-plugin-1.0.3.tgz#b90f6d6028a7b394bbb661f59c88cf902dc89da1"
-  integrity sha512-MGtTHZljCtyGyDLkmjaQ38qxThGgv8+XIn5t5InN3vz4itdqo8Q2lf9yMp8Ln99a6jWMGMtTECkMbFUVZDJ58w==
+yyl-rev-webpack-plugin@1.0.4:
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/yyl-rev-webpack-plugin/-/yyl-rev-webpack-plugin-1.0.4.tgz#c6115ad703b17ba7707c4b61cd9d5cb8d362d9b6"
+  integrity sha512-7LfgIozDhYieFP1vGsfFm+rtzm5VIFp1/Nm1zV8shBZjqUI95zqvVFOhY31wTW5j8UjAd5LpIv+wLUoFFrKWiA==
   dependencies:
     "@types/request-promise" "^4.1.47"
     request-promise "^4.2.6"
     tapable "^2.2.0"
+    yyl-webpack-plugin-base "^0.1.6"
+
+yyl-server-webpack-plugin@1.0.4:
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/yyl-server-webpack-plugin/-/yyl-server-webpack-plugin-1.0.4.tgz#e5d31ee7b894fb46430f4bb7fcb9e4738a98ded9"
+  integrity sha512-rxwSUbrwZtrlFKwO1QC5FGv8Q7xhOXw2KYP0EQzP/y7Hxv2xn8lpNIpqUarmNMRuZ9NY9UZbhY/pqloTJsuq2w==
+  dependencies:
+    tapable "^2.2.0"
+    yyl-config-types "^0.3.17"
     yyl-webpack-plugin-base "^0.1.6"
 
 yyl-sugar-webpack-plugin@1.0.3:

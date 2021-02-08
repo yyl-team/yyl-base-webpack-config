@@ -92,7 +92,8 @@
     "yyl-env-pop-webpack-plugin": "1.0.2",
     "yyl-fs": "^0.3.3",
     "yyl-os": "^0.11.4",
-    "yyl-rev-webpack-plugin": "1.0.3",
+    "yyl-rev-webpack-plugin": "1.0.4",
+    "yyl-server-webpack-plugin": "1.0.4",
     "yyl-sugar-webpack-plugin": "1.0.3",
     "yyl-util": "^2.3.8"
   },

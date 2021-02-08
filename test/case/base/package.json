@@ -2,8 +2,8 @@
   "name": "test-base",
   "version": "0.1.0",
   "scripts": {
-    "d": "webpack",
-    "w": "webpack-dev-server --env tips=true",
+    "o": "webpack",
+    "d": "webpack-cli serve --env tips=true",
     "eslint": "eslint --ext=jsx,ts,tsx ./",
     "eslint:fix": "eslint --fix --ext=jsx,ts,tsx ./",
     "prettier": "prettier --write ./**/*.{ts,tsx,js}"

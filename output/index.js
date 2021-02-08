@@ -23,6 +23,7 @@ var YylCopyWebpackPlugin = require('yyl-copy-webpack-plugin');
 var YylSugarWebpackPlugin = require('yyl-sugar-webpack-plugin');
 var YylRevWebpackPlugin = require('yyl-rev-webpack-plugin');
 var YylEnvPopPlugin = require('yyl-env-pop-webpack-plugin');
+var YylServerWebpackPlugin = require('yyl-server-webpack-plugin');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -43,6 +44,7 @@ var YylCopyWebpackPlugin__default = /*#__PURE__*/_interopDefaultLegacy(YylCopyWe
 var YylSugarWebpackPlugin__default = /*#__PURE__*/_interopDefaultLegacy(YylSugarWebpackPlugin);
 var YylRevWebpackPlugin__default = /*#__PURE__*/_interopDefaultLegacy(YylRevWebpackPlugin);
 var YylEnvPopPlugin__default = /*#__PURE__*/_interopDefaultLegacy(YylEnvPopPlugin);
+var YylServerWebpackPlugin__default = /*#__PURE__*/_interopDefaultLegacy(YylServerWebpackPlugin);
 
 /** 格式化路径 */
 function formatPath(str) {
@@ -435,7 +437,7 @@ function initModule(op) {
 }
 
 function initYylPlugins(op) {
-    var _a;
+    var _a, _b, _c, _d, _e, _f;
     const { env, alias, devServer, yylConfig, resolveRoot } = op;
     const pkgPath = path__default['default'].join(alias.dirname, 'package.json');
     let pkg = {
@@ -544,6 +546,22 @@ function initYylPlugins(op) {
                 });
                 return r;
             })()
+        }),
+        // server
+        new YylServerWebpackPlugin__default['default']({
+            context: alias.dirname,
+            static: alias.root,
+            hmr: !!(env === null || env === void 0 ? void 0 : env.hmr),
+            proxy: {
+                hosts: [
+                    ((_b = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _b === void 0 ? void 0 : _b.hostname) || '',
+                    ((_c = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _c === void 0 ? void 0 : _c.mainHost) || '',
+                    ((_d = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _d === void 0 ? void 0 : _d.staticHost) || ''
+                ].filter((x) => x !== ''),
+                enable: !env.proxy && !env.remote
+            },
+            homePage: (_e = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.proxy) === null || _e === void 0 ? void 0 : _e.homePage,
+            port: ((_f = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _f === void 0 ? void 0 : _f.port) || 5000
         })
     ];
     return r;

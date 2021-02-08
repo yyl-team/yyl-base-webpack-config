@@ -7,6 +7,7 @@ import YylCopyWebpackPlugin, { YylCopyWebpackPluginOption } from 'yyl-copy-webpa
 import YylSugarWebpackPlugin from 'yyl-sugar-webpack-plugin'
 import YylRevWebpackPlugin, { YylRevWebpackPluginOption } from 'yyl-rev-webpack-plugin'
 import YylEnvPopPlugin from 'yyl-env-pop-webpack-plugin'
+import YylServerWebpackPlugin from 'yyl-server-webpack-plugin'
 import { InitBaseOption } from '../types'
 import util from 'yyl-util'
 export type InitYylPluginsResult = Pick<WebpackOptionsNormalized, 'plugins'>
@@ -119,6 +120,22 @@ export function initYylPlugins(op: InitBaseOption) {
           })
         return r
       })()
+    }),
+    // server
+    new YylServerWebpackPlugin({
+      context: alias.dirname,
+      static: alias.root,
+      hmr: !!env?.hmr,
+      proxy: {
+        hosts: [
+          yylConfig?.commit?.hostname || '',
+          yylConfig?.commit?.mainHost || '',
+          yylConfig?.commit?.staticHost || ''
+        ].filter((x) => x !== ''),
+        enable: !env.proxy && !env.remote
+      },
+      homePage: yylConfig?.proxy?.homePage,
+      port: yylConfig?.localserver?.port || 5000
     })
   ]
 

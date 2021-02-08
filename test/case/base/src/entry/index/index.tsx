@@ -18,7 +18,7 @@ const App = (
   </Router>
 )
 
-axios.get('/api/yyweb/module/data/header').then((rs) => {
+axios.get('//www.yy.com/yyweb/module/data/header').then((rs) => {
   console.log(rs)
 })
 
