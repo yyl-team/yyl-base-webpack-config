@@ -1,9 +1,11 @@
 /*!
- * yyl-base-webpack-config cjs 0.1.0
+ * yyl-base-webpack-config cjs 0.1.1
  * (c) 2020 - 2021 
  * Released under the MIT License.
  */
 'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
 
 var merge = require('webpack-merge');
 var path = require('path');
@@ -644,3 +646,5 @@ function yylBaseInitConfig(op) {
     return mixedOptions;
 }
 module.exports = yylBaseInitConfig;
+
+exports.default = yylBaseInitConfig;
