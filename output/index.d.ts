@@ -1,3 +1,4 @@
+import { WebpackOptionsNormalized } from 'webpack';
 import { YylConfig, Env } from 'yyl-config-types';
 import { Alias } from './types';
 export interface YylBaseInitConfigOption {
@@ -13,3 +14,4 @@ export interface YylBaseInitConfigOption {
     };
 }
 export declare type YylBaseInitConfigProperty = Required<YylBaseInitConfigOption>;
+export default function yylBaseInitConfig(op?: YylBaseInitConfigOption): WebpackOptionsNormalized;

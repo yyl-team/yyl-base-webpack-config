@@ -44,7 +44,7 @@ const DEFAULT_DEV_SERVER: InitBaseOption['devServer'] = {
   port: 5000
 }
 
-function yylBaseInitConfig(op?: YylBaseInitConfigOption) {
+export default function yylBaseInitConfig(op?: YylBaseInitConfigOption) {
   // 配置初始化 - env
   const env = op?.env || {}
 
