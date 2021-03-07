@@ -518,7 +518,7 @@ function initYylPlugins(op) {
         }),
         // rev
         new YylRevWebpackPlugin__default['default']({
-            revFileName: util__default['default'].path.join(path__default['default'].relative(resolveRoot, alias.revDest)),
+            revFileName: util__default['default'].path.join(path__default['default'].relative(resolveRoot, path__default['default'].join(alias.revDest, './rev-mainfest.json'))),
             revRoot: alias.revRoot,
             remote: !!env.remote,
             remoteAddr: (_a = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _a === void 0 ? void 0 : _a.revAddr,

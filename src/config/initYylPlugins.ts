@@ -91,7 +91,9 @@ export function initYylPlugins(op: InitBaseOption) {
     }),
     // rev
     new YylRevWebpackPlugin({
-      revFileName: util.path.join(path.relative(resolveRoot, alias.revDest)),
+      revFileName: util.path.join(
+        path.relative(resolveRoot, path.join(alias.revDest, './rev-mainfest.json'))
+      ),
       revRoot: alias.revRoot,
       remote: !!env.remote,
       remoteAddr: yylConfig?.commit?.revAddr,

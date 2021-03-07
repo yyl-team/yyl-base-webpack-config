@@ -1,5 +1,8 @@
 # 版本变更
 
+## 0.1.3 (2021-03-08)
+- feat: 纠正 rev-manifest.json 生成 错误问题
+
 ## 0.1.2 (2021-03-07)
 
 - feat: 更新 `yyl-concat-webpack-plugin@1.0.10`
