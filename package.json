@@ -1,5 +1,5 @@
 {
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "output/index.js",
   "types": "output/index.d.ts",
   "eslintConfig": {
@@ -91,15 +91,15 @@
     "url-loader": "^4.1.1",
     "watch": "^1.0.2",
     "webpack-merge": "^5.7.3",
-    "yyl-concat-webpack-plugin": "1.0.7",
-    "yyl-config-types": "0.3.17",
-    "yyl-copy-webpack-plugin": "1.0.4",
+    "yyl-concat-webpack-plugin": "1.0.10",
+    "yyl-config-types": "0.3.18",
+    "yyl-copy-webpack-plugin": "1.0.7",
     "yyl-env-pop-webpack-plugin": "1.0.2",
     "yyl-fs": "^0.3.3",
     "yyl-os": "^0.11.4",
-    "yyl-rev-webpack-plugin": "1.0.4",
-    "yyl-server-webpack-plugin": "1.0.4",
-    "yyl-sugar-webpack-plugin": "1.0.3",
+    "yyl-rev-webpack-plugin": "1.0.7",
+    "yyl-server-webpack-plugin": "1.0.5",
+    "yyl-sugar-webpack-plugin": "1.0.5",
     "yyl-util": "^2.3.8"
   },
   "name": "yyl-base-webpack-config",
