@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "scripts": {
     "o": "webpack",
+    "w": "webpack --watch",
     "d": "webpack-cli serve --env tips=true",
     "eslint": "eslint --ext=jsx,ts,tsx ./",
     "eslint:fix": "eslint --fix --ext=jsx,ts,tsx ./",

@@ -1,9 +1,18 @@
 # 版本变更
 
-## 0.1.1 (2020-02-09)
+## 0.1.2 (2021-03-07)
+
+- feat: 更新 `yyl-concat-webpack-plugin@1.0.10`
+- feat: 更新 `yyl-config-types@0.3.18`
+- feat: 更新 `yyl-copy-webpack-plugin@1.0.7`
+- feat: 更新 `yyl-rev-webpack-plugin@1.0.7`
+- feat: 更新 `yyl-server-webpack-plugin@1.0.5`
+- feat: 更新 `yyl-sugar-webpack-plugin@1.0.5`
+
+## 0.1.1 (2021-02-09)
 
 - feat: 补充 export default
 
-## 0.1.0 (2020-02-08)
+## 0.1.0 (2021-02-08)
 
 - feat: 诞生
