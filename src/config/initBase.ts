@@ -1,4 +1,4 @@
-import { WebpackOptionsNormalized, DefinePlugin } from 'webpack'
+import { Configuration, DefinePlugin } from 'webpack'
 import path from 'path'
 import util from 'yyl-util'
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin'
@@ -10,17 +10,19 @@ export interface DefinePluginOption {
   [key: string]: any
 }
 
-export type InitBaseResult = Pick<
-  WebpackOptionsNormalized,
-  | 'mode'
-  | 'cache'
-  | 'context'
-  | 'output'
-  | 'resolveLoader'
-  | 'resolve'
-  | 'devtool'
-  | 'plugins'
-  | 'optimization'
+export type InitBaseResult = Required<
+  Pick<
+    Configuration,
+    | 'mode'
+    | 'cache'
+    | 'context'
+    | 'output'
+    | 'resolveLoader'
+    | 'resolve'
+    | 'devtool'
+    | 'plugins'
+    | 'optimization'
+  >
 >
 
 export function initBase(option: InitBaseOption) {

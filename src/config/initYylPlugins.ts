@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import extOs from 'yyl-os'
-import { WebpackOptionsNormalized } from 'webpack'
+import { Configuration } from 'webpack'
 import YylConcatWebpackPlugin from 'yyl-concat-webpack-plugin'
 import YylCopyWebpackPlugin, { YylCopyWebpackPluginOption } from 'yyl-copy-webpack-plugin'
 import YylSugarWebpackPlugin from 'yyl-sugar-webpack-plugin'
@@ -10,7 +10,7 @@ import YylEnvPopPlugin from 'yyl-env-pop-webpack-plugin'
 import YylServerWebpackPlugin from 'yyl-server-webpack-plugin'
 import { InitBaseOption } from '../types'
 import util from 'yyl-util'
-export type InitYylPluginsResult = Pick<WebpackOptionsNormalized, 'plugins'>
+export type InitYylPluginsResult = Required<Pick<Configuration, 'plugins'>>
 export function initYylPlugins(op: InitBaseOption) {
   const { env, alias, devServer, yylConfig, resolveRoot } = op
   const pkgPath = path.join(alias.dirname, 'package.json')

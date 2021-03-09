@@ -1,5 +1,5 @@
 /*!
- * yyl-base-webpack-config cjs 0.1.3
+ * yyl-base-webpack-config cjs 0.1.4
  * (c) 2020 - 2021 
  * Released under the MIT License.
  */
@@ -189,8 +189,10 @@ function initEntry(option) {
             const filename = ignoreExtName(path__default['default'].basename(iPath));
             let iChunks = [];
             iChunks = iChunks.concat(commonChunks);
-            if (filename in wConfig.entry) {
-                iChunks.push(filename);
+            if (typeof wConfig.entry === 'object') {
+                if (filename in wConfig.entry) {
+                    iChunks.push(filename);
+                }
             }
             const opts = {
                 template: iPath,

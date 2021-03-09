@@ -1,4 +1,4 @@
-import { WebpackOptionsNormalized } from 'webpack'
+import { Configuration } from 'webpack'
 import merge from 'webpack-merge'
 import path from 'path'
 import { YylConfig, Env } from 'yyl-config-types'
@@ -124,10 +124,10 @@ export default function yylBaseInitConfig(op?: YylBaseInitConfigOption) {
 
   // 配置合并
   const mixedOptions = merge(
-    baseWConfig as WebpackOptionsNormalized,
-    entryWConfig as WebpackOptionsNormalized,
-    moduleWConfig as WebpackOptionsNormalized,
-    yylPluginsWConfig as WebpackOptionsNormalized
+    baseWConfig as Configuration,
+    entryWConfig as Configuration,
+    moduleWConfig as Configuration,
+    yylPluginsWConfig as Configuration
   )
 
   // 添加 yyl 脚本， 没有挂 hooks 所以放最后比较稳

@@ -1,4 +1,4 @@
-import { WebpackOptionsNormalized, RuleSetUse } from 'webpack'
+import { Configuration, RuleSetUse } from 'webpack'
 import { InitBaseOption } from '../types'
 import { isModuleInclude, resolveModule } from '../formatter'
 import autoprefixer from 'autoprefixer'
@@ -12,7 +12,7 @@ const NODE_MODULES_REG = /node_modules/
 const IS_VUE_REG = /\.vue\.js/
 
 /** 初始化 wConfig module 部分 - 返回值 */
-export type InitModuleResult = Pick<WebpackOptionsNormalized, 'module' | 'resolve' | 'plugins'>
+export type InitModuleResult = Required<Pick<Configuration, 'module' | 'resolve' | 'plugins'>>
 
 /** 初始化 wConfig module 部分 */
 export function initModule(op: InitBaseOption) {
