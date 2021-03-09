@@ -1,4 +1,4 @@
-import { WebpackOptionsNormalized } from 'webpack';
+import { Configuration } from 'webpack';
 import { InitBaseOption } from '../types';
-export declare type InitYylPluginsResult = Pick<WebpackOptionsNormalized, 'plugins'>;
-export declare function initYylPlugins(op: InitBaseOption): Pick<WebpackOptionsNormalized, "plugins">;
+export declare type InitYylPluginsResult = Required<Pick<Configuration, 'plugins'>>;
+export declare function initYylPlugins(op: InitBaseOption): Required<Pick<Configuration, "plugins">>;

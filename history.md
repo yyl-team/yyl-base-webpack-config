@@ -1,5 +1,11 @@
 # 版本变更
 
+## 0.1.4 (2021-03-09)
+
+- feat: 更新 `yyl-sugar-webpack-plugin@1.0.6`
+- feat: 更新 `html-webpack-plugin@5.3.0`
+- feat: types 调整
+
 ## 0.1.3 (2021-03-08)
 
 - feat: 纠正 rev-manifest.json 生成 错误问题

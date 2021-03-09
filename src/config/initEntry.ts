@@ -1,4 +1,4 @@
-import { WebpackOptionsNormalized } from 'webpack'
+import { Configuration } from 'webpack'
 import path from 'path'
 import extFs from 'yyl-fs'
 import fs from 'fs'
@@ -13,7 +13,7 @@ function ignoreExtName(iPath: string) {
 }
 
 /** 初始化入口和输出html-返回结果 */
-export type InitEntryResult = Pick<WebpackOptionsNormalized, 'entry' | 'plugins'>
+export type InitEntryResult = Required<Pick<Configuration, 'entry' | 'plugins'>>
 export interface OutputMap {
   [key: string]: string
 }
@@ -24,7 +24,7 @@ export function initEntry(option: InitBaseOption) {
   const wConfig: InitEntryResult = {
     entry: (() => {
       const { srcRoot } = alias
-      const r: WebpackOptionsNormalized['entry'] = {}
+      const r: Configuration['entry'] = {}
 
       const entryPath = path.join(srcRoot, 'entry')
       if (fs.existsSync(entryPath)) {
@@ -83,8 +83,10 @@ export function initEntry(option: InitBaseOption) {
         const filename = ignoreExtName(path.basename(iPath))
         let iChunks: string[] = []
         iChunks = iChunks.concat(commonChunks)
-        if (filename in wConfig.entry) {
-          iChunks.push(filename)
+        if (typeof wConfig.entry === 'object') {
+          if (filename in wConfig.entry) {
+            iChunks.push(filename)
+          }
         }
         const opts: HtmlWebpackPluginOption = {
           template: iPath,
