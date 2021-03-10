@@ -11,7 +11,7 @@ import YylServerWebpackPlugin, { YylServerWebpackPluginOption } from 'yyl-server
 import { InitBaseOption } from '../types'
 import util from 'yyl-util'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
-export type InitYylPluginsResult = Required<Pick<WebpackOptionsNormalized, 'plugins' | 'devServer'>>
+export type InitYylPluginsResult = Required<Pick<Configuration, 'plugins' | 'devServer'>>
 export function initYylPlugins(op: InitBaseOption) {
   const { env, alias, devServer, yylConfig, resolveRoot } = op
   const pkgPath = path.join(alias.dirname, 'package.json')

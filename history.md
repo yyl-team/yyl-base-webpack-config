@@ -1,5 +1,9 @@
 # 版本变更
 
+## 0.1.5 (2021-03-09)
+
+- feat: 更新 `yyl-server-webpack-plugin@1.1.4`
+
 ## 0.1.4 (2021-03-09)
 
 - feat: 更新 `yyl-sugar-webpack-plugin@1.0.6`

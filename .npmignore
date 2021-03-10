@@ -21,3 +21,4 @@
 rollup.config.js
 tsconfig.json
 .prettierignore
+yarn-error.log
