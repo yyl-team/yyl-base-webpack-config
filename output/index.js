@@ -450,8 +450,28 @@ function initYylPlugins(op) {
     if (fs__default['default'].existsSync(pkgPath)) {
         pkg = require(pkgPath);
     }
+    const yylServerOption = {
+        context: alias.dirname,
+        devServer: {
+            noInfo: false,
+            contentBase: alias.root,
+            port: ((_a = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _a === void 0 ? void 0 : _a.port) || 5000,
+            hot: !!(env === null || env === void 0 ? void 0 : env.hmr)
+        },
+        proxy: {
+            hosts: [
+                ((_b = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _b === void 0 ? void 0 : _b.hostname) || '',
+                ((_c = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _c === void 0 ? void 0 : _c.mainHost) || '',
+                ((_d = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _d === void 0 ? void 0 : _d.staticHost) || ''
+            ].filter((x) => x !== ''),
+            enable: !env.proxy && !env.remote
+        },
+        homePage: (_e = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.proxy) === null || _e === void 0 ? void 0 : _e.homePage,
+        HtmlWebpackPlugin: HtmlWebpackPlugin__default['default']
+    };
     const r = {
-        plugins: []
+        plugins: [],
+        devServer: YylServerWebpackPlugin__default['default'].initDevServerConfig(yylServerOption)
     };
     r.plugins = [
         // pop
@@ -516,14 +536,15 @@ function initYylPlugins(op) {
         })()),
         // sugar
         new YylSugarWebpackPlugin__default['default']({
-            context: alias.dirname
+            context: alias.dirname,
+            HtmlWebpackPlugin: HtmlWebpackPlugin__default['default']
         }),
         // rev
         new YylRevWebpackPlugin__default['default']({
             revFileName: util__default['default'].path.join(path__default['default'].relative(resolveRoot, path__default['default'].join(alias.revDest, './rev-mainfest.json'))),
             revRoot: alias.revRoot,
             remote: !!env.remote,
-            remoteAddr: (_a = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _a === void 0 ? void 0 : _a.revAddr,
+            remoteAddr: (_f = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _f === void 0 ? void 0 : _f.revAddr,
             remoteBlankCss: !env.isCommit,
             extends: (() => {
                 var _a, _b, _c, _d;
@@ -552,21 +573,7 @@ function initYylPlugins(op) {
             })()
         }),
         // server
-        new YylServerWebpackPlugin__default['default']({
-            context: alias.dirname,
-            static: alias.root,
-            hmr: !!(env === null || env === void 0 ? void 0 : env.hmr),
-            proxy: {
-                hosts: [
-                    ((_b = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _b === void 0 ? void 0 : _b.hostname) || '',
-                    ((_c = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _c === void 0 ? void 0 : _c.mainHost) || '',
-                    ((_d = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _d === void 0 ? void 0 : _d.staticHost) || ''
-                ].filter((x) => x !== ''),
-                enable: !env.proxy && !env.remote
-            },
-            homePage: (_e = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.proxy) === null || _e === void 0 ? void 0 : _e.homePage,
-            port: ((_f = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _f === void 0 ? void 0 : _f.port) || 5000
-        })
+        new YylServerWebpackPlugin__default['default'](yylServerOption)
     ];
     return r;
 }

@@ -7,10 +7,11 @@ import YylCopyWebpackPlugin, { YylCopyWebpackPluginOption } from 'yyl-copy-webpa
 import YylSugarWebpackPlugin from 'yyl-sugar-webpack-plugin'
 import YylRevWebpackPlugin, { YylRevWebpackPluginOption } from 'yyl-rev-webpack-plugin'
 import YylEnvPopPlugin from 'yyl-env-pop-webpack-plugin'
-import YylServerWebpackPlugin from 'yyl-server-webpack-plugin'
+import YylServerWebpackPlugin, { YylServerWebpackPluginOption } from 'yyl-server-webpack-plugin'
 import { InitBaseOption } from '../types'
 import util from 'yyl-util'
-export type InitYylPluginsResult = Required<Pick<Configuration, 'plugins'>>
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+export type InitYylPluginsResult = Required<Pick<WebpackOptionsNormalized, 'plugins' | 'devServer'>>
 export function initYylPlugins(op: InitBaseOption) {
   const { env, alias, devServer, yylConfig, resolveRoot } = op
   const pkgPath = path.join(alias.dirname, 'package.json')
@@ -20,8 +21,30 @@ export function initYylPlugins(op: InitBaseOption) {
   if (fs.existsSync(pkgPath)) {
     pkg = require(pkgPath)
   }
+
+  const yylServerOption: YylServerWebpackPluginOption = {
+    context: alias.dirname,
+    devServer: {
+      noInfo: false,
+      contentBase: alias.root,
+      port: yylConfig?.localserver?.port || 5000,
+      hot: !!env?.hmr
+    },
+    proxy: {
+      hosts: [
+        yylConfig?.commit?.hostname || '',
+        yylConfig?.commit?.mainHost || '',
+        yylConfig?.commit?.staticHost || ''
+      ].filter((x) => x !== ''),
+      enable: !env.proxy && !env.remote
+    },
+    homePage: yylConfig?.proxy?.homePage,
+    HtmlWebpackPlugin
+  }
+
   const r: InitYylPluginsResult = {
-    plugins: []
+    plugins: [],
+    devServer: YylServerWebpackPlugin.initDevServerConfig(yylServerOption)
   }
   r.plugins = [
     // pop
@@ -87,7 +110,8 @@ export function initYylPlugins(op: InitBaseOption) {
     ),
     // sugar
     new YylSugarWebpackPlugin({
-      context: alias.dirname
+      context: alias.dirname,
+      HtmlWebpackPlugin
     }),
     // rev
     new YylRevWebpackPlugin({
@@ -124,21 +148,7 @@ export function initYylPlugins(op: InitBaseOption) {
       })()
     }),
     // server
-    new YylServerWebpackPlugin({
-      context: alias.dirname,
-      static: alias.root,
-      hmr: !!env?.hmr,
-      proxy: {
-        hosts: [
-          yylConfig?.commit?.hostname || '',
-          yylConfig?.commit?.mainHost || '',
-          yylConfig?.commit?.staticHost || ''
-        ].filter((x) => x !== ''),
-        enable: !env.proxy && !env.remote
-      },
-      homePage: yylConfig?.proxy?.homePage,
-      port: yylConfig?.localserver?.port || 5000
-    })
+    new YylServerWebpackPlugin(yylServerOption)
   ]
 
   return r
