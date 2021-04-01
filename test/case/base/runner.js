@@ -4,10 +4,10 @@ const fs = require('fs')
 const webpack = require('webpack')
 const util = require('yyl-util')
 const extFs = require('yyl-fs')
-const initBaseConfig = require('../')
+const initBaseConfig = require('../../../')
 
 async function init() {
-  const targetPath = path.join(__dirname, './case/base')
+  const targetPath = __dirname
   const distPath = path.join(targetPath, 'dist')
 
   await extFs.removeFiles(distPath)
