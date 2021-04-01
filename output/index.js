@@ -26,6 +26,8 @@ var YylSugarWebpackPlugin = require('yyl-sugar-webpack-plugin');
 var YylRevWebpackPlugin = require('yyl-rev-webpack-plugin');
 var YylEnvPopPlugin = require('yyl-env-pop-webpack-plugin');
 var YylServerWebpackPlugin = require('yyl-server-webpack-plugin');
+var devMiddleware = require('webpack-dev-middleware');
+var WebpackHotMiddleware = require('webpack-hot-middleware');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -47,6 +49,8 @@ var YylSugarWebpackPlugin__default = /*#__PURE__*/_interopDefaultLegacy(YylSugar
 var YylRevWebpackPlugin__default = /*#__PURE__*/_interopDefaultLegacy(YylRevWebpackPlugin);
 var YylEnvPopPlugin__default = /*#__PURE__*/_interopDefaultLegacy(YylEnvPopPlugin);
 var YylServerWebpackPlugin__default = /*#__PURE__*/_interopDefaultLegacy(YylServerWebpackPlugin);
+var devMiddleware__default = /*#__PURE__*/_interopDefaultLegacy(devMiddleware);
+var WebpackHotMiddleware__default = /*#__PURE__*/_interopDefaultLegacy(WebpackHotMiddleware);
 
 /** 格式化路径 */
 function formatPath(str) {
@@ -441,8 +445,8 @@ function initModule(op) {
 }
 
 function initYylPlugins(op) {
-    var _a, _b, _c, _d, _e, _f;
-    const { env, alias, devServer, yylConfig, resolveRoot } = op;
+    var _a, _b, _c, _d, _e, _f, _g;
+    const { env, alias, devServer, yylConfig, resolveRoot, publicPath } = op;
     const pkgPath = path__default['default'].join(alias.dirname, 'package.json');
     let pkg = {
         name: 'default'
@@ -450,23 +454,51 @@ function initYylPlugins(op) {
     if (fs__default['default'].existsSync(pkgPath)) {
         pkg = require(pkgPath);
     }
+    const devServerConfig = {
+        noInfo: `${env.logLevel}` === '2',
+        publicPath: /^\/\//.test(publicPath) ? `http:${publicPath}` : publicPath,
+        writeToDisk: !!(env.remote || env.isCommit || env.writeToDisk || ((_a = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _a === void 0 ? void 0 : _a.entry)),
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        watchOptions: {
+            aggregateTimeout: 1000
+        }
+    };
+    /** yylServer 配置 */
     const yylServerOption = {
         context: alias.dirname,
-        devServer: {
-            noInfo: false,
-            contentBase: alias.root,
-            port: ((_a = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _a === void 0 ? void 0 : _a.port) || 5000,
-            hot: !!(env === null || env === void 0 ? void 0 : env.hmr)
-        },
-        proxy: {
-            hosts: [
-                ((_b = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _b === void 0 ? void 0 : _b.hostname) || '',
-                ((_c = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _c === void 0 ? void 0 : _c.mainHost) || '',
-                ((_d = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _d === void 0 ? void 0 : _d.staticHost) || ''
-            ].filter((x) => x !== ''),
-            enable: !env.proxy && !env.remote
-        },
-        homePage: (_e = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.proxy) === null || _e === void 0 ? void 0 : _e.homePage,
+        https: !!env.https,
+        devServer: devServer === false
+            ? {}
+            : Object.assign(Object.assign({}, devServerConfig), { disableHostCheck: true, contentBase: alias.root, port: ((_b = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _b === void 0 ? void 0 : _b.port) || (devServer && (devServer === null || devServer === void 0 ? void 0 : devServer.port)) || 5000, hot: !!(env === null || env === void 0 ? void 0 : env.hmr), inline: !!env.https, liveReload: !!env.livereload, host: '0.0.0.0', sockHost: '127.0.0.1', serveIndex: true, before(app) {
+                    if (devServer) {
+                        const { historyApiFallback } = devServer;
+                        app.use((req, res, next) => {
+                            if (typeof historyApiFallback === 'object') {
+                                const matchRewrite = historyApiFallback.rewrites &&
+                                    historyApiFallback.rewrites.length &&
+                                    historyApiFallback.rewrites.some((item) => req.url.match(item.from));
+                                if (req.method === 'GET' &&
+                                    req.headers &&
+                                    ([''].includes(path__default['default'].extname(req.url)) || matchRewrite)) {
+                                    req.headers.accept =
+                                        'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9';
+                                }
+                            }
+                            next();
+                        });
+                    }
+                } }),
+        proxy: devServer === false
+            ? {}
+            : {
+                hosts: [
+                    ((_c = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _c === void 0 ? void 0 : _c.hostname) || '',
+                    ((_d = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _d === void 0 ? void 0 : _d.mainHost) || '',
+                    ((_e = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _e === void 0 ? void 0 : _e.staticHost) || ''
+                ].filter((x) => x !== ''),
+                enable: !env.proxy && !env.remote
+            },
+        homePage: ((_f = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.proxy) === null || _f === void 0 ? void 0 : _f.homePage) || '',
         HtmlWebpackPlugin: HtmlWebpackPlugin__default['default']
     };
     const r = {
@@ -477,7 +509,7 @@ function initYylPlugins(op) {
         // pop
         new YylEnvPopPlugin__default['default']({
             enable: !!env.tips,
-            text: `${pkg.name} - ${extOs__default['default'].LOCAL_IP}:${devServer.port}`,
+            text: `${pkg.name} - ${extOs__default['default'].LOCAL_IP}:${yylServerOption.devServer.port}`,
             duration: 3000
         }),
         // concat
@@ -544,7 +576,7 @@ function initYylPlugins(op) {
             revFileName: util__default['default'].path.join(path__default['default'].relative(resolveRoot, path__default['default'].join(alias.revDest, './rev-mainfest.json'))),
             revRoot: alias.revRoot,
             remote: !!env.remote,
-            remoteAddr: (_f = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _f === void 0 ? void 0 : _f.revAddr,
+            remoteAddr: (_g = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _g === void 0 ? void 0 : _g.revAddr,
             remoteBlankCss: !env.isCommit,
             extends: (() => {
                 var _a, _b, _c, _d;
@@ -576,6 +608,73 @@ function initYylPlugins(op) {
         new YylServerWebpackPlugin__default['default'](yylServerOption)
     ];
     return r;
+}
+
+const LANG = {
+    USE_MIDDLEWARE: '使用 server 中间件',
+    USE_DEV_SERVER: '使用 webpack-dev-server'
+};
+
+/** 初始化中间件 */
+function initMiddleWare(op) {
+    var _a;
+    let { app, env, logger, yylConfig, compiler } = op;
+    const publicPath = `${compiler.options.output.publicPath || ''}`;
+    if (!logger) {
+        logger = () => undefined;
+    }
+    logger('msg', 'info', [LANG.USE_MIDDLEWARE]);
+    /** init middleware */
+    const middleware = devMiddleware__default['default'](compiler, {
+        publicPath: /^\/\//.test(publicPath) ? `http:${publicPath}` : publicPath,
+        writeToDisk: !!((env === null || env === void 0 ? void 0 : env.remote) || (env === null || env === void 0 ? void 0 : env.isCommit) || (env === null || env === void 0 ? void 0 : env.writeToDisk) || ((_a = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _a === void 0 ? void 0 : _a.entry)),
+        headers: { 'Access-Control-Allow-Origin': '*' }
+    });
+    app.use(middleware);
+    app.use('/webpack-dev-server', (req, res) => {
+        const { devMiddleware } = res.locals.webpack;
+        res.setHeader('Content-Type', 'text/html');
+        res.write('<!DOCTYPE html><html><head><meta charset="utf-8"/></head><body>');
+        const jsonWebpackStats = devMiddleware.stats.toJson();
+        const filesystem = devMiddleware.outputFileSystem;
+        const { assetsByChunkName, outputPath } = jsonWebpackStats;
+        writeDirectory(publicPath || '/', outputPath || '/');
+        res.end('</body></html>');
+        function writeDirectory(baseUrl, basePath) {
+            const content = filesystem.readdirSync(basePath);
+            res.write('<ul>');
+            content.forEach((item) => {
+                const p = `${basePath}/${item}`;
+                if (filesystem.statSync(p).isFile()) {
+                    res.write(`<li><a href="${baseUrl + item}">${item}</a></li>`);
+                    if (/\.js$/.test(item)) {
+                        const html = item.substr(0, item.length - 3);
+                        const containerHref = baseUrl + html;
+                        const magicHtmlHref = baseUrl.replace(
+                        // eslint-disable-next-line
+                        /(^(https?:\/\/[^\/]+)?\/)/, '$1webpack-dev-server/') + html;
+                        res.write(`<li><a href="${containerHref}">${html}</a>` +
+                            ` (magic html for ${item}) (<a href="${magicHtmlHref}">webpack-dev-server</a>)` +
+                            '</li>');
+                    }
+                }
+                else {
+                    res.write(`<li>${item}<br>`);
+                    writeDirectory(`${baseUrl + item}/`, p);
+                    res.write('</li>');
+                }
+            });
+            res.write('</ul>');
+        }
+    });
+    /** init hot middleware */
+    if ((env === null || env === void 0 ? void 0 : env.hmr) || (env === null || env === void 0 ? void 0 : env.livereload)) {
+        app.use(WebpackHotMiddleware__default['default'](compiler, {
+            path: publicPath,
+            log: env.logLevel === 2 ? undefined : false,
+            heartbeat: 2000
+        }));
+    }
 }
 
 const DEFAULT_ALIAS = {
@@ -614,6 +713,9 @@ function yylBaseInitConfig(op) {
     if (op === null || op === void 0 ? void 0 : op.devServer) {
         devServer = Object.assign(Object.assign({}, devServer), op.devServer);
     }
+    else if ((op === null || op === void 0 ? void 0 : op.devServer) === false) {
+        devServer = false;
+    }
     // 配置初始化 - yylConfig
     let yylConfig;
     if (op === null || op === void 0 ? void 0 : op.yylConfig) {
@@ -628,7 +730,7 @@ function yylBaseInitConfig(op) {
         if (yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.alias) {
             alias = Object.assign(Object.assign({}, alias), yylConfig.alias);
         }
-        if ((_c = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _c === void 0 ? void 0 : _c.port) {
+        if (((_c = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _c === void 0 ? void 0 : _c.port) && devServer) {
             devServer.port = yylConfig.localserver.port;
         }
     }
@@ -645,10 +747,17 @@ function yylBaseInitConfig(op) {
     // dist 目录
     const resolveRoot = path__default['default'].resolve(__dirname, alias.root);
     // 配置初始化
-    const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot, devServer });
-    const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot, devServer });
-    const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot, devServer });
-    const yylPluginsWConfig = initYylPlugins({ yylConfig, env, alias, resolveRoot, devServer });
+    const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot });
+    const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot });
+    const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot });
+    const yylPluginsWConfig = initYylPlugins({
+        yylConfig,
+        env,
+        alias,
+        resolveRoot,
+        devServer,
+        publicPath: (devServer && devServer.publicPath) || `${baseWConfig.output.publicPath}`
+    });
     // 配置合并
     const mixedOptions = merge__default['default'](baseWConfig, entryWConfig, moduleWConfig, yylPluginsWConfig);
     // 添加 yyl 脚本， 没有挂 hooks 所以放最后比较稳
@@ -657,3 +766,4 @@ function yylBaseInitConfig(op) {
 module.exports = yylBaseInitConfig;
 
 exports.default = yylBaseInitConfig;
+exports.initMiddleWare = initMiddleWare;

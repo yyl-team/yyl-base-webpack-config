@@ -6,8 +6,8 @@ import { initBase } from './config/initBase'
 import { initEntry } from './config/initEntry'
 import { initModule } from './config/initModule'
 import { initYylPlugins } from './config/initYylPlugins'
-
 import { Alias, InitBaseOption } from './types'
+export * from './initMiddleware'
 export interface YylBaseInitConfigOption {
   /** 当前路径 */
   context: string
@@ -16,9 +16,8 @@ export interface YylBaseInitConfigOption {
   /** yyl.config */
   yylConfig?: YylConfig
   alias?: Alias
-  devServer?: {
-    port: number
-  }
+  /** devServer false 表示不配置 devServer */
+  devServer?: Configuration['devServer'] | false
 }
 
 type AliasProperty = Required<YylBaseInitConfigProperty['alias']>
@@ -40,7 +39,7 @@ const DEFAULT_ALIAS: AliasProperty = {
   publicPath: '/'
 }
 
-const DEFAULT_DEV_SERVER: InitBaseOption['devServer'] = {
+const DEFAULT_DEV_SERVER: Configuration['devServer'] = {
   port: 5000
 }
 
@@ -67,7 +66,7 @@ export default function yylBaseInitConfig(op?: YylBaseInitConfigOption) {
   }
 
   // 配置 devServer
-  let devServer = {
+  let devServer: YylBaseInitConfigOption['devServer'] = {
     ...DEFAULT_DEV_SERVER
   }
 
@@ -76,6 +75,8 @@ export default function yylBaseInitConfig(op?: YylBaseInitConfigOption) {
       ...devServer,
       ...op.devServer
     }
+  } else if (op?.devServer === false) {
+    devServer = false
   }
 
   // 配置初始化 - yylConfig
@@ -98,7 +99,7 @@ export default function yylBaseInitConfig(op?: YylBaseInitConfigOption) {
       }
     }
 
-    if (yylConfig?.localserver?.port) {
+    if (yylConfig?.localserver?.port && devServer) {
       devServer.port = yylConfig.localserver.port
     }
   }
@@ -117,10 +118,17 @@ export default function yylBaseInitConfig(op?: YylBaseInitConfigOption) {
   const resolveRoot = path.resolve(__dirname, alias.root)
 
   // 配置初始化
-  const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot, devServer })
-  const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot, devServer })
-  const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot, devServer })
-  const yylPluginsWConfig = initYylPlugins({ yylConfig, env, alias, resolveRoot, devServer })
+  const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot })
+  const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot })
+  const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot })
+  const yylPluginsWConfig = initYylPlugins({
+    yylConfig,
+    env,
+    alias,
+    resolveRoot,
+    devServer,
+    publicPath: (devServer && devServer.publicPath) || `${baseWConfig.output.publicPath}`
+  })
 
   // 配置合并
   const mixedOptions = merge(

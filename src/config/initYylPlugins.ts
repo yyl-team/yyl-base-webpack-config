@@ -8,12 +8,19 @@ import YylSugarWebpackPlugin from 'yyl-sugar-webpack-plugin'
 import YylRevWebpackPlugin, { YylRevWebpackPluginOption } from 'yyl-rev-webpack-plugin'
 import YylEnvPopPlugin from 'yyl-env-pop-webpack-plugin'
 import YylServerWebpackPlugin, { YylServerWebpackPluginOption } from 'yyl-server-webpack-plugin'
+import { Env } from 'yyl-config-types'
 import { InitBaseOption } from '../types'
 import util from 'yyl-util'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
+
 export type InitYylPluginsResult = Required<Pick<Configuration, 'plugins' | 'devServer'>>
-export function initYylPlugins(op: InitBaseOption) {
-  const { env, alias, devServer, yylConfig, resolveRoot } = op
+export interface InitYylPluginsOption extends InitBaseOption {
+  publicPath: string
+  devServer: Configuration['devServer'] | false
+}
+
+export function initYylPlugins(op: InitYylPluginsOption) {
+  const { env, alias, devServer, yylConfig, resolveRoot, publicPath } = op
   const pkgPath = path.join(alias.dirname, 'package.json')
   let pkg = {
     name: 'default'
@@ -22,23 +29,70 @@ export function initYylPlugins(op: InitBaseOption) {
     pkg = require(pkgPath)
   }
 
-  const yylServerOption: YylServerWebpackPluginOption = {
+  const devServerConfig: Configuration['devServer'] = {
+    noInfo: `${env.logLevel}` === '2',
+    publicPath: /^\/\//.test(publicPath) ? `http:${publicPath}` : publicPath,
+    writeToDisk: !!(env.remote || env.isCommit || env.writeToDisk || yylConfig?.localserver?.entry),
+    headers: { 'Access-Control-Allow-Origin': '*' },
+    watchOptions: {
+      aggregateTimeout: 1000
+    }
+  }
+
+  /** yylServer 配置 */
+  const yylServerOption: Required<YylServerWebpackPluginOption> = {
     context: alias.dirname,
-    devServer: {
-      noInfo: false,
-      contentBase: alias.root,
-      port: yylConfig?.localserver?.port || 5000,
-      hot: !!env?.hmr
-    },
-    proxy: {
-      hosts: [
-        yylConfig?.commit?.hostname || '',
-        yylConfig?.commit?.mainHost || '',
-        yylConfig?.commit?.staticHost || ''
-      ].filter((x) => x !== ''),
-      enable: !env.proxy && !env.remote
-    },
-    homePage: yylConfig?.proxy?.homePage,
+    https: !!env.https,
+    devServer:
+      devServer === false
+        ? {}
+        : {
+            ...devServerConfig,
+            disableHostCheck: true,
+            contentBase: alias.root,
+            port: yylConfig?.localserver?.port || (devServer && devServer?.port) || 5000,
+            hot: !!env?.hmr,
+            inline: !!env.https,
+            liveReload: !!env.livereload,
+            host: '0.0.0.0',
+            sockHost: '127.0.0.1',
+            serveIndex: true,
+            before(app) {
+              if (devServer) {
+                const { historyApiFallback } = devServer
+                app.use((req, res, next) => {
+                  if (typeof historyApiFallback === 'object') {
+                    const matchRewrite =
+                      historyApiFallback.rewrites &&
+                      historyApiFallback.rewrites.length &&
+                      historyApiFallback.rewrites.some((item) => req.url.match(item.from))
+                    if (
+                      req.method === 'GET' &&
+                      req.headers &&
+                      ([''].includes(path.extname(req.url)) || matchRewrite)
+                    ) {
+                      req.headers.accept =
+                        'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
+                    }
+                  }
+
+                  next()
+                })
+              }
+            }
+          },
+    proxy:
+      devServer === false
+        ? {}
+        : {
+            hosts: [
+              yylConfig?.commit?.hostname || '',
+              yylConfig?.commit?.mainHost || '',
+              yylConfig?.commit?.staticHost || ''
+            ].filter((x) => x !== ''),
+            enable: !env.proxy && !env.remote
+          },
+    homePage: yylConfig?.proxy?.homePage || '',
     HtmlWebpackPlugin
   }
 
@@ -50,7 +104,7 @@ export function initYylPlugins(op: InitBaseOption) {
     // pop
     new YylEnvPopPlugin({
       enable: !!env.tips,
-      text: `${pkg.name} - ${extOs.LOCAL_IP}:${devServer.port}`,
+      text: `${pkg.name} - ${extOs.LOCAL_IP}:${yylServerOption.devServer.port}`,
       duration: 3000
     }),
     // concat
