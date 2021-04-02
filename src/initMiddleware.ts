@@ -41,6 +41,7 @@ export function initMiddleWare(op: InitMiddleWareOption) {
     headers: { 'Access-Control-Allow-Origin': '*' }
   })
 
+  logger('msg', 'info', [LANG.USE_DEV_MIDDLEWARE])
   app.use(middleware)
 
   app.use('/webpack-dev-server', (req, res) => {
@@ -101,6 +102,7 @@ export function initMiddleWare(op: InitMiddleWareOption) {
 
   /** init hot middleware */
   if (env?.hmr || env?.livereload) {
+    logger('msg', 'info', [LANG.USE_HOT_MIDDLEWARE])
     app.use(
       WebpackHotMiddleware(compiler as any, {
         path: publicPath,

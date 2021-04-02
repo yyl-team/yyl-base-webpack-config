@@ -162,7 +162,7 @@ function initEntry(option) {
                         r[key] = {
                             import: [filePath]
                         };
-                        if ((_a = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _a === void 0 ? void 0 : _a.entry) {
+                        if (((_a = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _a === void 0 ? void 0 : _a.entry) && ((env === null || env === void 0 ? void 0 : env.hmr) || (env === null || env === void 0 ? void 0 : env.livereload))) {
                             // use hot plugin
                             const queryObj = {
                                 name: key,
@@ -640,6 +640,8 @@ function initYylPlugins(op) {
 
 const LANG = {
     USE_MIDDLEWARE: '使用 server 中间件',
+    USE_DEV_MIDDLEWARE: '使用 dev-server 中间件',
+    USE_HOT_MIDDLEWARE: '使用 热更新 中间件',
     USE_DEV_SERVER: '使用 webpack-dev-server'
 };
 
@@ -659,6 +661,7 @@ function initMiddleWare(op) {
         writeToDisk: !!((env === null || env === void 0 ? void 0 : env.remote) || (env === null || env === void 0 ? void 0 : env.isCommit) || (env === null || env === void 0 ? void 0 : env.writeToDisk) || ((_a = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _a === void 0 ? void 0 : _a.entry)),
         headers: { 'Access-Control-Allow-Origin': '*' }
     });
+    logger('msg', 'info', [LANG.USE_DEV_MIDDLEWARE]);
     app.use(middleware);
     app.use('/webpack-dev-server', (req, res) => {
         const { devMiddleware } = res.locals.webpack;
@@ -698,6 +701,7 @@ function initMiddleWare(op) {
     });
     /** init hot middleware */
     if ((env === null || env === void 0 ? void 0 : env.hmr) || (env === null || env === void 0 ? void 0 : env.livereload)) {
+        logger('msg', 'info', [LANG.USE_HOT_MIDDLEWARE]);
         app.use(WebpackHotMiddleware__default['default'](compiler, {
             path: publicPath,
             log: env.logLevel === 2 ? undefined : false,

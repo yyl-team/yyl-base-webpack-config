@@ -27,7 +27,9 @@ async function init() {
       {
         ...initYylBaseConfig({
           context: targetPath,
-          env: {},
+          env: {
+            hmr: true
+          },
           alias: {
             '~': path.join(targetPath, './src'),
             '~@': path.join(targetPath, './src/components/')
@@ -44,7 +46,9 @@ async function init() {
     initMiddleWare({
       app,
       compiler,
-      env: {},
+      env: {
+        hmr: true
+      },
       yylConfig,
       logger(...args) {
         console.log(...args)

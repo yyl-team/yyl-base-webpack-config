@@ -38,7 +38,7 @@ export function initEntry(option: InitBaseOption) {
             r[key] = {
               import: [filePath]
             }
-            if (yylConfig?.localserver?.entry) {
+            if (yylConfig?.localserver?.entry && (env?.hmr || env?.livereload)) {
               // use hot plugin
               const queryObj = {
                 name: key,
