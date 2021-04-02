@@ -1,7 +1,7 @@
 const extOs = require('yyl-os')
 const path = require('path')
 const fs = require('fs')
-const webpack = require('webpack')
+const webpack = require('../../../node_modules/webpack')
 const util = require('yyl-util')
 const extFs = require('yyl-fs')
 const { initMiddleWare, initYylBaseConfig } = require('../../../')
