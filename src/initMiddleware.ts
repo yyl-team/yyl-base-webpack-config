@@ -31,6 +31,7 @@ export function initMiddleWare(op: InitMiddleWareOption) {
   /** init middleware */
   const middleware = devMiddleware(compiler as any, {
     publicPath: /^\/\//.test(publicPath) ? `http:${publicPath}` : publicPath,
+    serverSideRender: true,
     writeToDisk: !!(
       env?.remote ||
       env?.isCommit ||

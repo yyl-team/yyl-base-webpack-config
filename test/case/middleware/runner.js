@@ -4,8 +4,7 @@ const fs = require('fs')
 const webpack = require('webpack')
 const util = require('yyl-util')
 const extFs = require('yyl-fs')
-const initBaseConfig = require('../../../')
-const { initMiddleWare } = require('../../../')
+const { initMiddleWare, initYylBaseConfig } = require('../../../')
 const yylConfig = require('./yyl.config')
 const { start } = require('./app')
 
@@ -26,32 +25,20 @@ async function init() {
     console.log('targetPath', targetPath)
     const compiler = webpack(
       {
-        ...initBaseConfig({
+        ...initYylBaseConfig({
           context: targetPath,
           env: {},
           alias: {
             '~': path.join(targetPath, './src'),
             '~@': path.join(targetPath, './src/components/')
           },
+          devServer: false,
           yylConfig
         }),
         watch: true
-      },
-      (err, stats) => {
-        if (err) {
-          throw err
-        }
-
-        const info = stats.toJson()
-
-        if (info.errors.length) {
-          console.log(info.errors[0].message)
-        } else {
-          console.log('done')
-        }
-        done()
       }
     )
+    compiler.watch({}, () => undefined)
     const app = start()
     app.listen(5000)
     initMiddleWare({

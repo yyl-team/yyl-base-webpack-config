@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import extOs from 'yyl-os'
-import { Configuration } from 'webpack'
+import { Configuration, HotModuleReplacementPlugin, NoEmitOnErrorsPlugin } from 'webpack'
 import YylConcatWebpackPlugin from 'yyl-concat-webpack-plugin'
 import YylCopyWebpackPlugin, { YylCopyWebpackPluginOption } from 'yyl-copy-webpack-plugin'
 import YylSugarWebpackPlugin from 'yyl-sugar-webpack-plugin'
@@ -34,6 +34,15 @@ export function initYylPlugins(op: InitYylPluginsOption) {
     publicPath: /^\/\//.test(publicPath) ? `http:${publicPath}` : publicPath,
     writeToDisk: !!(env.remote || env.isCommit || env.writeToDisk || yylConfig?.localserver?.entry),
     headers: { 'Access-Control-Allow-Origin': '*' },
+    disableHostCheck: true,
+    contentBase: alias.root,
+    port: yylConfig?.localserver?.port || (devServer && devServer?.port) || 5000,
+    hot: !!env?.hmr,
+    inline: !!env.https,
+    liveReload: !!env.livereload,
+    host: '0.0.0.0',
+    sockHost: '127.0.0.1',
+    serveIndex: true,
     watchOptions: {
       aggregateTimeout: 1000
     }
@@ -43,63 +52,64 @@ export function initYylPlugins(op: InitYylPluginsOption) {
   const yylServerOption: Required<YylServerWebpackPluginOption> = {
     context: alias.dirname,
     https: !!env.https,
-    devServer:
-      devServer === false
-        ? {}
-        : {
-            ...devServerConfig,
-            disableHostCheck: true,
-            contentBase: alias.root,
-            port: yylConfig?.localserver?.port || (devServer && devServer?.port) || 5000,
-            hot: !!env?.hmr,
-            inline: !!env.https,
-            liveReload: !!env.livereload,
-            host: '0.0.0.0',
-            sockHost: '127.0.0.1',
-            serveIndex: true,
-            before(app) {
-              if (devServer) {
-                const { historyApiFallback } = devServer
-                app.use((req, res, next) => {
-                  if (typeof historyApiFallback === 'object') {
-                    const matchRewrite =
-                      historyApiFallback.rewrites &&
-                      historyApiFallback.rewrites.length &&
-                      historyApiFallback.rewrites.some((item) => req.url.match(item.from))
-                    if (
-                      req.method === 'GET' &&
-                      req.headers &&
-                      ([''].includes(path.extname(req.url)) || matchRewrite)
-                    ) {
-                      req.headers.accept =
-                        'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
-                    }
-                  }
-
-                  next()
-                })
+    devServer: {
+      ...devServerConfig,
+      disableHostCheck: true,
+      contentBase: alias.root,
+      port: yylConfig?.localserver?.port || (devServer && devServer?.port) || 5000,
+      hot: !!env?.hmr,
+      inline: !!env.https,
+      liveReload: !!env.livereload,
+      host: '0.0.0.0',
+      sockHost: '127.0.0.1',
+      serveIndex: true,
+      before(app) {
+        if (devServer) {
+          const { historyApiFallback } = devServer
+          app.use((req, res, next) => {
+            if (typeof historyApiFallback === 'object') {
+              const matchRewrite =
+                historyApiFallback.rewrites &&
+                historyApiFallback.rewrites.length &&
+                historyApiFallback.rewrites.some((item) => req.url.match(item.from))
+              if (
+                req.method === 'GET' &&
+                req.headers &&
+                ([''].includes(path.extname(req.url)) || matchRewrite)
+              ) {
+                req.headers.accept =
+                  'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
               }
             }
-          },
-    proxy:
-      devServer === false
-        ? {}
-        : {
-            hosts: [
-              yylConfig?.commit?.hostname || '',
-              yylConfig?.commit?.mainHost || '',
-              yylConfig?.commit?.staticHost || ''
-            ].filter((x) => x !== ''),
-            enable: !env.proxy && !env.remote
-          },
+
+            next()
+          })
+        }
+      }
+    },
+    proxy: {
+      hosts: [
+        yylConfig?.commit?.hostname || '',
+        yylConfig?.commit?.mainHost || '',
+        yylConfig?.commit?.staticHost || ''
+      ].filter((x) => x !== ''),
+      enable: !env.proxy && !env.remote
+    },
     homePage: yylConfig?.proxy?.homePage || '',
     HtmlWebpackPlugin
+  }
+
+  // 当为 false 时 会作为 中间件形式
+  if (devServer === false) {
+    yylServerOption.devServer = {}
+    yylServerOption.proxy = {}
   }
 
   const r: InitYylPluginsResult = {
     plugins: [],
     devServer: YylServerWebpackPlugin.initDevServerConfig(yylServerOption)
   }
+
   r.plugins = [
     // pop
     new YylEnvPopPlugin({
@@ -204,6 +214,12 @@ export function initYylPlugins(op: InitYylPluginsOption) {
     // server
     new YylServerWebpackPlugin(yylServerOption)
   ]
+
+  // 插入 热更新插件
+  if (devServer === false) {
+    r.plugins.push(new HotModuleReplacementPlugin())
+    r.plugins.push(new NoEmitOnErrorsPlugin())
+  }
 
   return r
 }

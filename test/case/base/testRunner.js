@@ -6,7 +6,6 @@ const util = require('yyl-util')
 const extFs = require('yyl-fs')
 const { initYylBaseConfig } = require('../../../')
 const yylConfig = require('./yyl.config')
-const WebpackDevServer = require('webpack-dev-server')
 
 async function init() {
   const targetPath = __dirname
@@ -23,7 +22,7 @@ async function init() {
   // await extOs.runSpawn('npm run o', targetPath)
   await util.makeAwait((done) => {
     console.log('targetPath', targetPath)
-    const compiler = webpack(
+    webpack(
       initYylBaseConfig({
         context: targetPath,
         env: {},
@@ -32,14 +31,22 @@ async function init() {
           '~@': path.join(targetPath, './src/components/')
         },
         yylConfig
-      })
-    )
+      }),
+      (err, stats) => {
+        if (err) {
+          throw err
+        }
 
-    const devServer = new WebpackDevServer(compiler, {
-      port: 5000,
-      contentBase: path.join(__dirname, 'dist')
-    })
-    devServer.listen(5000)
+        const info = stats.toJson()
+
+        if (info.errors.length) {
+          console.log(info.errors[0].message)
+        } else {
+          console.log('done')
+        }
+        done()
+      }
+    )
   })
 }
 

@@ -445,7 +445,7 @@ function initModule(op) {
 }
 
 function initYylPlugins(op) {
-    var _a, _b, _c, _d, _e, _f, _g;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
     const { env, alias, devServer, yylConfig, resolveRoot, publicPath } = op;
     const pkgPath = path__default['default'].join(alias.dirname, 'package.json');
     let pkg = {
@@ -459,6 +459,15 @@ function initYylPlugins(op) {
         publicPath: /^\/\//.test(publicPath) ? `http:${publicPath}` : publicPath,
         writeToDisk: !!(env.remote || env.isCommit || env.writeToDisk || ((_a = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _a === void 0 ? void 0 : _a.entry)),
         headers: { 'Access-Control-Allow-Origin': '*' },
+        disableHostCheck: true,
+        contentBase: alias.root,
+        port: ((_b = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _b === void 0 ? void 0 : _b.port) || (devServer && (devServer === null || devServer === void 0 ? void 0 : devServer.port)) || 5000,
+        hot: !!(env === null || env === void 0 ? void 0 : env.hmr),
+        inline: !!env.https,
+        liveReload: !!env.livereload,
+        host: '0.0.0.0',
+        sockHost: '127.0.0.1',
+        serveIndex: true,
         watchOptions: {
             aggregateTimeout: 1000
         }
@@ -467,40 +476,41 @@ function initYylPlugins(op) {
     const yylServerOption = {
         context: alias.dirname,
         https: !!env.https,
-        devServer: devServer === false
-            ? {}
-            : Object.assign(Object.assign({}, devServerConfig), { disableHostCheck: true, contentBase: alias.root, port: ((_b = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _b === void 0 ? void 0 : _b.port) || (devServer && (devServer === null || devServer === void 0 ? void 0 : devServer.port)) || 5000, hot: !!(env === null || env === void 0 ? void 0 : env.hmr), inline: !!env.https, liveReload: !!env.livereload, host: '0.0.0.0', sockHost: '127.0.0.1', serveIndex: true, before(app) {
-                    if (devServer) {
-                        const { historyApiFallback } = devServer;
-                        app.use((req, res, next) => {
-                            if (typeof historyApiFallback === 'object') {
-                                const matchRewrite = historyApiFallback.rewrites &&
-                                    historyApiFallback.rewrites.length &&
-                                    historyApiFallback.rewrites.some((item) => req.url.match(item.from));
-                                if (req.method === 'GET' &&
-                                    req.headers &&
-                                    ([''].includes(path__default['default'].extname(req.url)) || matchRewrite)) {
-                                    req.headers.accept =
-                                        'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9';
-                                }
+        devServer: Object.assign(Object.assign({}, devServerConfig), { disableHostCheck: true, contentBase: alias.root, port: ((_c = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _c === void 0 ? void 0 : _c.port) || (devServer && (devServer === null || devServer === void 0 ? void 0 : devServer.port)) || 5000, hot: !!(env === null || env === void 0 ? void 0 : env.hmr), inline: !!env.https, liveReload: !!env.livereload, host: '0.0.0.0', sockHost: '127.0.0.1', serveIndex: true, before(app) {
+                if (devServer) {
+                    const { historyApiFallback } = devServer;
+                    app.use((req, res, next) => {
+                        if (typeof historyApiFallback === 'object') {
+                            const matchRewrite = historyApiFallback.rewrites &&
+                                historyApiFallback.rewrites.length &&
+                                historyApiFallback.rewrites.some((item) => req.url.match(item.from));
+                            if (req.method === 'GET' &&
+                                req.headers &&
+                                ([''].includes(path__default['default'].extname(req.url)) || matchRewrite)) {
+                                req.headers.accept =
+                                    'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9';
                             }
-                            next();
-                        });
-                    }
-                } }),
-        proxy: devServer === false
-            ? {}
-            : {
-                hosts: [
-                    ((_c = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _c === void 0 ? void 0 : _c.hostname) || '',
-                    ((_d = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _d === void 0 ? void 0 : _d.mainHost) || '',
-                    ((_e = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _e === void 0 ? void 0 : _e.staticHost) || ''
-                ].filter((x) => x !== ''),
-                enable: !env.proxy && !env.remote
-            },
-        homePage: ((_f = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.proxy) === null || _f === void 0 ? void 0 : _f.homePage) || '',
+                        }
+                        next();
+                    });
+                }
+            } }),
+        proxy: {
+            hosts: [
+                ((_d = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _d === void 0 ? void 0 : _d.hostname) || '',
+                ((_e = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _e === void 0 ? void 0 : _e.mainHost) || '',
+                ((_f = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _f === void 0 ? void 0 : _f.staticHost) || ''
+            ].filter((x) => x !== ''),
+            enable: !env.proxy && !env.remote
+        },
+        homePage: ((_g = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.proxy) === null || _g === void 0 ? void 0 : _g.homePage) || '',
         HtmlWebpackPlugin: HtmlWebpackPlugin__default['default']
     };
+    // 当为 false 时 会作为 中间件形式
+    if (devServer === false) {
+        yylServerOption.devServer = {};
+        yylServerOption.proxy = {};
+    }
     const r = {
         plugins: [],
         devServer: YylServerWebpackPlugin__default['default'].initDevServerConfig(yylServerOption)
@@ -576,7 +586,7 @@ function initYylPlugins(op) {
             revFileName: util__default['default'].path.join(path__default['default'].relative(resolveRoot, path__default['default'].join(alias.revDest, './rev-mainfest.json'))),
             revRoot: alias.revRoot,
             remote: !!env.remote,
-            remoteAddr: (_g = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _g === void 0 ? void 0 : _g.revAddr,
+            remoteAddr: (_h = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _h === void 0 ? void 0 : _h.revAddr,
             remoteBlankCss: !env.isCommit,
             extends: (() => {
                 var _a, _b, _c, _d;
@@ -607,6 +617,11 @@ function initYylPlugins(op) {
         // server
         new YylServerWebpackPlugin__default['default'](yylServerOption)
     ];
+    // 插入 热更新插件
+    if (devServer === false) {
+        r.plugins.push(new webpack.HotModuleReplacementPlugin());
+        r.plugins.push(new webpack.NoEmitOnErrorsPlugin());
+    }
     return r;
 }
 
@@ -627,6 +642,7 @@ function initMiddleWare(op) {
     /** init middleware */
     const middleware = devMiddleware__default['default'](compiler, {
         publicPath: /^\/\//.test(publicPath) ? `http:${publicPath}` : publicPath,
+        serverSideRender: true,
         writeToDisk: !!((env === null || env === void 0 ? void 0 : env.remote) || (env === null || env === void 0 ? void 0 : env.isCommit) || (env === null || env === void 0 ? void 0 : env.writeToDisk) || ((_a = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _a === void 0 ? void 0 : _a.entry)),
         headers: { 'Access-Control-Allow-Origin': '*' }
     });
@@ -694,7 +710,7 @@ const DEFAULT_ALIAS = {
 const DEFAULT_DEV_SERVER = {
     port: 5000
 };
-function yylBaseInitConfig(op) {
+function initYylBaseConfig(op) {
     var _a, _b, _c;
     // 配置初始化 - env
     const env = (op === null || op === void 0 ? void 0 : op.env) || {};
@@ -763,7 +779,6 @@ function yylBaseInitConfig(op) {
     // 添加 yyl 脚本， 没有挂 hooks 所以放最后比较稳
     return mixedOptions;
 }
-module.exports = yylBaseInitConfig;
 
-exports.default = yylBaseInitConfig;
 exports.initMiddleWare = initMiddleWare;
+exports.initYylBaseConfig = initYylBaseConfig;

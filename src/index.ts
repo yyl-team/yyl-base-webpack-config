@@ -8,7 +8,7 @@ import { initModule } from './config/initModule'
 import { initYylPlugins } from './config/initYylPlugins'
 import { Alias, InitBaseOption } from './types'
 export * from './initMiddleware'
-export interface YylBaseInitConfigOption {
+export interface InitYylBaseConfigOption {
   /** 当前路径 */
   context: string
   /** 环境变量 */
@@ -20,9 +20,9 @@ export interface YylBaseInitConfigOption {
   devServer?: Configuration['devServer'] | false
 }
 
-type AliasProperty = Required<YylBaseInitConfigProperty['alias']>
+export type InitYylBaseConfigProperty = Required<InitYylBaseConfigOption>
 
-export type YylBaseInitConfigProperty = Required<YylBaseInitConfigOption>
+type AliasProperty = Required<InitYylBaseConfigProperty['alias']>
 
 const DEFAULT_ALIAS: AliasProperty = {
   root: './dist',
@@ -43,7 +43,7 @@ const DEFAULT_DEV_SERVER: Configuration['devServer'] = {
   port: 5000
 }
 
-export default function yylBaseInitConfig(op?: YylBaseInitConfigOption) {
+export function initYylBaseConfig(op?: InitYylBaseConfigOption) {
   // 配置初始化 - env
   const env = op?.env || {}
 
@@ -66,7 +66,7 @@ export default function yylBaseInitConfig(op?: YylBaseInitConfigOption) {
   }
 
   // 配置 devServer
-  let devServer: YylBaseInitConfigOption['devServer'] = {
+  let devServer: InitYylBaseConfigOption['devServer'] = {
     ...DEFAULT_DEV_SERVER
   }
 
@@ -142,5 +142,3 @@ export default function yylBaseInitConfig(op?: YylBaseInitConfigOption) {
 
   return mixedOptions
 }
-
-module.exports = yylBaseInitConfig
