@@ -14,6 +14,7 @@ var util = require('yyl-util');
 var OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 var extFs = require('yyl-fs');
 var fs = require('fs');
+var querystring = require('querystring');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var autoprefixer = require('autoprefixer');
 var px2rem = require('postcss-pxtorem');
@@ -37,6 +38,7 @@ var util__default = /*#__PURE__*/_interopDefaultLegacy(util);
 var OptimizeCSSAssetsPlugin__default = /*#__PURE__*/_interopDefaultLegacy(OptimizeCSSAssetsPlugin);
 var extFs__default = /*#__PURE__*/_interopDefaultLegacy(extFs);
 var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
+var querystring__default = /*#__PURE__*/_interopDefaultLegacy(querystring);
 var HtmlWebpackPlugin__default = /*#__PURE__*/_interopDefaultLegacy(HtmlWebpackPlugin);
 var autoprefixer__default = /*#__PURE__*/_interopDefaultLegacy(autoprefixer);
 var px2rem__default = /*#__PURE__*/_interopDefaultLegacy(px2rem);
@@ -137,6 +139,7 @@ function initBase(option) {
     return wConfig;
 }
 
+const HOT_CLIENT_PATH = require.resolve('webpack-hot-middleware/client');
 const OUTPUT_HTML_REG = /(\.jade|\.pug|\.html)$/;
 const ENTRY_ERG = /\.(js|tsx?)$/;
 function ignoreExtName(iPath) {
@@ -144,7 +147,7 @@ function ignoreExtName(iPath) {
 }
 /** 初始化入口和输出html */
 function initEntry(option) {
-    const { env, alias, resolveRoot } = option;
+    const { env, alias, resolveRoot, yylConfig } = option;
     const wConfig = {
         entry: (() => {
             const { srcRoot } = alias;
@@ -153,12 +156,23 @@ function initEntry(option) {
             if (fs__default['default'].existsSync(entryPath)) {
                 const fileList = extFs__default['default'].readFilesSync(entryPath, ENTRY_ERG);
                 fileList.forEach((filePath) => {
+                    var _a;
                     const key = ignoreExtName(path__default['default'].basename(filePath));
                     if (key) {
                         r[key] = {
                             import: [filePath]
                         };
-                        if (env.useHotPlugin) ;
+                        if ((_a = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _a === void 0 ? void 0 : _a.entry) {
+                            // use hot plugin
+                            const queryObj = {
+                                name: key,
+                                path: `http://127.0.0.1:${env.port || (yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver.port) || 5000}/__webpack_hmr`
+                            };
+                            r[key] = {
+                                import: [`${HOT_CLIENT_PATH}?${querystring__default['default'].stringify(queryObj)}`, filePath]
+                            };
+                            // TODO:
+                        }
                     }
                 });
             }
@@ -620,7 +634,6 @@ function initYylPlugins(op) {
     // 插入 热更新插件
     if (devServer === false) {
         r.plugins.push(new webpack.HotModuleReplacementPlugin());
-        r.plugins.push(new webpack.NoEmitOnErrorsPlugin());
     }
     return r;
 }

@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import extOs from 'yyl-os'
-import { Configuration, HotModuleReplacementPlugin, NoEmitOnErrorsPlugin } from 'webpack'
+import { Configuration, HotModuleReplacementPlugin } from 'webpack'
 import YylConcatWebpackPlugin from 'yyl-concat-webpack-plugin'
 import YylCopyWebpackPlugin, { YylCopyWebpackPluginOption } from 'yyl-copy-webpack-plugin'
 import YylSugarWebpackPlugin from 'yyl-sugar-webpack-plugin'
@@ -218,7 +218,6 @@ export function initYylPlugins(op: InitYylPluginsOption) {
   // 插入 热更新插件
   if (devServer === false) {
     r.plugins.push(new HotModuleReplacementPlugin())
-    r.plugins.push(new NoEmitOnErrorsPlugin())
   }
 
   return r
