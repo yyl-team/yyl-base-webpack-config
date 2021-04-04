@@ -1,5 +1,12 @@
 # 版本变更
 
+## 0.1.6 (2021-04-05)
+
+- feat: 补充 `中间件` 模式
+- feat: 更新 `yyl-server-webpack-plugin@1.2.2`
+- feat: 更新 `yyl-sugar-webpack-plugin@1.0.7`
+- feat: 更新 `yyl-config-types@0.4.0`
+
 ## 0.1.5 (2021-03-09)
 
 - feat: 更新 `yyl-server-webpack-plugin@1.1.4`

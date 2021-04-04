@@ -27,8 +27,6 @@ export function initProxies(
 
   const enable = !env?.proxy && !env?.remote && !env?.isCommit
 
-  console.log('===', hosts, enable)
-
   return {
     hosts,
     enable

@@ -1,5 +1,5 @@
 /*!
- * yyl-base-webpack-config cjs 0.1.5
+ * yyl-base-webpack-config cjs 0.1.6
  * (c) 2020 - 2021 
  * Released under the MIT License.
  */
@@ -484,7 +484,6 @@ function initProxies(op) {
         }
     });
     const enable = !(env === null || env === void 0 ? void 0 : env.proxy) && !(env === null || env === void 0 ? void 0 : env.remote) && !(env === null || env === void 0 ? void 0 : env.isCommit);
-    console.log('===', hosts, enable);
     return {
         hosts,
         enable

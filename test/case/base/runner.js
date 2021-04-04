@@ -22,7 +22,6 @@ async function init() {
   // process.chdir(targetPath)
   // await extOs.runSpawn('npm run o', targetPath)
   await util.makeAwait((done) => {
-    console.log('targetPath', targetPath)
     const compiler = webpack(
       initYylBaseConfig({
         context: targetPath,
