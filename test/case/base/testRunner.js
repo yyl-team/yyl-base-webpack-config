@@ -4,10 +4,11 @@ const fs = require('fs')
 const webpack = require('webpack')
 const util = require('yyl-util')
 const extFs = require('yyl-fs')
-const initBaseConfig = require('../')
+const { initYylBaseConfig } = require('../../../')
+const yylConfig = require('./yyl.config')
 
 async function init() {
-  const targetPath = path.join(__dirname, './case/base')
+  const targetPath = __dirname
   const distPath = path.join(targetPath, 'dist')
 
   await extFs.removeFiles(distPath)
@@ -20,30 +21,15 @@ async function init() {
   // process.chdir(targetPath)
   // await extOs.runSpawn('npm run o', targetPath)
   await util.makeAwait((done) => {
-    console.log('targetPath', targetPath)
     webpack(
-      initBaseConfig({
+      initYylBaseConfig({
         context: targetPath,
         env: {},
         alias: {
           '~': path.join(targetPath, './src'),
           '~@': path.join(targetPath, './src/components/')
         },
-        yylConfig: {
-          concat: {
-            'dist/js/shim.js': [
-              'src/js/lib/shim/es5-sham.min.js',
-              'src/js/lib/shim/es5-shim.min.js',
-              'src/js/lib/shim/es6-sham.min.js',
-              'src/js/lib/shim/es6-shim.min.js',
-              'src/js/lib/shim/json3.min.js'
-            ]
-          },
-          commit: {
-            hostname: '//web.yystatic.com',
-            mainHost: 'http://www.yy.com'
-          }
-        }
+        yylConfig
       }),
       (err, stats) => {
         if (err) {

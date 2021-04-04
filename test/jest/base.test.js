@@ -5,5 +5,5 @@ const path = require('path')
 jest.setTimeout(30000)
 
 test('case base test', async () => {
-  await extOs.runSpawn('node ./run.js', path.join(__dirname, '../'))
+  await extOs.runSpawn('node ./testRunner.js', path.join(__dirname, '../case/base'))
 })

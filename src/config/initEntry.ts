@@ -3,7 +3,10 @@ import path from 'path'
 import extFs from 'yyl-fs'
 import fs from 'fs'
 import { InitBaseOption } from '../types'
+import querystring from 'querystring'
 import HtmlWebpackPlugin, { Options as HtmlWebpackPluginOption } from 'html-webpack-plugin'
+
+const HOT_CLIENT_PATH = require.resolve('webpack-hot-middleware/client')
 
 const OUTPUT_HTML_REG = /(\.jade|\.pug|\.html)$/
 const ENTRY_ERG = /\.(js|tsx?)$/
@@ -20,7 +23,7 @@ export interface OutputMap {
 
 /** 初始化入口和输出html */
 export function initEntry(option: InitBaseOption) {
-  const { env, alias, resolveRoot } = option
+  const { env, alias, resolveRoot, yylConfig } = option
   const wConfig: InitEntryResult = {
     entry: (() => {
       const { srcRoot } = alias
@@ -35,7 +38,17 @@ export function initEntry(option: InitBaseOption) {
             r[key] = {
               import: [filePath]
             }
-            if (env.useHotPlugin) {
+            if (yylConfig?.localserver?.entry && (env?.hmr || env?.livereload)) {
+              // use hot plugin
+              const queryObj = {
+                name: key,
+                path: `http://127.0.0.1:${
+                  env.port || yylConfig?.localserver.port || 5000
+                }/__webpack_hmr`
+              }
+              r[key] = {
+                import: [`${HOT_CLIENT_PATH}?${querystring.stringify(queryObj)}`, filePath]
+              }
               // TODO:
             }
           }

@@ -1,5 +1,5 @@
 /*!
- * yyl-base-webpack-config cjs 0.1.5
+ * yyl-base-webpack-config cjs 0.1.6
  * (c) 2020 - 2021 
  * Released under the MIT License.
  */
@@ -14,6 +14,7 @@ var util = require('yyl-util');
 var OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 var extFs = require('yyl-fs');
 var fs = require('fs');
+var querystring = require('querystring');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var autoprefixer = require('autoprefixer');
 var px2rem = require('postcss-pxtorem');
@@ -26,6 +27,8 @@ var YylSugarWebpackPlugin = require('yyl-sugar-webpack-plugin');
 var YylRevWebpackPlugin = require('yyl-rev-webpack-plugin');
 var YylEnvPopPlugin = require('yyl-env-pop-webpack-plugin');
 var YylServerWebpackPlugin = require('yyl-server-webpack-plugin');
+var devMiddleware = require('webpack-dev-middleware');
+var WebpackHotMiddleware = require('webpack-hot-middleware');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -35,6 +38,7 @@ var util__default = /*#__PURE__*/_interopDefaultLegacy(util);
 var OptimizeCSSAssetsPlugin__default = /*#__PURE__*/_interopDefaultLegacy(OptimizeCSSAssetsPlugin);
 var extFs__default = /*#__PURE__*/_interopDefaultLegacy(extFs);
 var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
+var querystring__default = /*#__PURE__*/_interopDefaultLegacy(querystring);
 var HtmlWebpackPlugin__default = /*#__PURE__*/_interopDefaultLegacy(HtmlWebpackPlugin);
 var autoprefixer__default = /*#__PURE__*/_interopDefaultLegacy(autoprefixer);
 var px2rem__default = /*#__PURE__*/_interopDefaultLegacy(px2rem);
@@ -47,6 +51,8 @@ var YylSugarWebpackPlugin__default = /*#__PURE__*/_interopDefaultLegacy(YylSugar
 var YylRevWebpackPlugin__default = /*#__PURE__*/_interopDefaultLegacy(YylRevWebpackPlugin);
 var YylEnvPopPlugin__default = /*#__PURE__*/_interopDefaultLegacy(YylEnvPopPlugin);
 var YylServerWebpackPlugin__default = /*#__PURE__*/_interopDefaultLegacy(YylServerWebpackPlugin);
+var devMiddleware__default = /*#__PURE__*/_interopDefaultLegacy(devMiddleware);
+var WebpackHotMiddleware__default = /*#__PURE__*/_interopDefaultLegacy(WebpackHotMiddleware);
 
 /** 格式化路径 */
 function formatPath(str) {
@@ -133,6 +139,7 @@ function initBase(option) {
     return wConfig;
 }
 
+const HOT_CLIENT_PATH = require.resolve('webpack-hot-middleware/client');
 const OUTPUT_HTML_REG = /(\.jade|\.pug|\.html)$/;
 const ENTRY_ERG = /\.(js|tsx?)$/;
 function ignoreExtName(iPath) {
@@ -140,7 +147,7 @@ function ignoreExtName(iPath) {
 }
 /** 初始化入口和输出html */
 function initEntry(option) {
-    const { env, alias, resolveRoot } = option;
+    const { env, alias, resolveRoot, yylConfig } = option;
     const wConfig = {
         entry: (() => {
             const { srcRoot } = alias;
@@ -149,12 +156,23 @@ function initEntry(option) {
             if (fs__default['default'].existsSync(entryPath)) {
                 const fileList = extFs__default['default'].readFilesSync(entryPath, ENTRY_ERG);
                 fileList.forEach((filePath) => {
+                    var _a;
                     const key = ignoreExtName(path__default['default'].basename(filePath));
                     if (key) {
                         r[key] = {
                             import: [filePath]
                         };
-                        if (env.useHotPlugin) ;
+                        if (((_a = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _a === void 0 ? void 0 : _a.entry) && ((env === null || env === void 0 ? void 0 : env.hmr) || (env === null || env === void 0 ? void 0 : env.livereload))) {
+                            // use hot plugin
+                            const queryObj = {
+                                name: key,
+                                path: `http://127.0.0.1:${env.port || (yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver.port) || 5000}/__webpack_hmr`
+                            };
+                            r[key] = {
+                                import: [`${HOT_CLIENT_PATH}?${querystring__default['default'].stringify(queryObj)}`, filePath]
+                            };
+                            // TODO:
+                        }
                     }
                 });
             }
@@ -440,9 +458,41 @@ function initModule(op) {
     return wConfig;
 }
 
+const LANG = {
+    SERVER_UNDER_MIDDLEWARE_MODE: '本地服务处于 中间件 模式',
+    SERVER_UNDER_NORMAL_MODE: '本地服务处于 一般 模式',
+    USE_DEV_MIDDLEWARE: '使用 dev-server 中间件',
+    USE_HOT_MIDDLEWARE: '使用 热更新 中间件',
+    USE_DEV_SERVER: '使用 webpack-dev-server'
+};
+
+/** 初始化 proxy 配置 */
+function initProxies(op) {
+    var _a, _b, _c, _d, _e;
+    const { yylConfig, env } = op;
+    let hosts = [];
+    if ((_a = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _a === void 0 ? void 0 : _a.proxies) {
+        hosts = hosts.concat((_b = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _b === void 0 ? void 0 : _b.proxies);
+    }
+    [
+        (_c = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _c === void 0 ? void 0 : _c.hostname,
+        (_d = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _d === void 0 ? void 0 : _d.mainHost,
+        (_e = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _e === void 0 ? void 0 : _e.staticHost
+    ].forEach((host) => {
+        if (host && !hosts.includes(host)) {
+            hosts = hosts.concat(host);
+        }
+    });
+    const enable = !(env === null || env === void 0 ? void 0 : env.proxy) && !(env === null || env === void 0 ? void 0 : env.remote) && !(env === null || env === void 0 ? void 0 : env.isCommit);
+    return {
+        hosts,
+        enable
+    };
+}
+
 function initYylPlugins(op) {
-    var _a, _b, _c, _d, _e, _f;
-    const { env, alias, devServer, yylConfig, resolveRoot } = op;
+    var _a, _b, _c, _d, _e;
+    const { env, alias, devServer, yylConfig, resolveRoot, publicPath, logger } = op;
     const pkgPath = path__default['default'].join(alias.dirname, 'package.json');
     let pkg = {
         name: 'default'
@@ -450,25 +500,70 @@ function initYylPlugins(op) {
     if (fs__default['default'].existsSync(pkgPath)) {
         pkg = require(pkgPath);
     }
+    const devServerConfig = {
+        noInfo: `${env.logLevel}` === '2',
+        publicPath: /^\/\//.test(publicPath) ? `http:${publicPath}` : publicPath,
+        writeToDisk: !!(env.remote || env.isCommit || env.writeToDisk || ((_a = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _a === void 0 ? void 0 : _a.entry)),
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        disableHostCheck: true,
+        contentBase: alias.root,
+        port: ((_b = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _b === void 0 ? void 0 : _b.port) || (devServer && (devServer === null || devServer === void 0 ? void 0 : devServer.port)) || 5000,
+        hot: !!(env === null || env === void 0 ? void 0 : env.hmr),
+        inline: !!env.https,
+        liveReload: !!env.livereload,
+        host: '0.0.0.0',
+        sockHost: '127.0.0.1',
+        serveIndex: true,
+        watchOptions: {
+            aggregateTimeout: 1000
+        }
+    };
+    /** yylServer 配置 */
     const yylServerOption = {
         context: alias.dirname,
-        devServer: {
-            noInfo: false,
-            contentBase: alias.root,
-            port: ((_a = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _a === void 0 ? void 0 : _a.port) || 5000,
-            hot: !!(env === null || env === void 0 ? void 0 : env.hmr)
-        },
-        proxy: {
-            hosts: [
-                ((_b = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _b === void 0 ? void 0 : _b.hostname) || '',
-                ((_c = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _c === void 0 ? void 0 : _c.mainHost) || '',
-                ((_d = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _d === void 0 ? void 0 : _d.staticHost) || ''
-            ].filter((x) => x !== ''),
-            enable: !env.proxy && !env.remote
-        },
-        homePage: (_e = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.proxy) === null || _e === void 0 ? void 0 : _e.homePage,
+        https: !!env.https,
+        devServer: Object.assign(Object.assign({}, devServerConfig), { disableHostCheck: true, contentBase: alias.root, port: ((_c = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _c === void 0 ? void 0 : _c.port) || (devServer && (devServer === null || devServer === void 0 ? void 0 : devServer.port)) || 5000, hot: !!(env === null || env === void 0 ? void 0 : env.hmr), inline: !!env.https, liveReload: !!env.livereload, host: '0.0.0.0', sockHost: '127.0.0.1', serveIndex: true, before(app) {
+                if (devServer) {
+                    const { historyApiFallback } = devServer;
+                    app.use((req, res, next) => {
+                        if (typeof historyApiFallback === 'object') {
+                            const matchRewrite = historyApiFallback.rewrites &&
+                                historyApiFallback.rewrites.length &&
+                                historyApiFallback.rewrites.some((item) => req.url.match(item.from));
+                            if (req.method === 'GET' &&
+                                req.headers &&
+                                ([''].includes(path__default['default'].extname(req.url)) || matchRewrite)) {
+                                req.headers.accept =
+                                    'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9';
+                            }
+                        }
+                        next();
+                    });
+                }
+            } }),
+        proxy: initProxies({
+            yylConfig,
+            env
+        }),
+        // proxy: {
+        //   hosts: [
+        //     yylConfig?.commit?.hostname || '',
+        //     yylConfig?.commit?.mainHost || '',
+        //     yylConfig?.commit?.staticHost || ''
+        //   ].filter((x) => x !== ''),
+        //   enable: !env.proxy && !env.remote
+        // },
+        homePage: ((_d = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.proxy) === null || _d === void 0 ? void 0 : _d.homePage) || '',
         HtmlWebpackPlugin: HtmlWebpackPlugin__default['default']
     };
+    // 当为 false 时 会作为 中间件形式
+    if (devServer === false) {
+        logger('msg', 'info', [LANG.SERVER_UNDER_MIDDLEWARE_MODE]);
+        yylServerOption.devServer = {};
+    }
+    else {
+        logger('msg', 'info', [LANG.SERVER_UNDER_NORMAL_MODE]);
+    }
     const r = {
         plugins: [],
         devServer: YylServerWebpackPlugin__default['default'].initDevServerConfig(yylServerOption)
@@ -477,7 +572,7 @@ function initYylPlugins(op) {
         // pop
         new YylEnvPopPlugin__default['default']({
             enable: !!env.tips,
-            text: `${pkg.name} - ${extOs__default['default'].LOCAL_IP}:${devServer.port}`,
+            text: `${pkg.name} - ${extOs__default['default'].LOCAL_IP}:${yylServerOption.devServer.port}`,
             duration: 3000
         }),
         // concat
@@ -544,7 +639,7 @@ function initYylPlugins(op) {
             revFileName: util__default['default'].path.join(path__default['default'].relative(resolveRoot, path__default['default'].join(alias.revDest, './rev-mainfest.json'))),
             revRoot: alias.revRoot,
             remote: !!env.remote,
-            remoteAddr: (_f = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _f === void 0 ? void 0 : _f.revAddr,
+            remoteAddr: (_e = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _e === void 0 ? void 0 : _e.revAddr,
             remoteBlankCss: !env.isCommit,
             extends: (() => {
                 var _a, _b, _c, _d;
@@ -575,7 +670,85 @@ function initYylPlugins(op) {
         // server
         new YylServerWebpackPlugin__default['default'](yylServerOption)
     ];
+    // 插入 热更新插件
+    if (devServer === false) {
+        r.plugins.push(new webpack.HotModuleReplacementPlugin());
+    }
     return r;
+}
+
+/** 初始化中间件 */
+function initMiddleWare(op) {
+    var _a;
+    let { app, env, logger, yylConfig, compiler } = op;
+    const publicPath = `${compiler.options.output.publicPath || ''}`;
+    if (!logger) {
+        logger = () => undefined;
+    }
+    /** init middleware */
+    const middleware = devMiddleware__default['default'](compiler, {
+        publicPath: /^\/\//.test(publicPath) ? `http:${publicPath}` : publicPath,
+        serverSideRender: true,
+        writeToDisk: !!((env === null || env === void 0 ? void 0 : env.remote) || (env === null || env === void 0 ? void 0 : env.isCommit) || (env === null || env === void 0 ? void 0 : env.writeToDisk) || ((_a = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _a === void 0 ? void 0 : _a.entry)),
+        headers: { 'Access-Control-Allow-Origin': '*' }
+    });
+    logger('msg', 'info', [LANG.USE_DEV_MIDDLEWARE]);
+    app.use(middleware);
+    app.use('/webpack-dev-server', (req, res) => {
+        const { devMiddleware } = res.locals.webpack;
+        res.setHeader('Content-Type', 'text/html');
+        res.write('<!DOCTYPE html><html><head><meta charset="utf-8"/></head><body>');
+        const jsonWebpackStats = devMiddleware.stats.toJson();
+        const filesystem = devMiddleware.outputFileSystem;
+        const { assetsByChunkName, outputPath } = jsonWebpackStats;
+        writeDirectory(publicPath || '/', outputPath || '/');
+        res.end('</body></html>');
+        function writeDirectory(baseUrl, basePath) {
+            const content = filesystem.readdirSync(basePath);
+            res.write('<ul>');
+            content.forEach((item) => {
+                const p = `${basePath}/${item}`;
+                if (filesystem.statSync(p).isFile()) {
+                    res.write(`<li><a href="${baseUrl + item}">${item}</a></li>`);
+                    if (/\.js$/.test(item)) {
+                        const html = item.substr(0, item.length - 3);
+                        const containerHref = baseUrl + html;
+                        const magicHtmlHref = baseUrl.replace(
+                        // eslint-disable-next-line
+                        /(^(https?:\/\/[^\/]+)?\/)/, '$1webpack-dev-server/') + html;
+                        res.write(`<li><a href="${containerHref}">${html}</a>` +
+                            ` (magic html for ${item}) (<a href="${magicHtmlHref}">webpack-dev-server</a>)` +
+                            '</li>');
+                    }
+                }
+                else {
+                    res.write(`<li>${item}<br>`);
+                    writeDirectory(`${baseUrl + item}/`, p);
+                    res.write('</li>');
+                }
+            });
+            res.write('</ul>');
+        }
+    });
+    /** init hot middleware */
+    if ((env === null || env === void 0 ? void 0 : env.hmr) || (env === null || env === void 0 ? void 0 : env.livereload)) {
+        logger('msg', 'info', [LANG.USE_HOT_MIDDLEWARE]);
+        app.use(WebpackHotMiddleware__default['default'](compiler, {
+            path: '/__webpack_hmr',
+            log: env.logLevel === 2 ? undefined : false,
+            heartbeat: 2000
+        }));
+    }
+    /** init server proxy middleware 只在非 --proxy, --remote 模式并且是watch 情况下运行 */
+    YylServerWebpackPlugin__default['default'].initProxyMiddleware({
+        app,
+        logger,
+        logLevel: env === null || env === void 0 ? void 0 : env.logLevel,
+        proxy: initProxies({
+            env,
+            yylConfig
+        })
+    });
 }
 
 const DEFAULT_ALIAS = {
@@ -595,7 +768,7 @@ const DEFAULT_ALIAS = {
 const DEFAULT_DEV_SERVER = {
     port: 5000
 };
-function yylBaseInitConfig(op) {
+function initYylBaseConfig(op) {
     var _a, _b, _c;
     // 配置初始化 - env
     const env = (op === null || op === void 0 ? void 0 : op.env) || {};
@@ -609,10 +782,14 @@ function yylBaseInitConfig(op) {
     if (op === null || op === void 0 ? void 0 : op.alias) {
         alias = Object.assign(Object.assign({}, alias), op.alias);
     }
+    const logger = (op === null || op === void 0 ? void 0 : op.logger) || (() => undefined);
     // 配置 devServer
     let devServer = Object.assign({}, DEFAULT_DEV_SERVER);
     if (op === null || op === void 0 ? void 0 : op.devServer) {
         devServer = Object.assign(Object.assign({}, devServer), op.devServer);
+    }
+    else if ((op === null || op === void 0 ? void 0 : op.devServer) === false) {
+        devServer = false;
     }
     // 配置初始化 - yylConfig
     let yylConfig;
@@ -628,7 +805,7 @@ function yylBaseInitConfig(op) {
         if (yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.alias) {
             alias = Object.assign(Object.assign({}, alias), yylConfig.alias);
         }
-        if ((_c = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _c === void 0 ? void 0 : _c.port) {
+        if (((_c = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _c === void 0 ? void 0 : _c.port) && devServer) {
             devServer.port = yylConfig.localserver.port;
         }
     }
@@ -645,15 +822,23 @@ function yylBaseInitConfig(op) {
     // dist 目录
     const resolveRoot = path__default['default'].resolve(__dirname, alias.root);
     // 配置初始化
-    const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot, devServer });
-    const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot, devServer });
-    const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot, devServer });
-    const yylPluginsWConfig = initYylPlugins({ yylConfig, env, alias, resolveRoot, devServer });
+    const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot, logger });
+    const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot, logger });
+    const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot, logger });
+    const yylPluginsWConfig = initYylPlugins({
+        yylConfig,
+        env,
+        alias,
+        resolveRoot,
+        devServer,
+        logger,
+        publicPath: (devServer && devServer.publicPath) || `${baseWConfig.output.publicPath}`
+    });
     // 配置合并
     const mixedOptions = merge__default['default'](baseWConfig, entryWConfig, moduleWConfig, yylPluginsWConfig);
     // 添加 yyl 脚本， 没有挂 hooks 所以放最后比较稳
     return mixedOptions;
 }
-module.exports = yylBaseInitConfig;
 
-exports.default = yylBaseInitConfig;
+exports.initMiddleWare = initMiddleWare;
+exports.initYylBaseConfig = initYylBaseConfig;
