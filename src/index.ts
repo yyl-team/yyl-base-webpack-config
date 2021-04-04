@@ -7,6 +7,7 @@ import { initEntry } from './config/initEntry'
 import { initModule } from './config/initModule'
 import { initYylPlugins } from './config/initYylPlugins'
 import { Alias, InitBaseOption } from './types'
+import { Logger } from 'yyl-seed-base'
 export * from './initMiddleware'
 export interface InitYylBaseConfigOption {
   /** 当前路径 */
@@ -18,6 +19,8 @@ export interface InitYylBaseConfigOption {
   alias?: Alias
   /** devServer false 表示不配置 devServer */
   devServer?: Configuration['devServer'] | false
+  /** 日志输出 */
+  logger?: Logger
 }
 
 export type InitYylBaseConfigProperty = Required<InitYylBaseConfigOption>
@@ -64,6 +67,8 @@ export function initYylBaseConfig(op?: InitYylBaseConfigOption) {
       ...op.alias
     }
   }
+
+  const logger: Logger = op?.logger || (() => undefined)
 
   // 配置 devServer
   let devServer: InitYylBaseConfigOption['devServer'] = {
@@ -118,15 +123,16 @@ export function initYylBaseConfig(op?: InitYylBaseConfigOption) {
   const resolveRoot = path.resolve(__dirname, alias.root)
 
   // 配置初始化
-  const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot })
-  const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot })
-  const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot })
+  const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot, logger })
+  const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot, logger })
+  const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot, logger })
   const yylPluginsWConfig = initYylPlugins({
     yylConfig,
     env,
     alias,
     resolveRoot,
     devServer,
+    logger,
     publicPath: (devServer && devServer.publicPath) || `${baseWConfig.output.publicPath}`
   })
 

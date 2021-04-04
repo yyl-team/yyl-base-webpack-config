@@ -458,9 +458,17 @@ function initModule(op) {
     return wConfig;
 }
 
+const LANG = {
+    SERVER_UNDER_MIDDLEWARE_MODE: '本地服务处于 中间件 模式',
+    SERVER_UNDER_NORMAL_MODE: '本地服务处于 一般 模式',
+    USE_DEV_MIDDLEWARE: '使用 dev-server 中间件',
+    USE_HOT_MIDDLEWARE: '使用 热更新 中间件',
+    USE_DEV_SERVER: '使用 webpack-dev-server'
+};
+
 function initYylPlugins(op) {
     var _a, _b, _c, _d, _e, _f, _g, _h;
-    const { env, alias, devServer, yylConfig, resolveRoot, publicPath } = op;
+    const { env, alias, devServer, yylConfig, resolveRoot, publicPath, logger } = op;
     const pkgPath = path__default['default'].join(alias.dirname, 'package.json');
     let pkg = {
         name: 'default'
@@ -522,8 +530,15 @@ function initYylPlugins(op) {
     };
     // 当为 false 时 会作为 中间件形式
     if (devServer === false) {
-        yylServerOption.devServer = {};
+        logger('msg', 'info', [LANG.SERVER_UNDER_MIDDLEWARE_MODE]);
+        yylServerOption.devServer = {
+            liveReload: true,
+            hot: true
+        };
         yylServerOption.proxy = {};
+    }
+    else {
+        logger('msg', 'info', [LANG.SERVER_UNDER_NORMAL_MODE]);
     }
     const r = {
         plugins: [],
@@ -638,13 +653,6 @@ function initYylPlugins(op) {
     return r;
 }
 
-const LANG = {
-    USE_MIDDLEWARE: '使用 server 中间件',
-    USE_DEV_MIDDLEWARE: '使用 dev-server 中间件',
-    USE_HOT_MIDDLEWARE: '使用 热更新 中间件',
-    USE_DEV_SERVER: '使用 webpack-dev-server'
-};
-
 /** 初始化中间件 */
 function initMiddleWare(op) {
     var _a;
@@ -653,7 +661,6 @@ function initMiddleWare(op) {
     if (!logger) {
         logger = () => undefined;
     }
-    logger('msg', 'info', [LANG.USE_MIDDLEWARE]);
     /** init middleware */
     const middleware = devMiddleware__default['default'](compiler, {
         publicPath: /^\/\//.test(publicPath) ? `http:${publicPath}` : publicPath,
@@ -703,7 +710,7 @@ function initMiddleWare(op) {
     if ((env === null || env === void 0 ? void 0 : env.hmr) || (env === null || env === void 0 ? void 0 : env.livereload)) {
         logger('msg', 'info', [LANG.USE_HOT_MIDDLEWARE]);
         app.use(WebpackHotMiddleware__default['default'](compiler, {
-            path: publicPath,
+            path: '/__webpack_hmr',
             log: env.logLevel === 2 ? undefined : false,
             heartbeat: 2000
         }));
@@ -741,6 +748,7 @@ function initYylBaseConfig(op) {
     if (op === null || op === void 0 ? void 0 : op.alias) {
         alias = Object.assign(Object.assign({}, alias), op.alias);
     }
+    const logger = (op === null || op === void 0 ? void 0 : op.logger) || (() => undefined);
     // 配置 devServer
     let devServer = Object.assign({}, DEFAULT_DEV_SERVER);
     if (op === null || op === void 0 ? void 0 : op.devServer) {
@@ -780,15 +788,16 @@ function initYylBaseConfig(op) {
     // dist 目录
     const resolveRoot = path__default['default'].resolve(__dirname, alias.root);
     // 配置初始化
-    const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot });
-    const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot });
-    const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot });
+    const baseWConfig = initBase({ yylConfig, env, alias, resolveRoot, logger });
+    const entryWConfig = initEntry({ yylConfig, env, alias, resolveRoot, logger });
+    const moduleWConfig = initModule({ yylConfig, env, alias, resolveRoot, logger });
     const yylPluginsWConfig = initYylPlugins({
         yylConfig,
         env,
         alias,
         resolveRoot,
         devServer,
+        logger,
         publicPath: (devServer && devServer.publicPath) || `${baseWConfig.output.publicPath}`
     });
     // 配置合并

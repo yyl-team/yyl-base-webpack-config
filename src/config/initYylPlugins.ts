@@ -8,6 +8,7 @@ import YylSugarWebpackPlugin from 'yyl-sugar-webpack-plugin'
 import YylRevWebpackPlugin, { YylRevWebpackPluginOption } from 'yyl-rev-webpack-plugin'
 import YylEnvPopPlugin from 'yyl-env-pop-webpack-plugin'
 import YylServerWebpackPlugin, { YylServerWebpackPluginOption } from 'yyl-server-webpack-plugin'
+import { LANG } from '../const'
 import { Env } from 'yyl-config-types'
 import { InitBaseOption } from '../types'
 import util from 'yyl-util'
@@ -20,7 +21,7 @@ export interface InitYylPluginsOption extends InitBaseOption {
 }
 
 export function initYylPlugins(op: InitYylPluginsOption) {
-  const { env, alias, devServer, yylConfig, resolveRoot, publicPath } = op
+  const { env, alias, devServer, yylConfig, resolveRoot, publicPath, logger } = op
   const pkgPath = path.join(alias.dirname, 'package.json')
   let pkg = {
     name: 'default'
@@ -101,8 +102,14 @@ export function initYylPlugins(op: InitYylPluginsOption) {
 
   // 当为 false 时 会作为 中间件形式
   if (devServer === false) {
-    yylServerOption.devServer = {}
+    logger('msg', 'info', [LANG.SERVER_UNDER_MIDDLEWARE_MODE])
+    yylServerOption.devServer = {
+      liveReload: true,
+      hot: true
+    }
     yylServerOption.proxy = {}
+  } else {
+    logger('msg', 'info', [LANG.SERVER_UNDER_NORMAL_MODE])
   }
 
   const r: InitYylPluginsResult = {

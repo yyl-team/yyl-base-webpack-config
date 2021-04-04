@@ -1,5 +1,6 @@
 export declare const LANG: {
-    USE_MIDDLEWARE: string;
+    SERVER_UNDER_MIDDLEWARE_MODE: string;
+    SERVER_UNDER_NORMAL_MODE: string;
     USE_DEV_MIDDLEWARE: string;
     USE_HOT_MIDDLEWARE: string;
     USE_DEV_SERVER: string;

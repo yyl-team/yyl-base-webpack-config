@@ -26,8 +26,6 @@ export function initMiddleWare(op: InitMiddleWareOption) {
     logger = () => undefined
   }
 
-  logger('msg', 'info', [LANG.USE_MIDDLEWARE])
-
   /** init middleware */
   const middleware = devMiddleware(compiler as any, {
     publicPath: /^\/\//.test(publicPath) ? `http:${publicPath}` : publicPath,
@@ -105,7 +103,7 @@ export function initMiddleWare(op: InitMiddleWareOption) {
     logger('msg', 'info', [LANG.USE_HOT_MIDDLEWARE])
     app.use(
       WebpackHotMiddleware(compiler as any, {
-        path: publicPath,
+        path: '/__webpack_hmr',
         log: env.logLevel === 2 ? undefined : false,
         heartbeat: 2000
       })
