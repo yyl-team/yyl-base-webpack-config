@@ -9,6 +9,7 @@ import YylRevWebpackPlugin, { YylRevWebpackPluginOption } from 'yyl-rev-webpack-
 import YylEnvPopPlugin from 'yyl-env-pop-webpack-plugin'
 import YylServerWebpackPlugin, { YylServerWebpackPluginOption } from 'yyl-server-webpack-plugin'
 import { LANG } from '../const'
+import { initProxies } from '../util'
 import { Env } from 'yyl-config-types'
 import { InitBaseOption } from '../types'
 import util from 'yyl-util'
@@ -88,14 +89,18 @@ export function initYylPlugins(op: InitYylPluginsOption) {
         }
       }
     },
-    proxy: {
-      hosts: [
-        yylConfig?.commit?.hostname || '',
-        yylConfig?.commit?.mainHost || '',
-        yylConfig?.commit?.staticHost || ''
-      ].filter((x) => x !== ''),
-      enable: !env.proxy && !env.remote
-    },
+    proxy: initProxies({
+      yylConfig,
+      env
+    }),
+    // proxy: {
+    //   hosts: [
+    //     yylConfig?.commit?.hostname || '',
+    //     yylConfig?.commit?.mainHost || '',
+    //     yylConfig?.commit?.staticHost || ''
+    //   ].filter((x) => x !== ''),
+    //   enable: !env.proxy && !env.remote
+    // },
     homePage: yylConfig?.proxy?.homePage || '',
     HtmlWebpackPlugin
   }
@@ -103,11 +108,7 @@ export function initYylPlugins(op: InitYylPluginsOption) {
   // 当为 false 时 会作为 中间件形式
   if (devServer === false) {
     logger('msg', 'info', [LANG.SERVER_UNDER_MIDDLEWARE_MODE])
-    yylServerOption.devServer = {
-      liveReload: true,
-      hot: true
-    }
-    yylServerOption.proxy = {}
+    yylServerOption.devServer = {}
   } else {
     logger('msg', 'info', [LANG.SERVER_UNDER_NORMAL_MODE])
   }

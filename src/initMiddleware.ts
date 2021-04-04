@@ -2,8 +2,10 @@ import { Logger } from 'yyl-seed-base'
 import { Express } from 'express'
 import { Env, YylConfig } from 'yyl-config-types'
 import { LANG } from './const'
+import { initProxies } from './util'
 import { Configuration, Compiler } from 'webpack'
 import devMiddleware from 'webpack-dev-middleware'
+import YylServerWebpackPlugin from 'yyl-server-webpack-plugin'
 import WebpackHotMiddleware, {
   ClientOptions as hotMiddlewareOption,
   MiddlewareOptions
@@ -109,4 +111,14 @@ export function initMiddleWare(op: InitMiddleWareOption) {
       })
     )
   }
+  /** init server proxy middleware 只在非 --proxy, --remote 模式并且是watch 情况下运行 */
+  YylServerWebpackPlugin.initProxyMiddleware({
+    app,
+    logger,
+    logLevel: env?.logLevel,
+    proxy: initProxies({
+      env,
+      yylConfig
+    })
+  })
 }

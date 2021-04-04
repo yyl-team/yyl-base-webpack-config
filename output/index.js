@@ -466,8 +466,33 @@ const LANG = {
     USE_DEV_SERVER: '使用 webpack-dev-server'
 };
 
+/** 初始化 proxy 配置 */
+function initProxies(op) {
+    var _a, _b, _c, _d, _e;
+    const { yylConfig, env } = op;
+    let hosts = [];
+    if ((_a = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _a === void 0 ? void 0 : _a.proxies) {
+        hosts = hosts.concat((_b = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _b === void 0 ? void 0 : _b.proxies);
+    }
+    [
+        (_c = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _c === void 0 ? void 0 : _c.hostname,
+        (_d = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _d === void 0 ? void 0 : _d.mainHost,
+        (_e = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _e === void 0 ? void 0 : _e.staticHost
+    ].forEach((host) => {
+        if (host && !hosts.includes(host)) {
+            hosts = hosts.concat(host);
+        }
+    });
+    const enable = !(env === null || env === void 0 ? void 0 : env.proxy) && !(env === null || env === void 0 ? void 0 : env.remote) && !(env === null || env === void 0 ? void 0 : env.isCommit);
+    console.log('===', hosts, enable);
+    return {
+        hosts,
+        enable
+    };
+}
+
 function initYylPlugins(op) {
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e;
     const { env, alias, devServer, yylConfig, resolveRoot, publicPath, logger } = op;
     const pkgPath = path__default['default'].join(alias.dirname, 'package.json');
     let pkg = {
@@ -517,25 +542,25 @@ function initYylPlugins(op) {
                     });
                 }
             } }),
-        proxy: {
-            hosts: [
-                ((_d = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _d === void 0 ? void 0 : _d.hostname) || '',
-                ((_e = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _e === void 0 ? void 0 : _e.mainHost) || '',
-                ((_f = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _f === void 0 ? void 0 : _f.staticHost) || ''
-            ].filter((x) => x !== ''),
-            enable: !env.proxy && !env.remote
-        },
-        homePage: ((_g = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.proxy) === null || _g === void 0 ? void 0 : _g.homePage) || '',
+        proxy: initProxies({
+            yylConfig,
+            env
+        }),
+        // proxy: {
+        //   hosts: [
+        //     yylConfig?.commit?.hostname || '',
+        //     yylConfig?.commit?.mainHost || '',
+        //     yylConfig?.commit?.staticHost || ''
+        //   ].filter((x) => x !== ''),
+        //   enable: !env.proxy && !env.remote
+        // },
+        homePage: ((_d = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.proxy) === null || _d === void 0 ? void 0 : _d.homePage) || '',
         HtmlWebpackPlugin: HtmlWebpackPlugin__default['default']
     };
     // 当为 false 时 会作为 中间件形式
     if (devServer === false) {
         logger('msg', 'info', [LANG.SERVER_UNDER_MIDDLEWARE_MODE]);
-        yylServerOption.devServer = {
-            liveReload: true,
-            hot: true
-        };
-        yylServerOption.proxy = {};
+        yylServerOption.devServer = {};
     }
     else {
         logger('msg', 'info', [LANG.SERVER_UNDER_NORMAL_MODE]);
@@ -615,7 +640,7 @@ function initYylPlugins(op) {
             revFileName: util__default['default'].path.join(path__default['default'].relative(resolveRoot, path__default['default'].join(alias.revDest, './rev-mainfest.json'))),
             revRoot: alias.revRoot,
             remote: !!env.remote,
-            remoteAddr: (_h = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _h === void 0 ? void 0 : _h.revAddr,
+            remoteAddr: (_e = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.commit) === null || _e === void 0 ? void 0 : _e.revAddr,
             remoteBlankCss: !env.isCommit,
             extends: (() => {
                 var _a, _b, _c, _d;
@@ -715,6 +740,16 @@ function initMiddleWare(op) {
             heartbeat: 2000
         }));
     }
+    /** init server proxy middleware 只在非 --proxy, --remote 模式并且是watch 情况下运行 */
+    YylServerWebpackPlugin__default['default'].initProxyMiddleware({
+        app,
+        logger,
+        logLevel: env === null || env === void 0 ? void 0 : env.logLevel,
+        proxy: initProxies({
+            env,
+            yylConfig
+        })
+    });
 }
 
 const DEFAULT_ALIAS = {
