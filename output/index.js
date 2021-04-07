@@ -1,5 +1,5 @@
 /*!
- * yyl-base-webpack-config cjs 0.1.6
+ * yyl-base-webpack-config cjs 0.1.7
  * (c) 2020 - 2021 
  * Released under the MIT License.
  */
@@ -501,7 +501,7 @@ function initYylPlugins(op) {
         pkg = require(pkgPath);
     }
     const devServerConfig = {
-        noInfo: `${env.logLevel}` === '2',
+        noInfo: `${env.logLevel}` !== '2',
         publicPath: /^\/\//.test(publicPath) ? `http:${publicPath}` : publicPath,
         writeToDisk: !!(env.remote || env.isCommit || env.writeToDisk || ((_a = yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.localserver) === null || _a === void 0 ? void 0 : _a.entry)),
         headers: { 'Access-Control-Allow-Origin': '*' },

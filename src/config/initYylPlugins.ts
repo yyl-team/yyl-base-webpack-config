@@ -32,7 +32,7 @@ export function initYylPlugins(op: InitYylPluginsOption) {
   }
 
   const devServerConfig: Configuration['devServer'] = {
-    noInfo: `${env.logLevel}` === '2',
+    noInfo: `${env.logLevel}` !== '2',
     publicPath: /^\/\//.test(publicPath) ? `http:${publicPath}` : publicPath,
     writeToDisk: !!(env.remote || env.isCommit || env.writeToDisk || yylConfig?.localserver?.entry),
     headers: { 'Access-Control-Allow-Origin': '*' },
