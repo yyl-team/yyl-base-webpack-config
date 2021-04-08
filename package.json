@@ -1,5 +1,5 @@
 {
-  "version": "0.1.7",
+  "version": "0.1.9",
   "main": "output/index.js",
   "types": "output/index.d.ts",
   "eslintConfig": {
@@ -36,7 +36,9 @@
     "w": "rollup --watch --config ./rollup.config.js",
     "prepublishOnly": "npm run prettier & npm test",
     "test": "npm run build & jest ./test/jest/",
-    "test:middleware": "npm run build & jest ./test/jest/middleware.test.js"
+    "test:middleware": "npm run build & jest ./test/jest/middleware.test.js",
+    "cbw": "cd test/case/base & node ./runner",
+    "cmw": "cd test/case/middleware & node ./runner"
   },
   "peerDependencies": {
     "webpack": ">=5.24.0",
@@ -109,7 +111,7 @@
     "yyl-os": "^0.11.4",
     "yyl-rev-webpack-plugin": "1.0.7",
     "yyl-seed-base": "^0.2.6",
-    "yyl-server-webpack-plugin": "1.2.2",
+    "yyl-server-webpack-plugin": "1.2.4",
     "yyl-sugar-webpack-plugin": "1.0.7",
     "yyl-util": "^2.3.8"
   },

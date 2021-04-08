@@ -8332,10 +8332,10 @@ yyl-seed-base@^0.2.6:
   dependencies:
     "@types/express" "^4.17.11"
 
-yyl-server-webpack-plugin@1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/yyl-server-webpack-plugin/-/yyl-server-webpack-plugin-1.2.2.tgz#4b18c31c20fb1fd199d15f561bf471fde4a82b45"
-  integrity sha512-jJulaAXHlzwP9k7M/ZT3NZSmr4oDg4gM+cxxAaY3iF+ySVwsTBcYv+RyKVBMI5VJc/1NL3NizldiJutWPOUOBQ==
+yyl-server-webpack-plugin@1.2.4:
+  version "1.2.4"
+  resolved "https://registry.npmjs.org/yyl-server-webpack-plugin/-/yyl-server-webpack-plugin-1.2.4.tgz#4e7824ae55a6b1db0db851cb7b8152ca491ed18e"
+  integrity sha512-CAFDms97c/kntS3MJ+4C6/dheDBPnJAqpBngV/sRJ+tPVMx0VjlI87fZ3nCQQa59H4Prtd6tJbCpiX26W4FMww==
   dependencies:
     "@types/express" "^4.17.11"
     "@types/http-proxy-middleware" "^1.0.0"

@@ -26,9 +26,11 @@ export function initProxies(
   })
 
   const enable = !env?.proxy && !env?.remote && !env?.isCommit
+  const logLevel = env?.logLevel
 
   return {
     hosts,
-    enable
+    enable,
+    logLevel
   }
 }

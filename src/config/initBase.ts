@@ -47,10 +47,10 @@ export function initBase(option: InitBaseOption) {
       )
     },
     resolveLoader: {
-      modules: [nodeModulesPath]
+      modules: [nodeModulesPath, 'node_modules']
     },
     resolve: {
-      modules: [nodeModulesPath],
+      modules: [nodeModulesPath, 'node_modules'],
       alias: {
         ...alias,
         ...yylConfig?.alias
