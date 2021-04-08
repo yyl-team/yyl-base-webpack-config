@@ -1,5 +1,5 @@
 /*!
- * yyl-base-webpack-config cjs 0.1.7
+ * yyl-base-webpack-config cjs 0.1.9
  * (c) 2020 - 2021 
  * Released under the MIT License.
  */
@@ -87,10 +87,10 @@ function initBase(option) {
             chunkFilename: formatPath(path__default['default'].relative(resolveRoot, path__default['default'].join(alias.jsDest, 'async_component/[name]-[chunkhash:8].js')))
         },
         resolveLoader: {
-            modules: [nodeModulesPath]
+            modules: [nodeModulesPath, 'node_modules']
         },
         resolve: {
-            modules: [nodeModulesPath],
+            modules: [nodeModulesPath, 'node_modules'],
             alias: Object.assign(Object.assign({}, alias), yylConfig === null || yylConfig === void 0 ? void 0 : yylConfig.alias)
         },
         devtool: 'source-map',
@@ -484,9 +484,11 @@ function initProxies(op) {
         }
     });
     const enable = !(env === null || env === void 0 ? void 0 : env.proxy) && !(env === null || env === void 0 ? void 0 : env.remote) && !(env === null || env === void 0 ? void 0 : env.isCommit);
+    const logLevel = env === null || env === void 0 ? void 0 : env.logLevel;
     return {
         hosts,
-        enable
+        enable,
+        logLevel
     };
 }
 

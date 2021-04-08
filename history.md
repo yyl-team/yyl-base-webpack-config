@@ -1,5 +1,14 @@
 # 版本变更
 
+## 0.1.9 (2021-04-08)
+
+- feat: 更新 `yyl-server-webpack-plugin@1.2.4`
+- feat: 补充 `proxy` debug 信息
+
+## 0.1.8 (2021-04-08)
+
+- feat: 调整 resolve.loader 配置
+
 ## 0.1.7 (2021-04-07)
 
 - feat: 调整 devServer.noInfo 逻辑
