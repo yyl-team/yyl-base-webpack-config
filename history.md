@@ -1,5 +1,9 @@
 # 版本变更
 
+## 0.1.10 (2021-04-08)
+
+- fix: `--proxy` 下 `alias.hostname` -> `alias.publicPath`
+
 ## 0.1.9 (2021-04-08)
 
 - feat: 更新 `yyl-server-webpack-plugin@1.2.4`
