@@ -91,7 +91,7 @@ export function initBase(option: InitBaseOption) {
   // 环境区分
   if (env.proxy || env.remote) {
     wConfig.output.publicPath = util.path.join(
-      alias.hostname,
+      alias.publicPath,
       alias.basePath,
       path.relative(alias.root, resolveRoot),
       '/'
@@ -99,7 +99,7 @@ export function initBase(option: InitBaseOption) {
   } else if (env.isCommit) {
     wConfig.mode = 'production'
     wConfig.output.publicPath = util.path.join(
-      alias.hostname,
+      alias.publicPath,
       alias.basePath,
       path.relative(alias.root, resolveRoot),
       '/'

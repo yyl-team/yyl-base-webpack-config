@@ -1,5 +1,5 @@
 /*!
- * yyl-base-webpack-config cjs 0.1.9
+ * yyl-base-webpack-config cjs 0.1.10
  * (c) 2020 - 2021 
  * Released under the MIT License.
  */
@@ -123,11 +123,11 @@ function initBase(option) {
     }
     // 环境区分
     if (env.proxy || env.remote) {
-        wConfig.output.publicPath = util__default['default'].path.join(alias.hostname, alias.basePath, path__default['default'].relative(alias.root, resolveRoot), '/');
+        wConfig.output.publicPath = util__default['default'].path.join(alias.publicPath, alias.basePath, path__default['default'].relative(alias.root, resolveRoot), '/');
     }
     else if (env.isCommit) {
         wConfig.mode = 'production';
-        wConfig.output.publicPath = util__default['default'].path.join(alias.hostname, alias.basePath, path__default['default'].relative(alias.root, resolveRoot), '/');
+        wConfig.output.publicPath = util__default['default'].path.join(alias.publicPath, alias.basePath, path__default['default'].relative(alias.root, resolveRoot), '/');
     }
     else {
         wConfig.output.publicPath = util__default['default'].path.join(alias.basePath, path__default['default'].relative(alias.root, resolveRoot), '/');
