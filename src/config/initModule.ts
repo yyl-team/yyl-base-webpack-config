@@ -6,6 +6,7 @@ import px2rem from 'postcss-pxtorem'
 import util, { path } from 'yyl-util'
 import sass from 'sass'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 import fs from 'fs'
 
 const NODE_MODULES_REG = /node_modules/
@@ -249,6 +250,13 @@ export function initModule(op: InitBaseOption) {
             }
           ]
         })
+      }
+      if (wConfig.resolve.plugins) {
+        wConfig.resolve.plugins.push(
+          new TsconfigPathsPlugin({
+            configFile: localTsConfigPath
+          })
+        )
       }
 
       if (wConfig.resolve.extensions) {
