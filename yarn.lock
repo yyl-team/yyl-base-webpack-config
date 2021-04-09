@@ -7676,6 +7676,15 @@ ts-loader@^8.0.14:
     micromatch "^4.0.0"
     semver "^7.3.4"
 
+tsconfig-paths-webpack-plugin@^3.5.1:
+  version "3.5.1"
+  resolved "https://registry.npmjs.org/tsconfig-paths-webpack-plugin/-/tsconfig-paths-webpack-plugin-3.5.1.tgz#e4dbf492a20dca9caab60086ddacb703afc2b726"
+  integrity sha512-n5CMlUUj+N5pjBhBACLq4jdr9cPTitySCjIosoQm0zwK99gmrcTGAfY9CwxRFT9+9OleNWXPRUcxsKP4AYExxQ==
+  dependencies:
+    chalk "^4.1.0"
+    enhanced-resolve "^5.7.0"
+    tsconfig-paths "^3.9.0"
+
 tsconfig-paths@^3.9.0:
   version "3.9.0"
   resolved "https://registry.npmjs.org/tsconfig-paths/-/tsconfig-paths-3.9.0.tgz#098547a6c4448807e8fcb8eae081064ee9a3c90b"

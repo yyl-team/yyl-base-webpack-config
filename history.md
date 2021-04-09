@@ -1,5 +1,9 @@
 # 版本变更
 
+## 0.1.11 (2021-04-09)
+
+- fix: 修复 在编译 ts 文件时对 `src/compponent` 路径不支持问题
+
 ## 0.1.10 (2021-04-08)
 
 - fix: `--proxy` 下 `alias.hostname` -> `alias.publicPath`

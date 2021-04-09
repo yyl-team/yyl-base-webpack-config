@@ -1,6 +1,6 @@
 import React from 'react'
 import './home.scss'
-import { Demo } from '~@/widget/demo/demo'
+import { Demo } from 'src/components/widget/demo/demo'
 import { Nav } from '~@/widget/nav/nav'
 
 // + declare & interface

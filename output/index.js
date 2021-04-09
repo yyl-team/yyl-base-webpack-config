@@ -1,5 +1,5 @@
 /*!
- * yyl-base-webpack-config cjs 0.1.10
+ * yyl-base-webpack-config cjs 0.1.11
  * (c) 2020 - 2021 
  * Released under the MIT License.
  */
@@ -20,6 +20,7 @@ var autoprefixer = require('autoprefixer');
 var px2rem = require('postcss-pxtorem');
 var sass = require('sass');
 var MiniCssExtractPlugin = require('mini-css-extract-plugin');
+var TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 var extOs = require('yyl-os');
 var YylConcatWebpackPlugin = require('yyl-concat-webpack-plugin');
 var YylCopyWebpackPlugin = require('yyl-copy-webpack-plugin');
@@ -44,6 +45,7 @@ var autoprefixer__default = /*#__PURE__*/_interopDefaultLegacy(autoprefixer);
 var px2rem__default = /*#__PURE__*/_interopDefaultLegacy(px2rem);
 var sass__default = /*#__PURE__*/_interopDefaultLegacy(sass);
 var MiniCssExtractPlugin__default = /*#__PURE__*/_interopDefaultLegacy(MiniCssExtractPlugin);
+var TsconfigPathsPlugin__default = /*#__PURE__*/_interopDefaultLegacy(TsconfigPathsPlugin);
 var extOs__default = /*#__PURE__*/_interopDefaultLegacy(extOs);
 var YylConcatWebpackPlugin__default = /*#__PURE__*/_interopDefaultLegacy(YylConcatWebpackPlugin);
 var YylCopyWebpackPlugin__default = /*#__PURE__*/_interopDefaultLegacy(YylCopyWebpackPlugin);
@@ -448,6 +450,11 @@ function initModule(op) {
                         }
                     ]
                 });
+            }
+            if (wConfig.resolve.plugins) {
+                wConfig.resolve.plugins.push(new TsconfigPathsPlugin__default['default']({
+                    configFile: localTsConfigPath
+                }));
             }
             if (wConfig.resolve.extensions) {
                 wConfig.resolve.extensions = wConfig.resolve.extensions.concat(['.tsx', '.ts']);
