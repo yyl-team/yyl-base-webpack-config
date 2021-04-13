@@ -1,5 +1,13 @@
 # 版本变更
 
+## 0.1.12 (2021-04-13)
+
+- feat: 更新 `yyl-rev-webpack-plugin@1.0.8`
+- feat: 更新 `yyl-sugar-webpack-plugin@1.0.8`
+- feat: 更新 `yyl-copy-webpack-plugin@1.0.8`
+- feat: 更新 `yyl-concat-webpack-plugin@1.0.8`
+- fix: 修复 yyl-concat 后 不能正确 sugar 问题
+
 ## 0.1.11 (2021-04-09)
 
 - fix: 修复 在编译 ts 文件时对 `src/compponent` 路径不支持问题

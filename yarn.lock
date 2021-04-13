@@ -8261,17 +8261,17 @@ yocto-queue@^0.1.0:
   resolved "https://registry.npmjs.org/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-yyl-concat-webpack-plugin@1.0.10:
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/yyl-concat-webpack-plugin/-/yyl-concat-webpack-plugin-1.0.10.tgz#86bbe31b89a52486327864e5298febdfe56e7f65"
-  integrity sha512-3KP5cFrLjScqmnRgSCvBIEcrLiWmvxlD+nOUiobzl1juhxh/F9D599lRS3Le+zVs/Tai5wNEA+xv1to3CvmqCQ==
+yyl-concat-webpack-plugin@1.0.11:
+  version "1.0.11"
+  resolved "https://registry.npmjs.org/yyl-concat-webpack-plugin/-/yyl-concat-webpack-plugin-1.0.11.tgz#44bbf1cd2d822ae989d8601cc2be91997c1465be"
+  integrity sha512-HQHsjcpPiiZcl3Pihg/Govxi5mCMd1G1fVS20nsaGh+ZTjvUVFhPFHuQWidMUxW8DReuZB90r7LWnVgrCsF+FA==
   dependencies:
     chalk "^4.1.0"
     concat-with-sourcemaps "^1.1.0"
     tapable "^2.2.0"
     terser "^5.5.1"
     yyl-util "^2.3.9"
-    yyl-webpack-plugin-base "^0.2.1"
+    yyl-webpack-plugin-base "^0.2.2"
 
 yyl-config-types@^0.3.17:
   version "0.3.17"
@@ -8283,10 +8283,10 @@ yyl-config-types@^0.4.0:
   resolved "https://registry.yarnpkg.com/yyl-config-types/-/yyl-config-types-0.4.0.tgz#911fb48261f95841237bd458afc9b6b4c2ac278c"
   integrity sha512-Z8Zwdb2KXu2lFQdeNdAlDi6iZXrJIDLzgz1EvpFlnfQqtZnnoWBwU/zQrYQJHCMr6Wt6nOpeb1KgIJJMmLVyqg==
 
-yyl-copy-webpack-plugin@1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/yyl-copy-webpack-plugin/-/yyl-copy-webpack-plugin-1.0.7.tgz#e9bfa26f32e6e883a7d60a2200a938d3b342be31"
-  integrity sha512-g9Jiswfr0qpcHRlwkC4WetciclIgJj15Et//kjHBaahhgndOD0tvAy/u/uoheMrY/YUmMS/LD/MgkdsUQ3706Q==
+yyl-copy-webpack-plugin@1.0.8:
+  version "1.0.8"
+  resolved "https://registry.npmjs.org/yyl-copy-webpack-plugin/-/yyl-copy-webpack-plugin-1.0.8.tgz#b462561d20cdfd3d2a44da6b97af4b73e6d3dabc"
+  integrity sha512-PWM+HLSlzJ4VCb/hWZLMT8/ZTzwQhWGGL39AsyRuD3U9veKHiigVfpfNCqx58GSKgYO/7Zz+U7ghFGS6LFwaZw==
   dependencies:
     "@types/clean-css" "^4.2.3"
     chalk "^4.1.0"
@@ -8296,7 +8296,7 @@ yyl-copy-webpack-plugin@1.0.7:
     terser "^5.5.1"
     yyl-fs "^0.3.3"
     yyl-util "^2.3.9"
-    yyl-webpack-plugin-base "^0.2.1"
+    yyl-webpack-plugin-base "^0.2.2"
 
 yyl-env-pop-webpack-plugin@1.0.2:
   version "1.0.2"
@@ -8324,15 +8324,15 @@ yyl-os@^0.11.4:
   dependencies:
     yyl-util "^2.3.5"
 
-yyl-rev-webpack-plugin@1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/yyl-rev-webpack-plugin/-/yyl-rev-webpack-plugin-1.0.7.tgz#a5ffafbf5cbc71d9f9bdd1a742c96b4d942b6baf"
-  integrity sha512-4oXYUY4oijcGPKe+VTrc2MmIXmJvLPVVtR84cuzOv/aixFF6YU7OkzdP1QKV9olmxBlynrwh4eq9RzVPgtM+7g==
+yyl-rev-webpack-plugin@1.0.8:
+  version "1.0.8"
+  resolved "https://registry.npmjs.org/yyl-rev-webpack-plugin/-/yyl-rev-webpack-plugin-1.0.8.tgz#cf30f52c2bfb4da2b30b03afb3174b7d6ad183a5"
+  integrity sha512-IvDHUBcg1K/T/MmYF1VDiK8X0vcRBOEwXWHbbFEL3YWRuPWAX/HkIo3BQah312bkJW4hqK5vsQoow6VKIu0HVQ==
   dependencies:
     "@types/request-promise" "^4.1.47"
     request-promise "^4.2.6"
     tapable "^2.2.0"
-    yyl-webpack-plugin-base "^0.2.1"
+    yyl-webpack-plugin-base "^0.2.2"
 
 yyl-seed-base@^0.2.6:
   version "0.2.6"
@@ -8356,16 +8356,16 @@ yyl-server-webpack-plugin@1.2.4:
     yyl-seed-base "^0.2.6"
     yyl-webpack-plugin-base "^0.2.1"
 
-yyl-sugar-webpack-plugin@1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/yyl-sugar-webpack-plugin/-/yyl-sugar-webpack-plugin-1.0.7.tgz#af8af98e34d71b1d003660c01ca54489bae6d722"
-  integrity sha512-vAj0axgj+GJD+/ARa2YpCCPY3GSDzdqSqYH+yFzOA3k5w68Cw1UQ44ipn5lI/Tc4mwT5oMxXU3vDnQAJIj8/mg==
+yyl-sugar-webpack-plugin@1.0.8:
+  version "1.0.8"
+  resolved "https://registry.npmjs.org/yyl-sugar-webpack-plugin/-/yyl-sugar-webpack-plugin-1.0.8.tgz#3e4abf2abcaf422b4f7eb39f5c70e1e293f66310"
+  integrity sha512-jbretLYbg235Enys9mbvcMXl4r1JcAVoEVXarM/FD6qH6yg6gmy5m5a6Qq5Rlv+B9NTWaFML40ClJOaB0GbsDQ==
   dependencies:
     chalk "^4.1.0"
     tapable "^2.2.0"
     yyl-file-replacer "^0.6.4"
     yyl-util "^2.3.9"
-    yyl-webpack-plugin-base "^0.2.1"
+    yyl-webpack-plugin-base "^0.2.2"
 
 yyl-util@^2.3.5, yyl-util@^2.3.8, yyl-util@^2.3.9:
   version "2.3.9"
@@ -8376,5 +8376,12 @@ yyl-webpack-plugin-base@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/yyl-webpack-plugin-base/-/yyl-webpack-plugin-base-0.2.1.tgz#b72358f4aefcd53a9b002bba3cac594f186502ec"
   integrity sha512-Mvm2rejt8ScHWUbvS+X6Ii3hy2aiMRxV3mbyJDy/KEyEe1DHKJYCCFrprVO87GEfS20IJGTFmYXnRWfaQSnjBA==
+  dependencies:
+    yyl-util "^2.3.9"
+
+yyl-webpack-plugin-base@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.npmjs.org/yyl-webpack-plugin-base/-/yyl-webpack-plugin-base-0.2.2.tgz#99555694f46f7a50a8c908efc5fe994b4de8f0b6"
+  integrity sha512-y7udKwquYYKQolBgWR08RUOIrGMPMr3xsjrcAQcPVKrZ/7/hlE4yMN+XhynSICS+OfY+nHLzvuIZuzjnVcMwMQ==
   dependencies:
     yyl-util "^2.3.9"
