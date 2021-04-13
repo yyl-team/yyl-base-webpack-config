@@ -8356,10 +8356,10 @@ yyl-server-webpack-plugin@1.2.4:
     yyl-seed-base "^0.2.6"
     yyl-webpack-plugin-base "^0.2.1"
 
-yyl-sugar-webpack-plugin@1.0.8:
-  version "1.0.8"
-  resolved "https://registry.npmjs.org/yyl-sugar-webpack-plugin/-/yyl-sugar-webpack-plugin-1.0.8.tgz#3e4abf2abcaf422b4f7eb39f5c70e1e293f66310"
-  integrity sha512-jbretLYbg235Enys9mbvcMXl4r1JcAVoEVXarM/FD6qH6yg6gmy5m5a6Qq5Rlv+B9NTWaFML40ClJOaB0GbsDQ==
+yyl-sugar-webpack-plugin@1.0.9:
+  version "1.0.9"
+  resolved "https://registry.npmjs.org/yyl-sugar-webpack-plugin/-/yyl-sugar-webpack-plugin-1.0.9.tgz#ddc244733c403d477058d0b57fa8ac50b25b7f07"
+  integrity sha512-x0O4jMILBKVShyZPN5i8DRnvm9JSQRhw30rUIkkpRbsJ5ff/MtttVnhUYtP1JisnF2JNAcFCUGXQLcdef+DwJg==
   dependencies:
     chalk "^4.1.0"
     tapable "^2.2.0"
