@@ -1,5 +1,5 @@
 {
-  "version": "0.1.12",
+  "version": "0.1.13",
   "main": "output/index.js",
   "types": "output/index.d.ts",
   "eslintConfig": {
@@ -113,7 +113,7 @@
     "yyl-rev-webpack-plugin": "1.0.8",
     "yyl-seed-base": "^0.2.6",
     "yyl-server-webpack-plugin": "1.2.4",
-    "yyl-sugar-webpack-plugin": "1.0.8",
+    "yyl-sugar-webpack-plugin": "1.0.9",
     "yyl-util": "^2.3.8"
   },
   "name": "yyl-base-webpack-config",
