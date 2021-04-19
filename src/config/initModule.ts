@@ -88,7 +88,10 @@ export function initModule(op: InitBaseOption) {
               }
             },
             {
-              loader: resolveModule('pug-loader')
+              loader: resolveModule('pug-loader'),
+              options: {
+                self: true
+              }
             }
           ]
         },

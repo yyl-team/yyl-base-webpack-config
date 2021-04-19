@@ -1,5 +1,5 @@
 /*!
- * yyl-base-webpack-config cjs 0.1.13
+ * yyl-base-webpack-config cjs 0.1.14
  * (c) 2020 - 2021 
  * Released under the MIT License.
  */
@@ -309,7 +309,10 @@ function initModule(op) {
                             }
                         },
                         {
-                            loader: resolveModule('pug-loader')
+                            loader: resolveModule('pug-loader'),
+                            options: {
+                                self: true
+                            }
                         }
                     ]
                 },

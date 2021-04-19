@@ -1,5 +1,9 @@
 # 版本变更
 
+## 0.1.14 (2021-04-19)
+
+- fix: 补充 `pug-loader` `self` options
+
 ## 0.1.13 (2021-04-13)
 
 - feat: 更新 `yyl-sugar-webpack-plugin@1.0.9`

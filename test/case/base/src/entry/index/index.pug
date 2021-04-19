@@ -5,5 +5,7 @@ html
     meta(http-equiv="X-UA-Compatible", content="ie=edge")
     title seed typescript
   body
+    - const mode = self.htmlWebpackPlugin.options.process.env.mode
     div#app
+    #{mode}
     script(src="{$jsDest}/shim.js")
