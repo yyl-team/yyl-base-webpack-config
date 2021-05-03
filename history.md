@@ -1,5 +1,9 @@
 # 版本变更
 
+## 0.1.15 (2021-05-03)
+
+- feat: 更新 `yyl-server-webpack-plugin@1.2.5`
+
 ## 0.1.14 (2021-04-19)
 
 - fix: 补充 `pug-loader` `self` options

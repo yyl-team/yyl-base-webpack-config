@@ -1,5 +1,5 @@
 /*!
- * yyl-base-webpack-config cjs 0.1.14
+ * yyl-base-webpack-config cjs 0.1.15
  * (c) 2020 - 2021 
  * Released under the MIT License.
  */
