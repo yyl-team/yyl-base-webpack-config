@@ -8273,15 +8273,17 @@ yyl-concat-webpack-plugin@1.0.11:
     yyl-util "^2.3.9"
     yyl-webpack-plugin-base "^0.2.2"
 
-yyl-config-types@^0.3.17:
-  version "0.3.17"
-  resolved "https://registry.npmjs.org/yyl-config-types/-/yyl-config-types-0.3.17.tgz#f40c9c5e86bf9042eab76acfb5da98621a2748d0"
-  integrity sha512-JfOwJDVU+5nNcMYIlKALDHaDF0094GdvuOjCeHht09Ms7GUh/ruYt44sdPmrG6+jyml2sXg7EdptRa0EnebOOg==
-
 yyl-config-types@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/yyl-config-types/-/yyl-config-types-0.4.0.tgz#911fb48261f95841237bd458afc9b6b4c2ac278c"
   integrity sha512-Z8Zwdb2KXu2lFQdeNdAlDi6iZXrJIDLzgz1EvpFlnfQqtZnnoWBwU/zQrYQJHCMr6Wt6nOpeb1KgIJJMmLVyqg==
+
+yyl-config-types@^0.4.3:
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/yyl-config-types/-/yyl-config-types-0.4.4.tgz#0c8426c26dc46d48b46d2f9ee993bca6c2ef21aa"
+  integrity sha512-9KkPgGkfLAMy20caKqwXBI+No5vZzUXqAybfOxP02i4QsfKWPhArlM/l5qcehos/4ahAvD5N9o7bmSpo/bGz7Q==
+  dependencies:
+    "@types/express" "^4.17.11"
 
 yyl-copy-webpack-plugin@1.0.8:
   version "1.0.8"
@@ -8341,10 +8343,10 @@ yyl-seed-base@^0.2.6:
   dependencies:
     "@types/express" "^4.17.11"
 
-yyl-server-webpack-plugin@1.2.4:
-  version "1.2.4"
-  resolved "https://registry.npmjs.org/yyl-server-webpack-plugin/-/yyl-server-webpack-plugin-1.2.4.tgz#4e7824ae55a6b1db0db851cb7b8152ca491ed18e"
-  integrity sha512-CAFDms97c/kntS3MJ+4C6/dheDBPnJAqpBngV/sRJ+tPVMx0VjlI87fZ3nCQQa59H4Prtd6tJbCpiX26W4FMww==
+yyl-server-webpack-plugin@1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/yyl-server-webpack-plugin/-/yyl-server-webpack-plugin-1.2.5.tgz#50a6a0e88c6bbb7d176564b6e04cd0dbc712811e"
+  integrity sha512-78dpXJXZNw+eB28QILtl/O+oruu38OgKeJGqVnYbiZNMZHhOtI4z+lmh0/OQVBY/LReD7oKkVx+wZOGAwj+j+A==
   dependencies:
     "@types/express" "^4.17.11"
     "@types/http-proxy-middleware" "^1.0.0"
@@ -8352,7 +8354,7 @@ yyl-server-webpack-plugin@1.2.4:
     chalk "^4.1.0"
     http-proxy-middleware "^1.1.0"
     tapable "^2.2.0"
-    yyl-config-types "^0.3.17"
+    yyl-config-types "^0.4.3"
     yyl-seed-base "^0.2.6"
     yyl-webpack-plugin-base "^0.2.1"
 
