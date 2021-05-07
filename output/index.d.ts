@@ -1,7 +1,6 @@
 import { Configuration } from 'webpack';
-import { YylConfig, Env } from 'yyl-config-types';
+import { YylConfig, Env, Logger } from 'yyl-config-types';
 import { Alias } from './types';
-import { Logger } from 'yyl-seed-base';
 export * from './initMiddleware';
 export interface InitYylBaseConfigOption {
     /** 当前路径 */

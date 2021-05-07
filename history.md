@@ -1,5 +1,11 @@
 # 版本变更
 
+## 0.2.0 (2021-05-07)
+
+- feat: 更新 `yyl-config-types@0.5.1`
+- feat: 更新 `yyl-seed-base@0.3.0`
+- feat: 更新 `yyl-server-webpack-plugin@1.3.0`
+
 ## 0.1.16 (2021-05-03)
 
 - feat: 更新 `yyl-config-types@0.4.3`

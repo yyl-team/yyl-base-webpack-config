@@ -1,6 +1,5 @@
-import { Logger } from 'yyl-seed-base';
 import { Express } from 'express';
-import { Env, YylConfig } from 'yyl-config-types';
+import { Env, YylConfig, Logger } from 'yyl-config-types';
 import { Compiler } from 'webpack';
 export interface InitMiddleWareOption {
     app: Express;

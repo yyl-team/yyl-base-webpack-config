@@ -1,6 +1,4 @@
-import { Env, YylConfig, YylConfigAlias } from 'yyl-config-types'
-import { Configuration } from 'webpack'
-import { Logger } from 'yyl-seed-base'
+import { Logger, Env, YylConfig, YylConfigAlias } from 'yyl-config-types'
 export interface Alias extends YylConfigAlias {}
 
 /** 初始化基础配置 */
