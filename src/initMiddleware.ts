@@ -1,9 +1,8 @@
-import { Logger } from 'yyl-seed-base'
 import { Express } from 'express'
-import { Env, YylConfig } from 'yyl-config-types'
+import { Env, YylConfig, Logger } from 'yyl-config-types'
 import { LANG } from './const'
 import { initProxies } from './util'
-import { Configuration, Compiler } from 'webpack'
+import { Compiler } from 'webpack'
 import devMiddleware from 'webpack-dev-middleware'
 import YylServerWebpackPlugin from 'yyl-server-webpack-plugin'
 import WebpackHotMiddleware, {

@@ -1,13 +1,12 @@
 import { Configuration } from 'webpack'
 import merge from 'webpack-merge'
 import path from 'path'
-import { YylConfig, Env } from 'yyl-config-types'
+import { YylConfig, Env, Logger } from 'yyl-config-types'
 import { initBase } from './config/initBase'
 import { initEntry } from './config/initEntry'
 import { initModule } from './config/initModule'
 import { initYylPlugins } from './config/initYylPlugins'
-import { Alias, InitBaseOption } from './types'
-import { Logger } from 'yyl-seed-base'
+import { Alias } from './types'
 export * from './initMiddleware'
 export interface InitYylBaseConfigOption {
   /** 当前路径 */
