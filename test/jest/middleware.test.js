@@ -27,7 +27,7 @@ test('case middleware test', async () => {
 
   await new Promise((resolve) => {
     request(app)
-      .get('/proxy_www_yy_com/yyweb/module/data/header')
+      .get('/proxy_www_testhost_com/getter-test')
       .expect((res) => {
         if (![200, 403].includes(res.status)) {
           throw new Error('返回码非 200 | 403')

@@ -22,8 +22,8 @@ module.exports = (env) => {
           ]
         },
         commit: {
-          hostname: '//web.yystatic.com',
-          mainHost: 'http://www.yy.com'
+          hostname: '//www.testhost.com',
+          mainHost: 'http://www.testhost.com'
         }
       }
     })
