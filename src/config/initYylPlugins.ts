@@ -101,7 +101,7 @@ export function initYylPlugins(op: InitYylPluginsOption) {
     //   ].filter((x) => x !== ''),
     //   enable: !env.proxy && !env.remote
     // },
-    homePage: yylConfig?.proxy?.homePage || '',
+    homePage: '',
     HtmlWebpackPlugin
   }
 
