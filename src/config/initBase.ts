@@ -1,7 +1,7 @@
 import { Configuration, DefinePlugin } from 'webpack'
 import path from 'path'
 import util from 'yyl-util'
-import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin'
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 
 import { InitBaseOption } from '../types'
 import { formatPath } from '../formatter'
@@ -59,7 +59,7 @@ export function initBase(option: InitBaseOption) {
     devtool: 'source-map',
     plugins: [],
     optimization: {
-      minimizer: [new OptimizeCSSAssetsPlugin({})]
+      minimizer: [new CssMinimizerPlugin() as any]
     }
   }
 

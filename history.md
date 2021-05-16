@@ -1,5 +1,13 @@
 # 版本变更
 
+## 0.2.1 (2021-05-16)
+
+- feat: 更新 `yyl-config-types@0.5.2`
+- feat: 更新 `yyl-rev-webpack-plugin@1.0.9`
+- feat: 更新 `yyl-seed-base@0.4.1`
+- feat: 更新 `yyl-seed-response@0.2.0`
+- feat: 替换 `optimize-css-assets-webpack-plugin` -> `css-minimizer-webpack-plugin`
+
 ## 0.2.0 (2021-05-07)
 
 - feat: 更新 `yyl-config-types@0.5.1`
