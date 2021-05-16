@@ -64,8 +64,8 @@ export function initModule(op: InitBaseOption) {
                 presets: [[resolveModule('@babel/preset-env'), { modules: 'commonjs' }]],
                 plugins: [
                   // Stage 2
-                  [resolveModule('@babel/plugin-proposal-decorators'), { legacy: true }],
-                  [resolveModule('@babel/plugin-proposal-class-properties'), { loose: true }],
+                  resolveModule('@babel/plugin-proposal-decorators'),
+                  resolveModule('@babel/plugin-proposal-class-properties'),
                   resolveModule('@babel/plugin-proposal-function-sent'),
                   resolveModule('@babel/plugin-proposal-export-namespace-from'),
                   resolveModule('@babel/plugin-proposal-numeric-separator'),
@@ -92,15 +92,6 @@ export function initModule(op: InitBaseOption) {
               options: {
                 self: true
               }
-            }
-          ]
-        },
-        // lib js
-        {
-          test: path.join(alias.srcRoot, 'js/lib/'),
-          use: [
-            {
-              loader: `${resolveModule('imports-loader')}?this=?window`
             }
           ]
         },
