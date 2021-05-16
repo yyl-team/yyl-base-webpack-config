@@ -1,5 +1,10 @@
 # 版本变更
 
+## 0.2.3 (2021-05-16)
+
+- feat: 更新 `yyl-config-types@0.5.3`
+- feat: 更新 `yyl-server-webpack-plugin@1.3.2`
+
 ## 0.2.2 (2021-05-16)
 
 - feat: 更新 `yyl-rev-webpack-plugin@1.0.10`
