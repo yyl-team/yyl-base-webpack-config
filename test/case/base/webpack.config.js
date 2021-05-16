@@ -1,10 +1,10 @@
 const path = require('path')
 const merge = require('webpack-merge').default
-const initBaseConfig = require('../../../')
+const { initYylBaseConfig } = require('../../../')
 
 module.exports = (env) => {
   return merge(
-    initBaseConfig({
+    initYylBaseConfig({
       context: __dirname,
       env,
       alias: {
