@@ -111,6 +111,7 @@ export function initEntry(option: InitBaseOption) {
           inlineSource: '.(js|css|ts|tsx|jsx)\\?__inline$',
           minify: false,
           inject: 'body',
+          scriptLoading: 'blocking',
           process: {
             env: env
           }
