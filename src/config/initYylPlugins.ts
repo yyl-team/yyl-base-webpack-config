@@ -56,6 +56,7 @@ export function initYylPlugins(op: InitYylPluginsOption) {
     https: !!env.https,
     devServer: {
       ...devServerConfig,
+      ...devServer,
       disableHostCheck: true,
       contentBase: alias.root,
       port: yylConfig?.localserver?.port || (devServer && devServer?.port) || 5000,

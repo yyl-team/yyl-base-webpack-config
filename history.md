@@ -1,5 +1,9 @@
 # 版本变更
 
+## 0.2.8 (2021-05-17)
+
+- feat: 兼容 `process is not defined` 问题
+
 ## 0.2.7 (2021-05-17)
 
 - feat: 调整 babel 配置

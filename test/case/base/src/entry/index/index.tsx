@@ -17,6 +17,7 @@ const App = (
     </Switch>
   </Router>
 )
+console.log(process.env.mode)
 
 axios.get('//9u9ntpb8xp.api.quickmocker.com/getter-test').then((rs) => {
   console.log(rs)
