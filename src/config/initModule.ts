@@ -61,11 +61,27 @@ export function initModule(op: InitBaseOption) {
               options: {
                 babelrc: false,
                 cacheDirectory: true,
-                presets: [[resolveModule('@babel/preset-env'), { modules: 'commonjs' }]],
+                presets: [
+                  [
+                    resolveModule('@babel/preset-env'),
+                    { modules: 'commonjs', useBuiltIns: 'usage' }
+                  ]
+                ],
                 plugins: [
                   // Stage 2
-                  resolveModule('@babel/plugin-proposal-decorators'),
-                  resolveModule('@babel/plugin-proposal-class-properties'),
+                  [resolveModule('@babel/plugin-proposal-decorators'), { legacy: true }],
+                  [resolveModule('@babel/plugin-proposal-class-properties'), { loose: true }],
+                  [
+                    resolveModule('@babel/plugin-transform-runtime'),
+                    {
+                      corejs: false,
+                      helpers: true,
+                      version: require('@babel/runtime/package.json').version,
+                      regenerator: true,
+                      useESModules: false,
+                      absoluteRuntime: false
+                    }
+                  ],
                   resolveModule('@babel/plugin-proposal-function-sent'),
                   resolveModule('@babel/plugin-proposal-export-namespace-from'),
                   resolveModule('@babel/plugin-proposal-numeric-separator'),
