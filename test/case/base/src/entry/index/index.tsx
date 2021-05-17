@@ -7,6 +7,12 @@ import axios from 'axios'
 import './index.scss'
 import { routes } from '~/routes/index'
 
+declare global {
+  interface Window {
+    [key: string]: any
+  }
+}
+
 const App = (
   <Router>
     <Switch>
@@ -18,6 +24,7 @@ const App = (
   </Router>
 )
 console.log(process.env.mode)
+window.helloworld = () => {}
 
 axios.get('//9u9ntpb8xp.api.quickmocker.com/getter-test').then((rs) => {
   console.log(rs)

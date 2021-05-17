@@ -1,5 +1,9 @@
 # 版本变更
 
+## 0.2.9 (2021-05-18)
+
+- feat: 去掉 `html-webpack-plugin` scriptloading = defer 配置
+
 ## 0.2.8 (2021-05-17)
 
 - feat: 兼容 `process is not defined` 问题
