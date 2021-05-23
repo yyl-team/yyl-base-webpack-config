@@ -1,5 +1,9 @@
 # 版本变更
 
+## 0.2.10 (2021-05-23)
+
+- feat: 更新 `sass@1.25.0`
+
 ## 0.2.9 (2021-05-18)
 
 - feat: 去掉 `html-webpack-plugin` scriptloading = defer 配置
