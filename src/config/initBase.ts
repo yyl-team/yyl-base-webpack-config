@@ -57,7 +57,7 @@ export function initBase(option: InitBaseOption) {
         ...yylConfig?.alias
       }
     },
-    devtool: 'source-map',
+    devtool: env.isCommit ? false : 'source-map',
     plugins: [],
     optimization: {
       minimize: !!env.isCommit,
