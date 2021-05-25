@@ -1,5 +1,5 @@
 {
-  "version": "0.2.11",
+  "version": "0.2.12",
   "main": "output/index.js",
   "types": "output/index.d.ts",
   "eslintConfig": {
@@ -97,6 +97,7 @@
     "sass": "1.26.3",
     "sass-loader": "11.0.0",
     "style-loader": "^2.0.0",
+    "terser-webpack-plugin": "^5.1.2",
     "ts-loader": "^8.0.14",
     "tsconfig-paths-webpack-plugin": "^3.5.1",
     "url-loader": "^4.1.1",

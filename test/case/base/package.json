@@ -2,7 +2,8 @@
   "name": "test-base",
   "version": "0.1.0",
   "scripts": {
-    "o": "webpack",
+    "all": "webpack",
+    "o": "webpack --env isCommit=true",
     "w": "webpack --watch",
     "d": "webpack-cli serve --env tips=true",
     "eslint": "eslint --ext=jsx,ts,tsx ./",

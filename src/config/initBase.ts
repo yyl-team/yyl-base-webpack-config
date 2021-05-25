@@ -2,6 +2,7 @@ import { Configuration, DefinePlugin } from 'webpack'
 import path from 'path'
 import util from 'yyl-util'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
+import TerserPlugin from 'terser-webpack-plugin'
 
 import { InitBaseOption } from '../types'
 import { formatPath } from '../formatter'
@@ -29,7 +30,7 @@ export function initBase(option: InitBaseOption) {
   const { resolveRoot, alias, yylConfig, env } = option
   const nodeModulesPath = path.join(alias.dirname, 'node_modules')
   const wConfig: InitBaseResult = {
-    mode: 'development',
+    mode: env.isCommit ? 'production' : 'development',
     cache: {
       type: 'memory'
     },
@@ -59,7 +60,19 @@ export function initBase(option: InitBaseOption) {
     devtool: 'source-map',
     plugins: [],
     optimization: {
-      minimizer: [new CssMinimizerPlugin() as any]
+      minimize: !!env.isCommit,
+      minimizer: [
+        new CssMinimizerPlugin() as any,
+        new TerserPlugin({
+          parallel: true, // 可省略，默认开启并行
+          extractComments: false,
+          terserOptions: {
+            toplevel: true, // 最高级别，删除无用代码
+            ie8: true,
+            safari10: true
+          }
+        })
+      ]
     }
   }
 
