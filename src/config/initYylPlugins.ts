@@ -108,10 +108,10 @@ export function initYylPlugins(op: InitYylPluginsOption) {
 
   // 当为 false 时 会作为 中间件形式
   if (devServer === false) {
-    logger('msg', 'info', [LANG.SERVER_UNDER_MIDDLEWARE_MODE])
+    logger('msg', 'success', [LANG.SERVER_UNDER_MIDDLEWARE_MODE])
     yylServerOption.devServer = {}
   } else {
-    logger('msg', 'info', [LANG.SERVER_UNDER_NORMAL_MODE])
+    logger('msg', 'success', [LANG.SERVER_UNDER_NORMAL_MODE])
   }
 
   const r: InitYylPluginsResult = {
@@ -225,7 +225,7 @@ export function initYylPlugins(op: InitYylPluginsOption) {
   ]
 
   // 插入 热更新插件
-  if (devServer === false) {
+  if (devServer === false && (env?.hmr || env?.livereload)) {
     r.plugins.push(new HotModuleReplacementPlugin())
   }
 

@@ -1,4 +1,4 @@
-import { Configuration } from 'webpack'
+import type { Configuration } from 'webpack'
 import merge from 'webpack-merge'
 import path from 'path'
 import { YylConfig, Env, Logger } from 'yyl-config-types'
@@ -101,6 +101,11 @@ export function initYylBaseConfig(op?: InitYylBaseConfigOption) {
         ...alias,
         ...yylConfig.alias
       }
+    }
+
+    // 使用项目自带 server
+    if (yylConfig?.localserver?.entry) {
+      devServer = false
     }
 
     if (yylConfig?.localserver?.port && devServer) {
