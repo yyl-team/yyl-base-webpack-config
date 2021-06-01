@@ -14,21 +14,13 @@ export interface DefinePluginOption {
 export type InitBaseResult = Required<
   Pick<
     Configuration,
-    | 'mode'
-    | 'cache'
-    | 'context'
-    | 'output'
-    | 'resolveLoader'
-    | 'resolve'
-    | 'devtool'
-    | 'plugins'
-    | 'optimization'
+    'mode' | 'cache' | 'context' | 'output' | 'resolve' | 'devtool' | 'plugins' | 'optimization'
   >
 >
 
 export function initBase(option: InitBaseOption) {
   const { resolveRoot, alias, yylConfig, env } = option
-  const nodeModulesPath = path.join(alias.dirname, 'node_modules')
+  const nodeModulesPath = path.join(alias.dirname)
   const wConfig: InitBaseResult = {
     mode: env.isCommit ? 'production' : 'development',
     cache: {
@@ -46,9 +38,6 @@ export function initBase(option: InitBaseOption) {
           path.join(alias.jsDest, 'async_component/[name]-[chunkhash:8].js')
         )
       )
-    },
-    resolveLoader: {
-      modules: [nodeModulesPath, 'node_modules']
     },
     resolve: {
       modules: [nodeModulesPath, 'node_modules'],
@@ -96,9 +85,6 @@ export function initBase(option: InitBaseOption) {
   if (yylConfig?.resolveModule) {
     if (wConfig.resolve.modules) {
       wConfig.resolve.modules.unshift(yylConfig.resolveModule)
-    }
-    if (wConfig.resolveLoader.modules) {
-      wConfig.resolveLoader.modules.unshift(yylConfig.resolveModule)
     }
   }
 
