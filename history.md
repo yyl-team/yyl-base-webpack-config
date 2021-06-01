@@ -1,5 +1,12 @@
 # 版本变更
 
+## 0.2.15 (2021-06-01)
+- feat: 支持 entry/sub/index 形式的目录结构
+- fix: 修复 px2rem 失效问题
+- feat: 替换 `postcss-pxtorem` -> `postcss-px2rem`
+- feat: 降级 `autoprefixer@9.7.2`
+- feat: 降级 `postcss-loader@3.0.0`
+
 ## 0.2.14 (2021-05-26)
 
 - fix: 修复 在 ssr 项目 hmr 启动报错问题
