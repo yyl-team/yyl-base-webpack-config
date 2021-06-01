@@ -2,7 +2,7 @@ import { Configuration, RuleSetUse } from 'webpack'
 import { InitBaseOption } from '../types'
 import { isModuleInclude, resolveModule } from '../formatter'
 import autoprefixer from 'autoprefixer'
-import px2rem from 'postcss-pxtorem'
+import px2rem from 'postcss-px2rem'
 import util, { path } from 'yyl-util'
 import sass from 'sass'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
@@ -143,28 +143,27 @@ export function initModule(op: InitBaseOption) {
     {
       loader: resolveModule('postcss-loader'),
       options: {
-        postcssOptions: {
-          plugins: (() => {
-            const r = []
-            if (yylConfig?.platform === 'pc') {
-              r.push(
-                autoprefixer({
-                  overrideBrowserslist: ['> 1%', 'last 2 versions']
-                })
-              )
-            } else {
-              r.push(
-                autoprefixer({
-                  overrideBrowserslist: ['iOS >= 7', 'Android >= 4']
-                })
-              )
-            }
+        ident: 'postcss',
+        plugins() {
+          const r = []
+          if (yylConfig?.platform === 'pc') {
+            r.push(
+              autoprefixer({
+                overrideBrowserslist: ['> 1%', 'last 2 versions']
+              })
+            )
+          } else {
+            r.push(
+              autoprefixer({
+                overrideBrowserslist: ['iOS >= 7', 'Android >= 4']
+              })
+            )
+          }
 
-            if (yylConfig?.px2rem === true) {
-              r.push(px2rem({ unitPrecision: 75 }))
-            }
-            return r
-          })()
+          if (yylConfig?.px2rem === true) {
+            r.push(px2rem({ remUnit: 75 }))
+          }
+          return r
         }
       }
     }

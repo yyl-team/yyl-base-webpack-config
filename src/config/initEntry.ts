@@ -33,7 +33,13 @@ export function initEntry(option: InitBaseOption) {
       if (fs.existsSync(entryPath)) {
         const fileList = extFs.readFilesSync(entryPath, ENTRY_ERG)
         fileList.forEach((filePath) => {
-          const key = ignoreExtName(path.basename(filePath))
+          let key = ignoreExtName(path.basename(filePath))
+          const parentDirname = path.basename(path.dirname(filePath))
+
+          // 兼容 entry/sub/index.js 形式
+          if (key === 'index' && parentDirname !== key) {
+            key = parentDirname
+          }
           if (key) {
             r[key] = {
               import: [filePath]
@@ -76,7 +82,13 @@ export function initEntry(option: InitBaseOption) {
 
       const outputMap: OutputMap = {}
       outputPath.forEach((iPath) => {
-        outputMap[ignoreExtName(path.basename(iPath))] = iPath
+        // 兼容 entry/sub/index 场景
+        let key = ignoreExtName(path.basename(iPath))
+        const parentDirname = path.basename(path.dirname(iPath))
+        if (key === 'index' && key !== parentDirname) {
+          key = parentDirname
+        }
+        outputMap[key] = iPath
       })
 
       const commonChunks: string[] = []
@@ -93,7 +105,13 @@ export function initEntry(option: InitBaseOption) {
       })
 
       return outputPath.map((iPath) => {
-        const filename = ignoreExtName(path.basename(iPath))
+        let filename = ignoreExtName(path.basename(iPath))
+        const parentDirname = path.basename(path.dirname(iPath))
+        // 允许设置 entry/sub/index.pug
+        if (filename === 'index' && filename !== parentDirname) {
+          filename = parentDirname
+        }
+
         let iChunks: string[] = []
         iChunks = iChunks.concat(commonChunks)
         if (typeof wConfig.entry === 'object') {
@@ -101,6 +119,7 @@ export function initEntry(option: InitBaseOption) {
             iChunks.push(filename)
           }
         }
+
         const opts: HtmlWebpackPluginOption = {
           template: iPath,
           filename: path.relative(resolveRoot, path.join(alias.htmlDest, `${filename}.html`)),
