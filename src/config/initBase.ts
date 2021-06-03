@@ -77,6 +77,7 @@ export function initBase(option: InitBaseOption) {
         }
       })
       r['process.env'] = {}
+      r.process = {}
       return new DefinePlugin(r)
     })()
   )
