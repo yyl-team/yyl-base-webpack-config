@@ -46,7 +46,8 @@ export function initYylPlugins(op: InitYylPluginsOption) {
     sockHost: '127.0.0.1',
     serveIndex: true,
     watchOptions: {
-      aggregateTimeout: 1000
+      aggregateTimeout: 1000,
+      ignored: ['node_modules']
     }
   }
 

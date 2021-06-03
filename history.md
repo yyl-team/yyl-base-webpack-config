@@ -1,5 +1,9 @@
 # 版本变更
 
+## 0.2.18 (2021-06-03)
+
+- feat: watchOption 不再监听 node_modules 里面的变化
+
 ## 0.2.17 (2021-06-03)
 
 - fix: rev-mainfest -> rev-manifest
