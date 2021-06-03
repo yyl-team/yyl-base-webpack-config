@@ -1,5 +1,10 @@
 # 版本变更
 
+## 0.2.17 (2021-06-03)
+
+- fix: rev-mainfest -> rev-manifest
+- fix: 修复 process && process.env && process.env.mode 判断 会报错问题
+
 ## 0.2.16 (2021-06-01)
 
 - feat: 调整 resolve 规则
