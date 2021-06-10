@@ -1,5 +1,9 @@
 # 版本变更
 
+## 0.2.19 (2021-06-10)
+
+- fix: 修复 px2rem 在 isCommit 时会把 `/*px*/` 这种注释去掉导致 px2rem 异常问题
+
 ## 0.2.18 (2021-06-03)
 
 - feat: watchOption 不再监听 node_modules 里面的变化

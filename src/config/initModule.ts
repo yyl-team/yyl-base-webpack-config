@@ -202,7 +202,10 @@ export function initModule(op: InitBaseOption) {
         {
           loader: resolveModule('sass-loader'),
           options: {
-            implementation: sass
+            implementation: sass,
+            sassOptions: {
+              outputStyle: 'expanded'
+            }
           }
         }
       ])
