@@ -1,5 +1,9 @@
 import { YylConfig, Env } from 'yyl-config-types'
 import { YylServerWebpackPluginOption } from 'yyl-server-webpack-plugin'
+
+export function isHttp(ctx: string) {
+  return /^(\/\/|https?:\/\/)/.test(ctx)
+}
 export interface InitProxiesOption {
   yylConfig?: YylConfig
   env?: Env
@@ -20,7 +24,7 @@ export function initProxies(
     yylConfig?.commit?.mainHost,
     yylConfig?.commit?.staticHost
   ].forEach((host) => {
-    if (host && !hosts.includes(host)) {
+    if (host && !hosts.includes(host) && isHttp(host)) {
       hosts = hosts.concat(host)
     }
   })

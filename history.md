@@ -1,5 +1,9 @@
 # 版本变更
 
+## 0.2.20 (2021-06-15)
+
+- fix: 修复 当 yylConfig.commit.hostname 传参不合法时会报错问题
+
 ## 0.2.19 (2021-06-10)
 
 - fix: 修复 px2rem 在 isCommit 时会把 `/*px*/` 这种注释去掉导致 px2rem 异常问题
