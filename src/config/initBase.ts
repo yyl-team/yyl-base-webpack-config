@@ -1,4 +1,5 @@
-import { Configuration, DefinePlugin } from 'webpack'
+import type { Configuration } from 'webpack'
+import { webpackLoader } from '../webpackLoader'
 import path from 'path'
 import util from 'yyl-util'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
@@ -6,6 +7,8 @@ import TerserPlugin from 'terser-webpack-plugin'
 
 import { InitBaseOption } from '../types'
 import { formatPath } from '../formatter'
+
+const { DefinePlugin } = webpackLoader
 
 export interface DefinePluginOption {
   [key: string]: any

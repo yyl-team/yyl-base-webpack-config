@@ -1,4 +1,4 @@
-import { Configuration } from 'webpack'
+import type { Configuration } from 'webpack'
 import path from 'path'
 import extFs from 'yyl-fs'
 import fs from 'fs'
@@ -41,9 +41,7 @@ export function initEntry(option: InitBaseOption) {
             key = parentDirname
           }
           if (key) {
-            r[key] = {
-              import: [filePath]
-            }
+            r[key] = [filePath]
             if (yylConfig?.localserver?.entry && (env?.hmr || env?.livereload)) {
               // use hot plugin
               const queryObj = {
@@ -52,9 +50,7 @@ export function initEntry(option: InitBaseOption) {
                   env.port || yylConfig?.localserver.port || 5000
                 }/__webpack_hmr`
               }
-              r[key] = {
-                import: [`${HOT_CLIENT_PATH}?${querystring.stringify(queryObj)}`, filePath]
-              }
+              r[key] = [`${HOT_CLIENT_PATH}?${querystring.stringify(queryObj)}`, filePath]
               // TODO:
             }
           }

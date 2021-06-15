@@ -1,7 +1,9 @@
 import fs from 'fs'
 import path from 'path'
 import extOs from 'yyl-os'
-import { Configuration, HotModuleReplacementPlugin } from 'webpack'
+import type { WebpackOptionsNormalized } from 'webpack'
+import type { Configuration as DevServerConfiguration } from 'webpack-dev-server'
+import { webpackLoader } from '../webpackLoader'
 import YylConcatWebpackPlugin from 'yyl-concat-webpack-plugin'
 import YylCopyWebpackPlugin, { YylCopyWebpackPluginOption } from 'yyl-copy-webpack-plugin'
 import YylSugarWebpackPlugin from 'yyl-sugar-webpack-plugin'
@@ -10,15 +12,19 @@ import YylEnvPopPlugin from 'yyl-env-pop-webpack-plugin'
 import YylServerWebpackPlugin, { YylServerWebpackPluginOption } from 'yyl-server-webpack-plugin'
 import { LANG } from '../const'
 import { initProxies } from '../util'
-import { Env } from 'yyl-config-types'
 import { InitBaseOption } from '../types'
 import util from 'yyl-util'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 
-export type InitYylPluginsResult = Required<Pick<Configuration, 'plugins' | 'devServer'>>
+const { HotModuleReplacementPlugin } = webpackLoader
+
+export interface InitYylPluginsResult {
+  plugins: WebpackOptionsNormalized['plugins']
+  devServer: DevServerConfiguration
+}
 export interface InitYylPluginsOption extends InitBaseOption {
   publicPath: string
-  devServer: Configuration['devServer'] | false
+  devServer: DevServerConfiguration | false
 }
 
 export function initYylPlugins(op: InitYylPluginsOption) {
@@ -31,7 +37,7 @@ export function initYylPlugins(op: InitYylPluginsOption) {
     pkg = require(pkgPath)
   }
 
-  const devServerConfig: Configuration['devServer'] = {
+  const devServerConfig: WebpackOptionsNormalized['devServer'] = {
     noInfo: `${env.logLevel}` !== '2',
     publicPath: /^\/\//.test(publicPath) ? `http:${publicPath}` : publicPath,
     writeToDisk: !!(env.remote || env.isCommit || env.writeToDisk || yylConfig?.localserver?.entry),
@@ -227,7 +233,10 @@ export function initYylPlugins(op: InitYylPluginsOption) {
 
   // 插入 热更新插件
   if (devServer === false && (env?.hmr || env?.livereload)) {
-    r.plugins.push(new HotModuleReplacementPlugin())
+    try {
+      const webpack = require('webpack')
+      r.plugins.push(new webpack.HotModuleReplacementPlugin())
+    } catch (er) {}
   }
 
   return r

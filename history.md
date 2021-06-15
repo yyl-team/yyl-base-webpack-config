@@ -1,5 +1,9 @@
 # 版本变更
 
+## 0.2.21 (2021-06-15)
+
+- feat: 剔除 webpack 作为 devDependency 的角色
+
 ## 0.2.20 (2021-06-15)
 
 - fix: 修复 当 yylConfig.commit.hostname 传参不合法时会报错问题

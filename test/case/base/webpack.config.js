@@ -1,5 +1,6 @@
 const path = require('path')
 const merge = require('webpack-merge').default
+var vConsolePlugin = require('vconsole-webpack-plugin')
 const { initYylBaseConfig } = require('../../../')
 
 module.exports = (env) => {
@@ -33,6 +34,14 @@ module.exports = (env) => {
         noInfo: false,
         open: true
       }
-    })
+    }),
+    {
+      plugins: [
+        new vConsolePlugin({
+          filter: [],  // 需要过滤的入口文件
+          enable: true // 发布代码前记得改回 false
+        })
+      ]
+    }
   )
 }

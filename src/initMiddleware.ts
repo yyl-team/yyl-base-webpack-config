@@ -2,7 +2,7 @@ import { Express } from 'express'
 import { Env, YylConfig, Logger } from 'yyl-config-types'
 import { LANG } from './const'
 import { initProxies } from './util'
-import { Compiler } from 'webpack'
+import type { Compiler } from 'webpack'
 import devMiddleware from 'webpack-dev-middleware'
 import YylServerWebpackPlugin from 'yyl-server-webpack-plugin'
 import WebpackHotMiddleware, {

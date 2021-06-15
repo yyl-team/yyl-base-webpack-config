@@ -1,4 +1,5 @@
 import type { Configuration } from 'webpack'
+import type { Configuration as DevServerConfiguration } from 'webpack-dev-server'
 import merge from 'webpack-merge'
 import path from 'path'
 import { YylConfig, Env, Logger } from 'yyl-config-types'
@@ -17,7 +18,7 @@ export interface InitYylBaseConfigOption {
   yylConfig?: YylConfig
   alias?: Alias
   /** devServer false 表示不配置 devServer */
-  devServer?: Configuration['devServer'] | false
+  devServer?: DevServerConfiguration | false
   /** 日志输出 */
   logger?: Logger
 }
@@ -41,7 +42,7 @@ const DEFAULT_ALIAS: AliasProperty = {
   publicPath: '/'
 }
 
-const DEFAULT_DEV_SERVER: Configuration['devServer'] = {
+const DEFAULT_DEV_SERVER: DevServerConfiguration = {
   port: 5000
 }
 

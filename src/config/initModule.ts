@@ -1,4 +1,4 @@
-import { Configuration, RuleSetUse } from 'webpack'
+import type { Configuration, RuleSetUse } from 'webpack'
 import { InitBaseOption } from '../types'
 import { isModuleInclude, resolveModule } from '../formatter'
 import autoprefixer from 'autoprefixer'
