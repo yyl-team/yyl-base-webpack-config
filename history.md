@@ -1,5 +1,10 @@
 # 版本变更
 
+## 0.2.22 (2021-06-26)
+
+- feat: 更新 `yyl-sugar-webpack-plugin@1.0.10`
+- fix: 修复 sugar 后会生成 2 分文件，一份未被 sugar 一份被 sugar 的问题
+
 ## 0.2.21 (2021-06-15)
 
 - feat: 剔除 webpack 作为 devDependency 的角色
