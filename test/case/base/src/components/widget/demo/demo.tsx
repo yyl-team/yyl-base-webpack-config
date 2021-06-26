@@ -8,7 +8,7 @@ interface DemoProps {
 
 let interKey: any
 
-export const Demo: FC<DemoProps> = (props) => {
+export const Demo: FC<DemoProps> = props => {
   const [type, setType] = useState(0)
 
   useEffect(() => {

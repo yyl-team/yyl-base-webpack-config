@@ -28,7 +28,7 @@ if (process && process.env && process.env.mode) {
 }
 window.helloworld = () => {}
 
-axios.get('//9u9ntpb8xp.api.quickmocker.com/getter-test').then((rs) => {
+axios.get('//9u9ntpb8xp.api.quickmocker.com/getter-test').then(rs => {
   console.log(rs)
 })
 
