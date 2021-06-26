@@ -1,5 +1,10 @@
 # 版本变更
 
+## 0.2.24 (2021-06-26)
+
+- feat: 更新 `yyl-rev-webpack-plugin@1.0.11`
+- fix: 修复 无 hash 图片不能显示问题
+
 ## 0.2.23 (2021-06-26)
 
 - feat: 修复 serveIndex 不生效问题
