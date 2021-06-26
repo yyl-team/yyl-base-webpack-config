@@ -1,5 +1,9 @@
 # 版本变更
 
+## 0.2.23 (2021-06-26)
+
+- feat: 修复 serveIndex 不生效问题
+
 ## 0.2.22 (2021-06-26)
 
 - feat: 更新 `yyl-sugar-webpack-plugin@1.0.10`

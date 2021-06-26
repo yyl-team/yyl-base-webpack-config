@@ -51,7 +51,6 @@ export function initEntry(option: InitBaseOption) {
                 }/__webpack_hmr`
               }
               r[key] = [`${HOT_CLIENT_PATH}?${querystring.stringify(queryObj)}`, filePath]
-              // TODO:
             }
           }
         })
