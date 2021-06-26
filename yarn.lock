@@ -8131,10 +8131,10 @@ yyl-os@^0.11.4:
   dependencies:
     yyl-util "^2.3.5"
 
-yyl-rev-webpack-plugin@1.0.10:
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/yyl-rev-webpack-plugin/-/yyl-rev-webpack-plugin-1.0.10.tgz#4857173bdafd825c168d4adce815ef5c9b73d289"
-  integrity sha512-5Ib5NOTnp1YpMK7831jG/boxU5WAwbQi7QeLZgSv2J1wEC/Cu5C7Ls8dOlvQIHYPlKTagctg7Au/KqCNpBLkGQ==
+yyl-rev-webpack-plugin@1.0.11:
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/yyl-rev-webpack-plugin/-/yyl-rev-webpack-plugin-1.0.11.tgz#561cdf6b94e96b97a6aabdd9d517fa8636c7ff5e"
+  integrity sha512-AQ1lhr1/UoJDBH9EYrvnnG87Xtu0HmOmVZImeFwhbYRQ65UUCcC0NDt+L91ojb8bfLgVQL2jiXA39JXJLaNwYQ==
   dependencies:
     "@types/webpack" "^5.28.0"
     axios "^0.21.1"
