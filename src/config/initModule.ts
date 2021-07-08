@@ -5,6 +5,7 @@ import { initModuleBase } from './initModuleBase'
 import { initModuleJs } from './initModuleJs'
 import { initModuleScss } from './initModuleScss'
 import { initModuleTs } from './initModuleTs'
+import { initModuleEsbuild } from './initModuleEsbuild'
 
 /** 初始化 wConfig module 部分 - 返回值 */
 export type InitModuleResult = Required<
@@ -13,5 +14,10 @@ export type InitModuleResult = Required<
 
 /** 初始化 wConfig module 部分 */
 export function initModule(op: InitBaseOption): InitModuleResult {
-  return merge<any>(initModuleBase(op), initModuleJs(op), initModuleTs(op), initModuleScss(op))
+  const { env } = op
+  if (env.esbuild) {
+    return merge<any>(initModuleBase(op), initModuleEsbuild(op))
+  } else {
+    return merge<any>(initModuleBase(op), initModuleJs(op), initModuleTs(op), initModuleScss(op))
+  }
 }
