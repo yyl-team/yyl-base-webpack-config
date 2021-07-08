@@ -1,5 +1,9 @@
 # 版本变更
 
+## 0.3.1 (2021-07-08)
+
+- fix: 修复 `esbuild-loader` 模式下 tsconfig paths 获取不了问题
+
 ## 0.3.0 (2021-07-08)
 
 - feat: 补充 `esbuild-loader`
