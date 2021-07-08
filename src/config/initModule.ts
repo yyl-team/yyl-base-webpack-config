@@ -1,6 +1,8 @@
 import type { Configuration, RuleSetUse } from 'webpack'
 import { InitBaseOption } from '../types'
 import { isModuleInclude, resolveModule } from '../formatter'
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
+import TerserPlugin from 'terser-webpack-plugin'
 import autoprefixer from 'autoprefixer'
 import px2rem from 'postcss-px2rem'
 import util, { path } from 'yyl-util'
@@ -13,7 +15,9 @@ const NODE_MODULES_REG = /node_modules/
 const IS_VUE_REG = /\.vue\.js/
 
 /** 初始化 wConfig module 部分 - 返回值 */
-export type InitModuleResult = Required<Pick<Configuration, 'module' | 'resolve' | 'plugins'>>
+export type InitModuleResult = Required<
+  Pick<Configuration, 'module' | 'resolve' | 'plugins' | 'optimization'>
+>
 
 /** 初始化 wConfig module 部分 */
 export function initModule(op: InitBaseOption) {
@@ -113,7 +117,21 @@ export function initModule(op: InitBaseOption) {
       extensions: ['.js', '.json', '.wasm', '.mjs', '.jsx'],
       plugins: []
     },
-    plugins: []
+    plugins: [],
+    optimization: {
+      minimize: !!env.isCommit,
+      minimizer: [
+        new TerserPlugin({
+          parallel: true, // 可省略，默认开启并行
+          extractComments: false,
+          terserOptions: {
+            toplevel: true, // 最高级别，删除无用代码
+            ie8: true,
+            safari10: true
+          }
+        })
+      ]
+    }
   }
 
   // url loader 补充
@@ -210,6 +228,9 @@ export function initModule(op: InitBaseOption) {
         }
       ])
     })
+  }
+  if (wConfig.optimization.minimizer) {
+    wConfig.optimization.minimizer.push(new CssMinimizerPlugin() as any)
   }
   // - css & scss
 
