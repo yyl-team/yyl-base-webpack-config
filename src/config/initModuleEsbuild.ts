@@ -6,6 +6,7 @@ import px2rem from 'postcss-px2rem'
 import util, { path } from 'yyl-util'
 import sass from 'sass'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 import { ESBuildMinifyPlugin } from 'esbuild-loader'
 import fs from 'fs'
 
@@ -22,6 +23,15 @@ export function initModuleEsbuild(op: InitBaseOption) {
   const { yylConfig, alias, resolveRoot, env } = op
 
   const localTsConfigPath = path.join(alias.dirname, 'tsconfig.json')
+
+  const tsconfigRaw = fs.existsSync(localTsConfigPath) ? require(localTsConfigPath) : undefined
+  if (tsconfigRaw) {
+    if (!tsconfigRaw.compilerOptions.rootDirs) {
+      tsconfigRaw.compilerOptions.rootDirs = []
+    }
+    tsconfigRaw.compilerOptions.rootDirs.push(alias.dirname)
+    console.log('===zzzddd', tsconfigRaw)
+  }
 
   const wConfig: InitModuleResult = {
     module: {
@@ -42,7 +52,7 @@ export function initModuleEsbuild(op: InitBaseOption) {
           options: {
             loader: 'tsx',
             target: 'es2015',
-            tsconfigRaw: fs.existsSync(localTsConfigPath) ? require(localTsConfigPath) : undefined
+            tsconfigRaw
           }
         }
       ]
@@ -61,6 +71,14 @@ export function initModuleEsbuild(op: InitBaseOption) {
         })
       ]
     }
+  }
+
+  if (wConfig.resolve.plugins) {
+    wConfig.resolve.plugins.push(
+      new TsconfigPathsPlugin({
+        configFile: localTsConfigPath
+      })
+    )
   }
 
   // + css & scss
