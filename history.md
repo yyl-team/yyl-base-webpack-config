@@ -1,5 +1,9 @@
 # 版本变更
 
+## 0.3.0 (2021-07-08)
+
+- feat: 补充 `esbuild-loader`
+
 ## 0.2.24 (2021-06-26)
 
 - feat: 更新 `yyl-rev-webpack-plugin@1.0.11`

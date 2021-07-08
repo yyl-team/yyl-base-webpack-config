@@ -6,6 +6,7 @@
     "o": "webpack --env isCommit=true",
     "w": "webpack --watch",
     "d": "webpack-cli serve --env tips=true",
+    "e": "webpack-cli serve --env tips=true --env esbuild=true",
     "eslint": "eslint --ext=jsx,ts,tsx ./",
     "eslint:fix": "eslint --fix --ext=jsx,ts,tsx ./",
     "prettier": "prettier --write ./**/*.{ts,tsx,js}"

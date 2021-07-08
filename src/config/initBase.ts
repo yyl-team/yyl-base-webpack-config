@@ -15,10 +15,7 @@ export interface DefinePluginOption {
 }
 
 export type InitBaseResult = Required<
-  Pick<
-    Configuration,
-    'mode' | 'cache' | 'context' | 'output' | 'resolve' | 'devtool' | 'plugins' | 'optimization'
-  >
+  Pick<Configuration, 'mode' | 'cache' | 'context' | 'output' | 'resolve' | 'devtool' | 'plugins'>
 >
 
 export function initBase(option: InitBaseOption) {
@@ -50,22 +47,7 @@ export function initBase(option: InitBaseOption) {
       }
     },
     devtool: env.isCommit ? false : 'source-map',
-    plugins: [],
-    optimization: {
-      minimize: !!env.isCommit,
-      minimizer: [
-        new CssMinimizerPlugin() as any,
-        new TerserPlugin({
-          parallel: true, // 可省略，默认开启并行
-          extractComments: false,
-          terserOptions: {
-            toplevel: true, // 最高级别，删除无用代码
-            ie8: true,
-            safari10: true
-          }
-        })
-      ]
-    }
+    plugins: []
   }
 
   // 环境变量
