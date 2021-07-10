@@ -30,7 +30,6 @@ export function initModuleEsbuild(op: InitBaseOption) {
       tsconfigRaw.compilerOptions.rootDirs = []
     }
     tsconfigRaw.compilerOptions.rootDirs.push(alias.dirname)
-    console.log('===zzzddd', tsconfigRaw)
   }
 
   const wConfig: InitModuleResult = {
