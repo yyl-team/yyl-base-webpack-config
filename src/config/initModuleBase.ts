@@ -46,6 +46,10 @@ export function initModuleBase(op: InitBaseOption) {
             }
           ]
         },
+        {
+          test: /\.svg$/,
+          use: resolveModule('svg-inline-loader')
+        },
         // images
         {
           test: /\.(png|jpg|gif|webp|ico)$/,
