@@ -22,16 +22,6 @@ export type InitModuleResult = Required<
 export function initModuleEsbuild(op: InitBaseOption) {
   const { yylConfig, alias, resolveRoot, env } = op
 
-  const localTsConfigPath = path.join(alias.dirname, 'tsconfig.json')
-
-  const tsconfigRaw = fs.existsSync(localTsConfigPath) ? require(localTsConfigPath) : undefined
-  if (tsconfigRaw) {
-    if (!tsconfigRaw.compilerOptions.rootDirs) {
-      tsconfigRaw.compilerOptions.rootDirs = []
-    }
-    tsconfigRaw.compilerOptions.rootDirs.push(alias.dirname)
-  }
-
   const wConfig: InitModuleResult = {
     module: {
       rules: [
@@ -42,16 +32,6 @@ export function initModuleEsbuild(op: InitBaseOption) {
           options: {
             loader: 'jsx',
             target: 'es2015'
-          }
-        },
-        // tsx
-        {
-          test: /\.tsx?$/,
-          loader: resolveModule('esbuild-loader'),
-          options: {
-            loader: 'tsx',
-            target: 'es2015',
-            tsconfigRaw
           }
         }
       ]
@@ -72,13 +52,35 @@ export function initModuleEsbuild(op: InitBaseOption) {
     }
   }
 
-  if (wConfig.resolve.plugins) {
-    wConfig.resolve.plugins.push(
-      new TsconfigPathsPlugin({
-        configFile: localTsConfigPath
+  // + ts
+  const localTsConfigPath = path.join(alias.dirname, 'tsconfig.json')
+  if (fs.existsSync(localTsConfigPath)) {
+    const tsconfigRaw = require(localTsConfigPath)
+    if (!tsconfigRaw.compilerOptions.rootDirs) {
+      tsconfigRaw.compilerOptions.rootDirs = []
+    }
+    tsconfigRaw.compilerOptions.rootDirs.push(alias.dirname)
+    if (wConfig.module.rules) {
+      wConfig.module.rules.push({
+        test: /\.tsx?$/,
+        loader: resolveModule('esbuild-loader'),
+        options: {
+          loader: 'tsx',
+          target: 'es2015',
+          tsconfigRaw
+        }
       })
-    )
+    }
+
+    if (wConfig.resolve.plugins) {
+      wConfig.resolve.plugins.push(
+        new TsconfigPathsPlugin({
+          configFile: localTsConfigPath
+        })
+      )
+    }
   }
+  // - ts
 
   // + css & scss
   const postCssOptions = {
