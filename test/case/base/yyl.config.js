@@ -1,4 +1,5 @@
 module.exports = {
+  px2rem: true,
   localserver: {
     root: './dist',
     proxies: ['https://9u9ntpb8xp.api.quickmocker.com/']

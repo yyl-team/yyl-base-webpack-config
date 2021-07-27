@@ -145,15 +145,15 @@ export function initModuleEsbuild(op: InitBaseOption) {
       },
       resolveModule('css-loader'),
       {
-        loader: resolveModule('postcss-loader'),
-        options: postCssOptions
-      },
-      {
         loader: resolveModule('esbuild-loader'),
         options: {
           loader: 'css',
           minify: !!env.isCommit
         }
+      },
+      {
+        loader: resolveModule('postcss-loader'),
+        options: postCssOptions
       }
     ]
   }
