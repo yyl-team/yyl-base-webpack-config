@@ -16,6 +16,7 @@ module.exports = {
   resource: {
     'src/resource': 'dist/js'
   },
+  bableLoaderIncludes: ['react', 'react-dom', 'ansi-regex'],
   commit: {
     hostname: '//www.testhost.com',
     mainHost: 'http://www.testhost.com'

@@ -29,6 +29,9 @@ export function initBase(option: InitBaseOption) {
     context: path.resolve(__dirname, alias.dirname),
     output: {
       path: resolveRoot,
+      environment: {
+        arrowFunction: false
+      },
       filename: formatPath(
         path.relative(resolveRoot, path.join(alias.jsDest, '[name]-[chunkhash:8].js'))
       ),

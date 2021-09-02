@@ -69,7 +69,8 @@ export function initModuleJs(op: InitBaseOption) {
                   resolveModule('@babel/plugin-proposal-export-namespace-from'),
                   resolveModule('@babel/plugin-proposal-numeric-separator'),
                   resolveModule('@babel/plugin-proposal-throw-expressions'),
-                  resolveModule('@babel/plugin-syntax-dynamic-import')
+                  resolveModule('@babel/plugin-syntax-dynamic-import'),
+                  resolveModule('@babel/plugin-transform-arrow-functions')
                 ]
               }
             }
